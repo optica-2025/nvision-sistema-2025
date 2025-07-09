@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 400px; margin: 0 auto; }
+        
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo { 
+            font-size: 50px; 
+            margin-bottom: 15px; 
+        }
+        
+        .brand-name { 
+            font-size: 24px; 
+            font-weight: 800; 
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline { 
+            font-size: 14px; 
+            opacity: 0.9; 
+            margin-bottom: 15px; 
+        }
+        
+        .contact-info { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            font-size: 12px; 
+        }
+        
+        .contact-item { 
+            padding: 8px 12px; 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 15px; 
+            font-weight: 600;
+        }
+
+        .main-buttons {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .main-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        
+        .main-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+        }
+
+        .btn-catalog {
+            background: linear-gradient(45deg, #0ea5e9, #0284c7);
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        }
+
+        .btn-pos {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .btn-news {
+            background: linear-gradient(45deg, #f59e0b, #dc2626);
+        }
+
+        .btn-test {
+            background: linear-gradient(45deg, #06b6d4, #0891b2);
+        }
+
+        .btn-ncf {
+            background: linear-gradient(45deg, #6366f1, #4f46e5);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+            z-index: 999;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">👁️</div>
+            <h1 class="brand-name">Óptica Nvision</h1>
+            <p class="tagline">Cuidado visual completo y profesional</p>
+            <div class="contact-info">
+                <div class="contact-item">📱 849-797-2424</div>
+                <div class="contact-item">🚚 Entregas</div>
+            </div>
+        </div>
+
+        <div class="main-buttons">
+            <button class="main-btn btn-whatsapp" onclick="contactarWhatsApp()">
+                📱 Contactar por WhatsApp
+            </button>
+            
+            <button class="main-btn btn-news" onclick="verNoticias()">
+                📰 InfoFlash - Noticias del Día
+            </button>
+
+            <button class="main-btn btn-test" onclick="hacerTest()">
+                👁️ Test de Vista Gratuito
+            </button>
+            
+            <button class="main-btn btn-catalog" onclick="verCatalogo()">
+                👓 Ver Catálogo de Monturas
+            </button>
+            
+            <button class="main-btn btn-pos" onclick="irAPOS()">
+                💼 Sistema de Facturación
+            </button>
+            
+            <button class="main-btn btn-ncf" onclick="irANCF()">
+                🧾 Sistema NCF Fiscal
+            </button>
+            
+            <button class="main-btn btn-admin" onclick="irAAdmin()">
+                ⚙️ Panel Administrativo
+            </button>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <div class="feature-title">Exámenes Avanzados</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👓</div>
+                <div class="feature-title">Monturas Premium</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <div class="feature-title">Lentes de Lujo</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👨‍⚕️</div>
+                <div class="feature-title">Optometristas Expertos</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            by fbrugal jrubinstein consultores
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        const WHATSAPP = '18497972424';
+
+        function mostrarNotificacion(mensaje) {
+            const notif = document.getElementById('notification');
+            notif.textContent = mensaje;
+            notif.style.display = 'block';
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+
+        function contactarWhatsApp() {
+            const mensaje = `¡Hola! Vengo desde la página web de Óptica Nvision. Me interesa conocer más sobre sus servicios ópticos y monturas disponibles. ¿Podrían ayudarme? 👁️✨`;
+            const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+            mostrarNotificacion('📱 Abriendo WhatsApp...');
+        }
+
+        function verNoticias() {
+            mostrarNotificacion('📰 Abriendo InfoFlash...');
+            window.open('info-nvision.html', '_blank');
+        }
+
+        function hacerTest() {
+            mostrarNotificacion('👁️ Abriendo Test de Vista...');
+            window.open('test-visual.html', '_blank');
+        }
+
+        function verCatalogo() {
+            mostrarNotificacion('👓 Abriendo catálogo...');
+            window.open('catalogo.html', '_blank');
+        }
+
+        function irAPOS() {
+            mostrarNotificacion('💼 Abriendo sistema POS...');
+            window.open('pos.html', '_blank');
+        }
+
+        function irANCF() {
+            mostrarNotificacion('🧾 Abriendo sistema NCF...');
+            window.open('ncf.html', '_blank');
+        }
+
+        function irAAdmin() {
+            mostrarNotificacion('⚙️ Abriendo panel administrativo...');
+            window.open('admin.html', '_blank');
+        }
+
+        console.log('✅ Óptica Nvision cargada correctamente');
+    </script>
+</body>
+</html>
