@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoFlash - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #1e40af 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 15px;
+        }
+        .container { max-width: 450px; margin: 0 auto; }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #f59e0b, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .update-status {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+            padding: 12px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .news-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .news-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .news-mundial { border-left-color: #22d3ee; }
+        .news-local { border-left-color: #10b981; }
+        .news-farandula { border-left-color: #f59e0b; }
+
+        .news-content {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .news-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-whatsapp { background: #25d366; }
+        .btn-share { background: #f59e0b; }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #f59e0b, #dc2626);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+            z-index: 999;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 InfoFlash Nvision</h1>
+            <p>Noticias instantáneas para compartir</p>
+        </div>
+
+        <div class="update-status">
+            🕒 Última actualización: <span id="lastUpdate">Cargando...</span>
+        </div>
+
+        <button onclick="refreshNews()" class="refresh-btn">
+            🔄 Actualizar Noticias
+        </button>
+
+        <div class="news-section">
+            <div class="section-title">
+                <span>🌍</span>
+                <span style="color: #22d3ee;">NOTICIAS MUNDIALES</span>
+            </div>
+            <div id="newsMundial"></div>
+        </div>
+
+        <div class="news-section">
+            <div class="section-title">
+                <span>🇩🇴</span>
+                <span style="color: #10b981;">REPÚBLICA DOMINICANA</span>
+            </div>
+            <div id="newsLocal"></div>
+        </div>
+
+        <div class="news-section">
+            <div class="section-title">
+                <span>🎭</span>
+                <span style="color: #f59e0b;">FARÁNDULA & BÉISBOL</span>
+            </div>
+            <div id="newsFarandula"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
+
+    <script>
+        let currentNewsCache = {
+            mundial: [],
+            local: [],
+            farandula: []
+        };
+
+        // Función para obtener noticias reales desde Netlify Function
+        async function fetchRealNews(category) {
+            try {
+                const response = await fetch(`/.netlify/functions/get-news?category=${category}`);
+                const data = await response.json();
+                
+                if (data.success && data.noticias) {
+                    return data.noticias;
+                }
+                return getFallbackNews(category);
+            } catch (error) {
+                console.log('Error obteniendo noticias, usando respaldo:', error);
+                return getFallbackNews(category);
+            }
+        }
+
+        // Noticias de respaldo (las originales que funcionan)
+        function getFallbackNews(category) {
+            const fallback = {
+                mundial: [
+                    {texto: "🇺🇸 Trump impone nuevos aranceles comerciales a socios asiáticos", enlace: "https://cnnespanol.cnn.com/economia"},
+                    {texto: "🌊 Inundaciones devastadoras afectan Texas con múltiples víctimas", enlace: "https://cnnespanol.cnn.com/mundo"},
+                    {texto: "🏛️ Los BRICS evitan confrontación directa pero rechazan proteccionismo", enlace: "https://news.un.org/es/news"},
+                    {texto: "🔥 Francia combate incendios forestales por vientos y calor extremo", enlace: "https://cnnespanol.cnn.com/mundo"},
+                    {texto: "🇮🇱 Israel establece nueva zona humanitaria para palestinos en Gaza", enlace: "https://cnnespanol.cnn.com/mundo"},
+                    {texto: "💰 Volatilidad en mercados asiáticos por tensiones comerciales", enlace: "https://cnnespanol.cnn.com/economia"}
+                ],
+                local: [
+                    {texto: "🚫 Autoridades desmienten presencia de carteles mexicanos en RD", enlace: "https://almomento.net/"},
+                    {texto: "🏭 ADITEX alerta sobre crisis en sector textil dominicano", enlace: "https://listindiario.com/"},
+                    {texto: "💰 Dólar aumenta 12 centavos, cotiza a RD$60.35 este martes", enlace: "https://hoy.com.do/"},
+                    {texto: "🏛️ Instituto Duartiano critica posición eclesiástica migratoria", enlace: "https://almomento.net/"},
+                    {texto: "🏠 Inician restauración de edificios históricos del centro", enlace: "https://listindiario.com/"},
+                    {texto: "🇭🇹 Pandillas haitianas expanden control territorial desafiando Estado", enlace: "https://hoy.com.do/"}
+                ],
+                farandula: [
+                    {texto: "⚾ Cinco dominicanos titulares confirmados para All-Star MLB 2025", enlace: "https://www.mlb.com/es/news"},
+                    {texto: "🏆 Record histórico: 94 dominicanos en rosters de apertura MLB", enlace: "https://espndeportes.espn.com/"},
+                    {texto: "📱 La Materialista genera controversia con nuevo reto de TikTok", enlace: "https://www.telemundo.com/entretenimiento/farandula"},
+                    {texto: "🎬 Telemundo estrena 'El Conde: Amor y Honor' en julio", enlace: "https://www.univision.com/temas/farandula"},
+                    {texto: "💃 Natti Natasha sorprende anunciando segundo embarazo", enlace: "https://cnnespanol.cnn.com/entretenimiento"},
+                    {texto: "📺 Alofoke revela secretos de famosos en programa especial", enlace: "https://www.telemundo.com/entretenimiento/farandula"}
+                ]
+            };
+            return fallback[category] || [];
+        }
+
+        async function loadAllNews() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.innerHTML = '🔄 Actualizando...';
+            refreshBtn.disabled = true;
+
+            try {
+                // Intentar obtener noticias reales de todas las categorías
+                const [mundialNews, localNews, farandulaNews] = await Promise.all([
+                    fetchRealNews('mundial'),
+                    fetchRealNews('local'),
+                    fetchRealNews('farandula')
+                ]);
+
+                // Guardar en cache
+                currentNewsCache.mundial = mundialNews;
+                currentNewsCache.local = localNews;
+                currentNewsCache.farandula = farandulaNews;
+
+                // Mostrar noticias
+                displayNews('newsMundial', mundialNews, 'mundial');
+                displayNews('newsLocal', localNews, 'local');
+                displayNews('newsFarandula', farandulaNews, 'farandula');
+                
+                updateTimestamp();
+                console.log('✅ Noticias actualizadas con contenido real de NewsAPI');
+                
+            } catch (error) {
+                console.error('Error cargando noticias:', error);
+                
+                // Mostrar noticias de respaldo
+                displayNews('newsMundial', getFallbackNews('mundial'), 'mundial');
+                displayNews('newsLocal', getFallbackNews('local'), 'local');
+                displayNews('newsFarandula', getFallbackNews('farandula'), 'farandula');
+            }
+
+            refreshBtn.innerHTML = '🔄 Actualizar Noticias';
+            refreshBtn.disabled = false;
+        }
+
+        function displayNews(containerId, newsArray, category) {
+            const container = document.getElementById(containerId);
+            let html = '';
+
+            newsArray.forEach((newsItem, index) => {
+                html += `
+                    <div class="news-item news-${category}">
+                        <div class="news-content">${newsItem.texto}</div>
+                        <div class="news-actions">
+                            <button class="action-btn btn-whatsapp" onclick="shareWhatsApp('${newsItem.texto.replace(/'/g, "&#39;")}', '${newsItem.enlace}')">📱 WhatsApp</button>
+                            <button class="action-btn btn-share" onclick="shareNews('${newsItem.texto.replace(/'/g, "&#39;")}', '${newsItem.enlace}')">📤 Compartir</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function shareWhatsApp(texto, enlace) {
+            const currentUrl = window.location.href;
+            const message = `📰 *InfoFlash Nvision*\n\n${texto}\n\n👁️ Óptica Nvision\n📱 809-713-5307\n\n🔗 Leer noticia completa:\n${enlace}\n\n📰 Más noticias:\n${currentUrl}\n\n#NoticiasAlInstante`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function shareNews(texto, enlace) {
+            const currentUrl = window.location.href;
+            const shareText = `📰 ${texto}\n\n👁️ Óptica Nvision - InfoFlash\n🔗 Leer completa: ${enlace}\n📰 Más noticias: ${currentUrl}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'InfoFlash Nvision',
+                    text: shareText,
+                    url: enlace
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('✅ Noticia copiada al portapapeles');
+                }).catch(() => {
+                    prompt('Copiar noticia:', shareText);
+                });
+            }
+        }
+
+        function refreshNews() {
+            loadAllNews();
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-DO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('lastUpdate').textContent = timeString;
+        }
+
+        // Cargar noticias al iniciar
+        window.addEventListener('DOMContentLoaded', function() {
+            // Mostrar noticias de respaldo inmediatamente
+            displayNews('newsMundial', getFallbackNews('mundial'), 'mundial');
+            displayNews('newsLocal', getFallbackNews('local'), 'local');
+            displayNews('newsFarandula', getFallbackNews('farandula'), 'farandula');
+            updateTimestamp();
+            
+            // Intentar cargar noticias reales después de 1 segundo
+            setTimeout(() => {
+                loadAllNews();
+            }, 1000);
+        });
+
+        // Actualizar automáticamente cada 5 minutos
+        setInterval(() => {
+            loadAllNews();
+            console.log('🔄 Noticias actualizadas automáticamente cada 5 minutos');
+        }, 5 * 60 * 1000);
+
+        console.log('✅ InfoFlash Nvision con Netlify Functions cargado correctamente');
+    </script>
+
+        setInterval(() => {
+            currentIndex++;
+            loadAllNews();
+            console.log('🔄 Noticias rotadas automáticamente cada 5 minutos');
+        }, 5 * 60 * 1000);
+
+        console.log('✅ InfoFlash Nvision cargado correctamente');
+    </script>
+</body>
+</html>
