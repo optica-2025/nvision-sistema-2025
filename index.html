@@ -3,291 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Óptica Nvision</title>
+    <title>Óptica Nvisión Marketing</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: system-ui, -apple-system, sans-serif; 
-            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
-            min-height: 100vh; 
-            color: white; 
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #064e3b, #065f46);
+            color: white;
+            padding: 15px;
+            min-height: 100vh;
         }
         .container { max-width: 400px; margin: 0 auto; }
-        
-        .header { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(10px);
-            border-radius: 20px; 
-            padding: 30px; 
-            text-align: center; 
-            margin-bottom: 20px; 
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .header {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        
-        .logo { 
-            font-size: 50px; 
-            margin-bottom: 15px; 
-        }
-        
-        .brand-name { 
-            font-size: 24px; 
-            font-weight: 800; 
-            margin-bottom: 8px;
-            background: linear-gradient(45deg, #10b981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .tagline { 
-            font-size: 14px; 
-            opacity: 0.9; 
-            margin-bottom: 15px; 
-        }
-        
-        .contact-info { 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            font-size: 12px; 
-        }
-        
-        .contact-item { 
-            padding: 8px 12px; 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 15px; 
-            font-weight: 600;
-        }
-
-        .main-buttons {
+        .header h1 { font-size: 24px; color: #10b981; }
+        .phone { font-size: 18px; font-weight: bold; color: #10b981; margin: 10px 0; }
+        .tabs {
             display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab { 
+            background: rgba(16, 185, 129, 0.2);
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .tab.active { background: #10b981; color: #000; }
+        .section {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .section.active { display: block; }
+        .title { font-size: 18px; text-align: center; margin-bottom: 20px; color: #10b981; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-bottom: 20px;
         }
-        
-        .main-btn {
+        .card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 20px;
             border-radius: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
+            padding: 15px;
             text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
         }
-        
-        .main-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+        .card.selected { border-color: #10b981; background: rgba(16, 185, 129, 0.3); }
+        .card-icon { font-size: 30px; margin-bottom: 8px; }
+        .card-name { font-weight: bold; font-size: 12px; }
+        .textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            font-family: inherit;
+            min-height: 80px;
+            margin: 15px 0;
+            font-size: 16px;
         }
-
-        .btn-whatsapp {
-            background: linear-gradient(45deg, #25d366, #128c7e);
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px 0;
         }
-
-        .btn-catalog {
-            background: linear-gradient(45deg, #0ea5e9, #0284c7);
+        .btn-primary { background: #10b981; color: #000; }
+        .btn-whatsapp { background: #25d366; color: white; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.2); color: white; }
+        .result {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
         }
-
-        .btn-admin {
-            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        .result.show { display: block; }
+        .result-text {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            font-size: 14px;
         }
-
-        .btn-pos {
-            background: linear-gradient(45deg, #10b981, #059669);
-        }
-
-        .btn-news {
-            background: linear-gradient(45deg, #f59e0b, #dc2626);
-        }
-
-        .btn-test {
-            background: linear-gradient(45deg, #06b6d4, #0891b2);
-        }
-
-        .btn-ncf {
-            background: linear-gradient(45deg, #6366f1, #4f46e5);
-        }
-
-        .notification {
+        .alert {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(16, 185, 129, 0.9);
+            background: #10b981;
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 20px;
             z-index: 1000;
             display: none;
         }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
+        .camera-area {
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
         }
-
-        .feature-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
+        .camera-box {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            position: relative;
         }
-
-        .feature-title {
-            font-size: 12px;
-            font-weight: 600;
-            opacity: 0.9;
+        .camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 13px;
         }
-
-        .footer {
-            position: fixed;
+        .capture {
+            position: absolute;
             bottom: 10px;
-            right: 25px;
-            font-size: 10px;
-            font-weight: 600;
-            opacity: 0.6;
-            z-index: 999;
-            background: linear-gradient(45deg, #8B4513, #DAA520);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #10b981;
+            cursor: pointer;
+            display: none;
+        }
+        .input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            font-family: inherit;
+            margin: 10px 0;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">👁️</div>
-            <h1 class="brand-name">Óptica Nvision</h1>
-            <p class="tagline">Cuidado visual completo y profesional</p>
-            <div class="contact-info">
-                <div class="contact-item">📱 849-797-2424</div>
-                <div class="contact-item">🚚 Entregas</div>
+            <h1>👁️ ÓPTICA NVISIÓN</h1>
+            <div class="phone">📱 849-797-2424</div>
+            <div>Vea mejor, viva mejor</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection(0, this)">📝 Mensajes</button>
+            <button class="tab" onclick="showSection(1, this)">📷 Cámara</button>
+            <button class="tab" onclick="showSection(2, this)">🔗 Enlaces</button>
+        </div>
+
+        <!-- MENSAJES -->
+        <div class="section active">
+            <div class="title">📝 Crear Mensajes Familiares</div>
+            
+            <div class="grid">
+                <div class="card" onclick="selectCard(this, 'familiar')">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <div class="card-name">Familiar</div>
+                </div>
+                <div class="card" onclick="selectCard(this, 'comunidad')">
+                    <div class="card-icon">🤝</div>
+                    <div class="card-name">Comunidad</div>
+                </div>
+                <div class="card" onclick="selectCard(this, 'accesible')">
+                    <div class="card-icon">💰</div>
+                    <div class="card-name">Accesible</div>
+                </div>
+                <div class="card" onclick="selectCard(this, 'urgencia')">
+                    <div class="card-icon">🚨</div>
+                    <div class="card-name">Urgencia</div>
+                </div>
+            </div>
+
+            <textarea class="textarea" id="customText" placeholder="Escribe tu mensaje personalizado (opcional)..."></textarea>
+            
+            <button class="btn btn-primary" onclick="createMessage()">🎯 Crear Mensaje</button>
+            
+            <div class="result" id="messageResult">
+                <div class="result-text" id="messageText"></div>
+                <button class="btn btn-secondary" onclick="copyText()">📋 Copiar</button>
+                <button class="btn btn-whatsapp" onclick="sendWhatsApp()">💬 Enviar WhatsApp</button>
             </div>
         </div>
 
-        <div class="main-buttons">
-            <button class="main-btn btn-whatsapp" onclick="contactarWhatsApp()">
-                📱 Contactar por WhatsApp
-            </button>
+        <!-- CÁMARA -->
+        <div class="section">
+            <div class="title">📷 Tomar Fotos</div>
             
-            <button class="main-btn btn-news" onclick="verNoticias()">
-                📰 InfoFlash - Noticias del Día
-            </button>
-
-            <button class="main-btn btn-test" onclick="hacerTest()">
-                👁️ Test de Vista Gratuito
-            </button>
-            
-            <button class="main-btn btn-catalog" onclick="verCatalogo()">
-                👓 Ver Catálogo de Monturas
-            </button>
-            
-            <button class="main-btn btn-pos" onclick="irAPOS()">
-                💼 Sistema de Facturación
-            </button>
-            
-            <button class="main-btn btn-ncf" onclick="irANCF()">
-                🧾 Sistema NCF Fiscal
-            </button>
-            
-            <button class="main-btn btn-admin" onclick="irAAdmin()">
-                ⚙️ Panel Administrativo
-            </button>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🔬</div>
-                <div class="feature-title">Exámenes Avanzados</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">👓</div>
-                <div class="feature-title">Monturas Premium</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💎</div>
-                <div class="feature-title">Lentes de Lujo</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">👨‍⚕️</div>
-                <div class="feature-title">Optometristas Expertos</div>
+            <div class="camera-area">
+                <div class="camera-box" id="cameraBox">
+                    <div>
+                        <div style="font-size: 50px;">📷</div>
+                        <div>Toca para activar</div>
+                    </div>
+                    <video id="video" class="camera-video" style="display: none;" autoplay playsinline></video>
+                    <button id="capture" class="capture" onclick="takePhoto()"></button>
+                </div>
+                
+                <button class="btn btn-primary" onclick="startCamera()" id="startBtn">📷 Activar Cámara</button>
+                
+                <canvas id="canvas" style="display: none;"></canvas>
+                <img id="photo" style="display: none; width: 100%; border-radius: 10px; margin: 10px 0;">
+                
+                <div id="photoActions" style="display: none;">
+                    <button class="btn btn-whatsapp" onclick="sharePhoto()">💬 Enviar con "Me Interesa"</button>
+                    <button class="btn btn-secondary" onclick="retake()">🔄 Tomar Otra</button>
+                    <button class="btn btn-secondary" onclick="showPhotoGallery()">📁 Ver Fotos Guardadas</button>
+                </div>
             </div>
         </div>
 
-        <div class="footer">
-            by fbrugal jrubinstein consultores
+        <!-- ENLACES -->
+        <div class="section">
+            <div class="title">🔗 Compartir Enlaces</div>
+            
+            <input class="input" id="linkInput" placeholder="Pega el enlace de YouTube, TikTok, Instagram...">
+            <textarea class="textarea" id="linkText" placeholder="Mensaje para acompañar el enlace..."></textarea>
+            
+            <div class="grid">
+                <button class="btn" style="background: #ff0000;" onclick="shareLink('youtube')">📺 YouTube</button>
+                <button class="btn" style="background: #000;" onclick="shareLink('tiktok')">🎵 TikTok</button>
+                <button class="btn" style="background: #e1306c;" onclick="shareLink('instagram')">📸 Instagram</button>
+                <button class="btn btn-primary" onclick="shareLink('otro')">🔗 Otro</button>
+            </div>
         </div>
     </div>
 
-    <div id="notification" class="notification"></div>
+    <div class="alert" id="alert"></div>
 
     <script>
-        const WHATSAPP = '18497972424';
+        const templates = {
+            familiar: '👨‍👩‍👧‍👦 CUIDAMOS DE TODA LA FAMILIA 👨‍👩‍👧‍👦\n\nÓptica Nvisión\n\n💝 Atención personalizada para cada edad\n👶 Desde bebés hasta abuelos\n👓 Monturas cómodas y resistentes\n🏠 Ambiente familiar y acogedor\n\n📱 849-797-2424\n💬 WhatsApp: 849-797-2424\n🌐 https://opticanvision.com/\n\n❤️ Vea mejor, viva mejor',
+            comunidad: '🤝 COMPROMETIDOS CON LA COMUNIDAD 🤝\n\nÓptica Nvisión\n\n🏘️ Parte de tu comunidad desde hace años\n❤️ Precios justos y accesibles\n🚐 Brigadas de salud visual\n👥 Apoyo a organizaciones locales\n\n📱 849-797-2424\n🌐 https://opticanvision.com/\n\nVea mejor, viva mejor',
+            accesible: '💰 CALIDAD AL ALCANCE DE TODOS 💰\n\nÓptica Nvisión\n\n✨ Excelente calidad a precios justos\n💳 Planes de pago sin intereses\n🎁 Promociones constantes\n📋 Acepta seguros médicos\n\n📱 849-797-2424\n💬 WhatsApp: 849-797-2424\n🌐 https://opticanvision.com/\n\nVea mejor, viva mejor',
+            urgencia: '🚨 EMERGENCIA OCULAR 🚨\n\nLlame INMEDIATAMENTE:\n📱 849-797-2424\n\n⚠️ SÍNTOMAS URGENTES:\n• Dolor intenso en los ojos\n• Pérdida súbita de visión\n• Golpes o lesiones oculares\n• Destellos o luces extrañas\n\n🏥 Óptica Nvisión\nVea mejor, viva mejor'
+        };
 
-        function mostrarNotificacion(mensaje) {
-            const notif = document.getElementById('notification');
-            notif.textContent = mensaje;
-            notif.style.display = 'block';
+        let selectedType = null;
+        let currentMessage = '';
+        let videoStream = null;
+        let photoData = null;
+
+        function showSection(index, btn) {
+            document.querySelectorAll('.section').forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (index !== 1 && videoStream) {
+                stopCamera();
+            }
+        }
+
+        function selectCard(card, type) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedType = type;
+            showAlert('Template seleccionado: ' + type);
+        }
+
+        function createMessage() {
+            if (!selectedType) {
+                showAlert('Selecciona un tipo de mensaje');
+                return;
+            }
+
+            const custom = document.getElementById('customText').value.trim();
+            
+            if (custom) {
+                currentMessage = custom + '\n\n📱 849-797-2424\n🌐 https://opticanvision.com/\n❤️ Vea mejor, viva mejor';
+            } else {
+                currentMessage = templates[selectedType];
+            }
+
+            document.getElementById('messageText').textContent = currentMessage;
+            document.getElementById('messageResult').classList.add('show');
+            showAlert('Mensaje creado');
+        }
+
+        function copyText() {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(currentMessage);
+                showAlert('Copiado al portapapeles');
+            }
+        }
+
+        function sendWhatsApp() {
+            if (!currentMessage) return;
+            const text = encodeURIComponent(currentMessage);
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                window.location.href = 'whatsapp://send?text=' + text;
+            } else {
+                window.open('https://wa.me/?text=' + text, '_blank');
+            }
+        }
+
+        async function startCamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = videoStream;
+                video.style.display = 'block';
+                document.getElementById('capture').style.display = 'block';
+                document.getElementById('startBtn').style.display = 'none';
+                document.querySelector('#cameraBox > div').style.display = 'none';
+                
+                showAlert('Cámara activada');
+            } catch (e) {
+                showAlert('Error: No se pudo acceder a la cámara');
+            }
+        }
+
+        function takePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photo = document.getElementById('photo');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            photoData = canvas.toDataURL('image/jpeg', 0.8);
+            photo.src = photoData;
+            photo.style.display = 'block';
+            document.getElementById('photoActions').style.display = 'block';
+            
+            stopCamera();
+            showAlert('Foto capturada');
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            document.getElementById('video').style.display = 'none';
+            document.getElementById('capture').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.querySelector('#cameraBox > div').style.display = 'block';
+        }
+
+        function sharePhoto() {
+            if (!photoData) {
+                showAlert('No hay foto para enviar');
+                return;
+            }
+            
+            // Guardar foto en almacenamiento local
+            const photoId = 'foto_' + Date.now();
+            const photoInfo = {
+                id: photoId,
+                data: photoData,
+                timestamp: new Date().toISOString(),
+                shared: true
+            };
+            
+            // Almacenar en localStorage
+            let savedPhotos = JSON.parse(localStorage.getItem('nvision_photos') || '[]');
+            savedPhotos.push(photoInfo);
+            // Solo mantener las últimas 50 fotos
+            if (savedPhotos.length > 50) {
+                savedPhotos = savedPhotos.slice(-50);
+            }
+            localStorage.setItem('nvision_photos', JSON.stringify(savedPhotos));
+            
+            const msg = '📸 *Nueva montura disponible en Óptica Nvisión* 📸\n\n👁️ Óptica Nvisión\n👓 Monturas cómodas para toda la familia\n💝 Perfectas para tu estilo de vida\n\n' + 
+                       '👆 *¿Te interesa esta montura?*\n' +
+                       '👉 Visita: https://opticanvision.com/\n' +
+                       '📱 O responde "ME INTERESA" a este mensaje\n\n' +
+                       '📞 Llama directo: 849-797-2424\n' +
+                       '💬 WhatsApp: 849-797-2424\n\n' +
+                       '❤️ Vea mejor, viva mejor';
+            
+            // Para móviles, intentar enviar la imagen directamente
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile && navigator.share) {
+                // API Web Share para móviles modernos
+                fetch(photoData)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'montura_nvision.jpg', { type: 'image/jpeg' });
+                        return navigator.share({
+                            title: 'Nueva montura - Óptica Nvisión',
+                            text: msg,
+                            files: [file]
+                        });
+                    })
+                    .catch(() => {
+                        // Fallback: solo texto
+                        const text = encodeURIComponent(msg);
+                        window.location.href = 'whatsapp://send?text=' + text;
+                    });
+            } else {
+                // Fallback para otros casos
+                const text = encodeURIComponent(msg);
+                if (isMobile) {
+                    window.location.href = 'whatsapp://send?text=' + text;
+                } else {
+                    window.open('https://wa.me/?text=' + text, '_blank');
+                }
+            }
+            
+            showAlert('Foto enviada con enlace "Me Interesa"');
+        }
+
+        function retake() {
+            document.getElementById('photo').style.display = 'none';
+            document.getElementById('photoActions').style.display = 'none';
+            photoData = null;
+            startCamera();
+        }
+
+        // Mostrar galería de fotos guardadas
+        function showPhotoGallery() {
+            const savedPhotos = JSON.parse(localStorage.getItem('nvision_photos') || '[]');
+            if (savedPhotos.length === 0) {
+                showAlert('No hay fotos guardadas');
+                return;
+            }
+            
+            let galleryHTML = '<div style="background: rgba(0,0,0,0.9); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; padding: 20px; overflow-y: auto;">';
+            galleryHTML += '<div style="text-align: center; color: white; margin-bottom: 20px;">';
+            galleryHTML += '<h3>📸 Fotos Enviadas (' + savedPhotos.length + ')</h3>';
+            galleryHTML += '<button onclick="closeGallery()" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin: 10px;">✕ Cerrar</button>';
+            galleryHTML += '</div>';
+            galleryHTML += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">';
+            
+            savedPhotos.reverse().forEach((photo, index) => {
+                const date = new Date(photo.timestamp).toLocaleString();
+                galleryHTML += `
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; text-align: center;">
+                        <img src="${photo.data}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;">
+                        <div style="font-size: 10px; color: #ccc;">${date}</div>
+                        <button onclick="resharePhoto('${photo.id}')" style="background: #25d366; color: white; border: none; padding: 5px 10px; border-radius: 15px; margin-top: 5px; font-size: 10px;">🔄 Reenviar</button>
+                    </div>
+                `;
+            });
+            
+            galleryHTML += '</div></div>';
+            
+            const galleryDiv = document.createElement('div');
+            galleryDiv.id = 'photoGallery';
+            galleryDiv.innerHTML = galleryHTML;
+            document.body.appendChild(galleryDiv);
+        }
+
+        function closeGallery() {
+            const gallery = document.getElementById('photoGallery');
+            if (gallery) {
+                gallery.remove();
+            }
+        }
+
+        function resharePhoto(photoId) {
+            const savedPhotos = JSON.parse(localStorage.getItem('nvision_photos') || '[]');
+            const photo = savedPhotos.find(p => p.id === photoId);
+            
+            if (photo) {
+                photoData = photo.data;
+                sharePhoto();
+                closeGallery();
+            }
+        }
+
+        function shareLink(platform) {
+            const link = document.getElementById('linkInput').value.trim();
+            const customText = document.getElementById('linkText').value.trim();
+            
+            if (!link) {
+                showAlert('Pega un enlace primero');
+                return;
+            }
+
+            let prefix = '';
+            switch(platform) {
+                case 'youtube': prefix = '📺 Video inspirador en YouTube 📺\n\n'; break;
+                case 'tiktok': prefix = '🎵 Video motivacional en TikTok 🎵\n\n'; break;
+                case 'instagram': prefix = '📸 Contenido positivo en Instagram 📸\n\n'; break;
+                default: prefix = '🔗 Contenido que vale la pena ver 🔗\n\n'; break;
+            }
+
+            const message = prefix + (customText || 'Te comparto este contenido positivo:') + '\n\n' + link + '\n\n👁️ Óptica Nvisión te comparte contenido de valor\n📱 849-797-2424\n🌐 https://opticanvision.com/\n❤️ Vea mejor, viva mejor';
+            
+            const text = encodeURIComponent(message);
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                window.location.href = 'whatsapp://send?text=' + text;
+            } else {
+                window.open('https://wa.me/?text=' + text, '_blank');
+            }
+            
+            showAlert('Enlace enviado por WhatsApp');
+        }
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
             setTimeout(() => {
-                notif.style.display = 'none';
-            }, 3000);
+                alert.style.display = 'none';
+            }, 2000);
         }
 
-        function contactarWhatsApp() {
-            const mensaje = `¡Hola! Vengo desde la página web de Óptica Nvision. Me interesa conocer más sobre sus servicios ópticos y monturas disponibles. ¿Podrían ayudarme? 👁️✨`;
-            const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-            mostrarNotificacion('📱 Abriendo WhatsApp...');
-        }
-
-        function verNoticias() {
-            mostrarNotificacion('📰 Abriendo InfoFlash...');
-            window.open('info-nvision.html', '_blank');
-        }
-
-        function hacerTest() {
-            mostrarNotificacion('👁️ Abriendo Test de Vista...');
-            window.open('test-visual.html', '_blank');
-        }
-
-        function verCatalogo() {
-            mostrarNotificacion('👓 Abriendo catálogo...');
-            window.open('catalogo.html', '_blank');
-        }
-
-        function irAPOS() {
-            mostrarNotificacion('💼 Abriendo sistema POS...');
-            window.open('pos.html', '_blank');
-        }
-
-        function irANCF() {
-            mostrarNotificacion('🧾 Abriendo sistema NCF...');
-            window.open('ncf.html', '_blank');
-        }
-
-        function irAAdmin() {
-            mostrarNotificacion('⚙️ Abriendo panel administrativo...');
-            window.open('admin.html', '_blank');
-        }
-
-        console.log('✅ Óptica Nvision cargada correctamente');
+        document.getElementById('linkInput').addEventListener('input', function() {
+            this.placeholder = this.value ? 'Enlace detectado ✓' : 'Pega el enlace aquí...';
+        });
     </script>
 </body>
 </html>
