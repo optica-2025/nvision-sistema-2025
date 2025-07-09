@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema NCF - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #10b981;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .ncf-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #10b981;
+        }
+
+        .ncf-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+
+        .ncf-b01 { border-left-color: #22d3ee; }
+        .ncf-b02 { border-left-color: #10b981; }
+        .ncf-b14 { border-left-color: #8b5cf6; }
+        .ncf-b15 { border-left-color: #f59e0b; }
+
+        .ncf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ncf-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .ncf-status {
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 12px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: monospace;
+            text-align: center;
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .ncf-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .generator-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .current-ncf {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .ncf-number {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: monospace;
+            color: #10b981;
+            margin: 10px 0;
+        }
+
+        .alert {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+            z-index: 999;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .innovation-badge {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 1000;
+            display: none;
+        }
+
+        .factoring-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .preview-content {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="innovation-badge" id="innovationBadge">
+        🚀 SISTEMA DISRUPTIVO NCF
+    </div>
+
+    <button class="logout-btn" id="logoutBtn" onclick="cerrarSesion()">
+        🚪 Cerrar Sesión
+    </button>
+
+    <div class="container">
+        <!-- PANTALLA DE LOGIN -->
+        <div id="loginScreen">
+            <div class="header">
+                <h1>🔒 Sistema NCF Seguro</h1>
+                <p>Óptica Nvision - Acceso Autorizado</p>
+            </div>
+
+            <div class="login-section">
+                <div class="login-title">🔐 Acceso Restringido</div>
+                <input type="text" id="username" class="login-input" placeholder="👤 Usuario">
+                <input type="password" id="password" class="login-input" placeholder="🔑 Contraseña">
+                <button onclick="iniciarSesion()" class="login-btn">🚀 Acceder al Sistema</button>
+                
+                <div style="margin-top: 20px; font-size: 12px; opacity: 0.8;">
+                    🔒 Sistema protegido con autenticación<br>
+                    💎 Tecnología disruptiva para ópticas
+                </div>
+            </div>
+        </div>
+
+        <!-- SISTEMA NCF PRINCIPAL -->
+        <div id="ncfSystem" class="hidden">
+            <div class="header">
+                <h1>🧾 Sistema NCF Innovador</h1>
+                <p>Óptica Nvision - Comprobantes fiscales del futuro</p>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <!-- Configuración de Rangos NCF -->
+            <div class="ncf-section">
+                <h2 class="section-title">⚙️ Configuración Inteligente de Rangos</h2>
+                
+                <!-- B01 - Consumidor Final -->
+                <div class="ncf-card ncf-b01">
+                    <div class="ncf-header">
+                        <div class="ncf-title">🧾 B01 - Consumidor Final</div>
+                        <div class="ncf-status status-active" id="statusB01">ACTIVO</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Desde:</label>
+                            <input type="text" id="b01Desde" class="form-input" placeholder="B0100000001" maxlength="11">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hasta:</label>
+                            <input type="text" id="b01Hasta" class="form-input" placeholder="B0100010000" maxlength="11">
+                        </div>
+                    </div>
+
+                    <div class="ncf-info">
+                        <div class="info-item">
+                            <div class="info-label">Actual:</div>
+                            <div class="info-value" id="b01Actual">No configurado</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Usados:</div>
+                            <div class="info-value" id="b01Usados">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Disponibles:</div>
+                            <div class="info-value" id="b01Disponibles">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B02 - Empresarial -->
+                <div class="ncf-card ncf-b02">
+                    <div class="ncf-header">
+                        <div class="ncf-title">🏢 B02 - Empresarial</div>
+                        <div class="ncf-status status-active" id="statusB02">ACTIVO</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Desde:</label>
+                            <input type="text" id="b02Desde" class="form-input" placeholder="B0200000001" maxlength="11">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hasta:</label>
+                            <input type="text" id="b02Hasta" class="form-input" placeholder="B0200010000" maxlength="11">
+                        </div>
+                    </div>
+
+                    <div class="ncf-info">
+                        <div class="info-item">
+                            <div class="info-label">Actual:</div>
+                            <div class="info-value" id="b02Actual">No configurado</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Usados:</div>
+                            <div class="info-value" id="b02Usados">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Disponibles:</div>
+                            <div class="info-value" id="b02Disponibles">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="guardarRangos()" class="btn btn-primary">💾 Guardar Configuración</button>
+                    <button onclick="resetearTodo()" class="btn btn-danger">🔄 Resetear Sistema</button>
+                </div>
+            </div>
+
+            <!-- Generador Innovador de Facturas -->
+            <div class="generator-section">
+                <h2 class="section-title">🚀 Generador Disruptivo de Facturas</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Comprobante:</label>
+                        <select id="tipoComprobante" class="form-input">
+                            <option value="B01">🧾 B01 - Consumidor Final</option>
+                            <option value="B02">🏢 B02 - Empresarial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cliente:</label>
+                        <input type="text" id="nombreCliente" class="form-input" placeholder="Nombre del cliente">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">RNC/Cédula:</label>
+                        <input type="text" id="rncCliente" class="form-input" placeholder="000-00000-0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monto Total:</label>
+                        <input type="number" id="montoTotal" class="form-input" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+
+                <div class="current-ncf">
+                    <div style="font-size: 14px; opacity: 0.8;">Próximo NCF inteligente:</div>
+                    <div class="ncf-number" id="proximoNCF">Seleccione tipo</div>
+                </div>
+
+                <div class="factoring-buttons">
+                    <button onclick="previsualizarFactura()" class="btn btn-secondary">👁️ Vista Previa</button>
+                    <button onclick="generarFactura()" class="btn btn-success">📄 Generar PDF</button>
+                    <button onclick="enviarWhatsApp()" class="btn btn-whatsapp">📱 Enviar WhatsApp</button>
+                    <button onclick="enviarEmail()" class="btn btn-primary">📧 Enviar Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE VISTA PREVIA -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-content">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #10b981;">📄 Vista Previa de Factura</h3>
+            <div id="previewContent"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="cerrarPreview()" class="btn btn-secondary">❌ Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // Credenciales seguras
+        const CREDENTIALS = {
+            username: 'admin',
+            password: 'nvision2530'
+        };
+
+        // Variables del sistema
+        let rangosNCF = {
+            B01: { desde: null, hasta: null, actual: null },
+            B02: { desde: null, hasta: null, actual: null }
+        };
+        
+        let facturas = [];
+        let isLoggedIn = false;
+
+        function iniciarSesion() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                isLoggedIn = true;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('ncfSystem').classList.remove('hidden');
+                document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('innovationBadge').style.display = 'block';
+                mostrarAlerta('🚀 Acceso autorizado - Sistema disruptivo activado', 'success');
+                
+                // Configuración automática para demo
+                setTimeout(() => {
+                    configuracionRapida();
+                }, 1000);
+            } else {
+                mostrarAlerta('❌ Credenciales incorrectas - Acceso denegado', 'error');
+                document.getElementById('password').value = '';
+            }
+        }
+
+        function cerrarSesion() {
+            isLoggedIn = false;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('ncfSystem').classList.add('hidden');
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('innovationBadge').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            mostrarAlerta('🚪 Sesión cerrada correctamente', 'success');
+        }
+
+        function configuracionRapida() {
+            // Auto-configurar para demo
+            document.getElementById('b01Desde').value = 'B0100000001';
+            document.getElementById('b01Hasta').value = 'B0100001000';
+            document.getElementById('b02Desde').value = 'B0200000001';
+            document.getElementById('b02Hasta').value = 'B0200001000';
+            guardarRangos();
+        }
+
+        function mostrarAlerta(mensaje, tipo = 'success') {
+            const alertHtml = `<div class="alert alert-${tipo}" style="display: block;">${mensaje}</div>`;
+            document.getElementById('alertContainer').innerHTML = alertHtml;
+            setTimeout(() => {
+                document.getElementById('alertContainer').innerHTML = '';
+            }, 4000);
+        }
+
+        function guardarRangos() {
+            const tipos = ['B01', 'B02'];
+            let configurado = false;
+
+            tipos.forEach(tipo => {
+                const desde = document.getElementById(tipo.toLowerCase() + 'Desde').value.trim().toUpperCase();
+                const hasta = document.getElementById(tipo.toLowerCase() + 'Hasta').value.trim().toUpperCase();
+                
+                if (desde && hasta) {
+                    if (validarFormatoNCF(desde, tipo) && validarFormatoNCF(hasta, tipo)) {
+                        rangosNCF[tipo] = {
+                            desde: desde,
+                            hasta: hasta,
+                            actual: desde
+                        };
+                        configurado = true;
+                    } else {
+                        mostrarAlerta(`❌ Formato incorrecto para ${tipo}. Debe ser ${tipo}00000001`, 'error');
+                        return;
+                    }
+                }
+            });
+
+            if (configurado) {
+                actualizarEstadisticas();
+                mostrarAlerta('✅ Rangos NCF configurados con tecnología disruptiva');
+            } else {
+                mostrarAlerta('❌ Configure al menos un rango NCF', 'error');
+            }
+        }
+
+        function validarFormatoNCF(ncf, tipo) {
+            const regex = new RegExp(`^${tipo}\\d{8}$`);
+            return regex.test(ncf);
+        }
+
+        function actualizarEstadisticas() {
+            ['B01', 'B02'].forEach(tipo => {
+                const rango = rangosNCF[tipo];
+                const actualElement = document.getElementById(tipo.toLowerCase() + 'Actual');
+                const usadosElement = document.getElementById(tipo.toLowerCase() + 'Usados');
+                const disponiblesElement = document.getElementById(tipo.toLowerCase() + 'Disponibles');
+                
+                if (rango.desde && rango.hasta) {
+                    const numDesde = parseInt(rango.desde.substring(3));
+                    const numHasta = parseInt(rango.hasta.substring(3));
+                    const numActual = parseInt(rango.actual.substring(3));
+                    
+                    const usados = numActual - numDesde;
+                    const disponibles = numHasta - numActual + 1;
+                    
+                    actualElement.textContent = rango.actual;
+                    usadosElement.textContent = usados;
+                    disponiblesElement.textContent = disponibles;
+                    
+                    const statusElement = document.getElementById('status' + tipo);
+                    if (disponibles <= 10) {
+                        statusElement.textContent = 'CRÍTICO';
+                        statusElement.className = 'ncf-status status-danger';
+                    } else if (disponibles <= 100) {
+                        statusElement.textContent = 'ADVERTENCIA';
+                        statusElement.className = 'ncf-status status-warning';
+                    } else {
+                        statusElement.textContent = 'ACTIVO';
+                        statusElement.className = 'ncf-status status-active';
+                    }
+                }
+            });
+            
+            actualizarProximoNCF();
+        }
+
+        function actualizarProximoNCF() {
+            const tipo = document.getElementById('tipoComprobante').value;
+            const proximoElement = document.getElementById('proximoNCF');
+            
+            if (rangosNCF[tipo] && rangosNCF[tipo].actual) {
+                proximoElement.textContent = rangosNCF[tipo].actual;
+            } else {
+                proximoElement.textContent = 'No configurado';
+            }
+        }
+
+        function obtenerSiguienteNCF(tipo) {
+            const rango = rangosNCF[tipo];
+            if (!rango || !rango.actual) {
+                throw new Error(`Tipo ${tipo} no configurado`);
+            }
+            
+            const numActual = parseInt(rango.actual.substring(3));
+            const numHasta = parseInt(rango.hasta.substring(3));
+            
+            if (numActual > numHasta) {
+                throw new Error(`No quedan comprobantes ${tipo} disponibles`);
+            }
+            
+            const ncfActual = rango.actual;
+            const siguienteNum = numActual + 1;
+            rango.actual = tipo + siguienteNum.toString().padStart(8, '0');
+            
+            return ncfActual;
+        }
+
+        function previsualizarFactura() {
+            const datos = obtenerDatosFactura();
+            if (!datos) return;
+            
+            const previewHtml = `
+                <div style="border: 2px solid #10b981; padding: 20px; border-radius: 10px;">
+                    <h2 style="text-align: center; color: #10b981;">ÓPTICA NVISION</h2>
+                    <h3 style="text-align: center; margin-bottom: 20px;">FACTURA FISCAL</h3>
+                    
+                    <div style="margin-bottom: 15px;"><strong>NCF:</strong> ${datos.ncf}</div>
+                    <div style="margin-bottom: 15px;"><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</div>
+                    <div style="margin-bottom: 15px;"><strong>Cliente:</strong> ${datos.cliente}</div>
+                    <div style="margin-bottom: 15px;"><strong>RNC/Cédula:</strong> ${datos.rnc}</div>
+                    
+                    <hr style="margin: 20px 0; border-color: #10b981;">
+                    
+                    <div style="margin-bottom: 10px;"><strong>Subtotal:</strong> RD$${datos.subtotal.toFixed(2)}</div>
+                    <div style="margin-bottom: 10px;"><strong>ITBIS (18%):</strong> RD$${datos.itbis.toFixed(2)}</div>
+                    <div style="font-size: 18px; font-weight: bold; color: #10b981;"><strong>TOTAL:</strong> RD$${datos.total.toFixed(2)}</div>
+                    
+                    <hr style="margin: 20px 0; border-color: #10b981;">
+                    
+                    <div style="text-align: center; font-size: 12px;">
+                        📧 oopticanvision@gmail.com<br>
+                        📱 849-797-2424<br>
+                        🌐 opticanvision.com<br>
+                        ✨ Vea mejor, viva mejor
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewContent').innerHTML = previewHtml;
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+
+        function cerrarPreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+
+        function obtenerDatosFactura() {
+            const tipo = document.getElementById('tipoComprobante').value;
+            const cliente = document.getElementById('nombreCliente').value.trim();
+            const rnc = document.getElementById('rncCliente').value.trim();
+            const monto = parseFloat(document.getElementById('montoTotal').value);
+            
+            if (!cliente || !monto) {
+                mostrarAlerta('❌ Complete cliente y monto', 'error');
+                return null;
+            }
+            
+            try {
+                const ncf = obtenerSiguienteNCF(tipo);
+                const subtotal = monto / 1.18;
+                const itbis = monto - subtotal;
+                
+                return {
+                    ncf: ncf,
+                    tipo: tipo,
+                    cliente: cliente,
+                    rnc: rnc || 'N/A',
+                    subtotal: subtotal,
+                    itbis: itbis,
+                    total: monto
+                };
+            } catch (error) {
+                mostrarAlerta('❌ ' + error.message, 'error');
+                return null;
+            }
+        }
+
+        function generarFactura() {
+            const datos = obtenerDatosFactura();
+            if (!datos) return;
+            
+            generarPDF(datos);
+            facturas.push({...datos, fecha: new Date().toISOString()});
+            actualizarEstadisticas();
+            limpiarFormulario();
+            
+            mostrarAlerta('✅ Factura PDF generada: ' + datos.ncf);
+        }
+
+        function generarPDF(factura) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Encabezado con estilo
+            doc.setFillColor(20, 185, 129);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.text('ÓPTICA NVISION', 105, 20, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('FACTURA FISCAL ELECTRÓNICA', 105, 30, { align: 'center' });
+            
+            // Información de la factura
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text(`NCF: ${factura.ncf}`, 20, 55);
+            doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 65);
+            doc.text(`Hora: ${new Date().toLocaleTimeString()}`, 20, 75);
+            
+            // Información del cliente
+            doc.text(`Cliente: ${factura.cliente}`, 20, 95);
+            doc.text(`RNC/Cédula: ${factura.rnc}`, 20, 105);
+            
+            // Línea divisoria
+            doc.setDrawColor(20, 185, 129);
+            doc.setLineWidth(1);
+            doc.line(20, 120, 190, 120);
+            
+            // Detalles financieros
+            doc.text(`Subtotal: RD${factura.subtotal.toFixed(2)}`, 20, 140);
+            doc.text(`ITBIS (18%): RD${factura.itbis.toFixed(2)}`, 20, 150);
+            
+            // Total destacado
+            doc.setFontSize(16);
+            doc.setTextColor(20, 185, 129);
+            doc.text(`TOTAL: RD${factura.total.toFixed(2)}`, 20, 170);
+            
+            // Información de contacto
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text('📧 oopticanvision@gmail.com', 20, 200);
+            doc.text('📱 849-797-2424', 20, 210);
+            doc.text('🌐 opticanvision.com', 20, 220);
+            doc.text('✨ Vea mejor, viva mejor', 20, 230);
+            
+            // Pie de página
+            doc.setTextColor(150, 150, 150);
+            doc.text('Sistema NCF Disruptivo - by fbrugal jrubinstein consultores', 105, 280, { align: 'center' });
+            
+            // Descargar PDF
+            doc.save(`Factura_${factura.ncf}.pdf`);
+        }
+
+        function enviarWhatsApp() {
+            const datos = obtenerDatosFactura();
+            if (!datos) return;
+            
+            const mensaje = `🧾 *FACTURA FISCAL - ÓPTICA NVISION*\n\n` +
+                          `📋 NCF: ${datos.ncf}\n` +
+                          `👤 Cliente: ${datos.cliente}\n` +
+                          `🆔 RNC/Cédula: ${datos.rnc}\n\n` +
+                          `💰 Subtotal: RD${datos.subtotal.toFixed(2)}\n` +
+                          `📊 ITBIS (18%): RD${datos.itbis.toFixed(2)}\n` +
+                          `💎 TOTAL: RD${datos.total.toFixed(2)}\n\n` +
+                          `📧 oopticanvision@gmail.com\n` +
+                          `📱 849-797-2424\n` +
+                          `🌐 opticanvision.com\n\n` +
+                          `✨ Vea mejor, viva mejor\n` +
+                          `🚀 Factura generada con tecnología disruptiva`;
+            
+            const url = `https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+            
+            // Actualizar sistema después del envío
+            facturas.push({...datos, fecha: new Date().toISOString()});
+            actualizarEstadisticas();
+            limpiarFormulario();
+            
+            mostrarAlerta('📱 Factura enviada por WhatsApp: ' + datos.ncf);
+        }
+
+        function enviarEmail() {
+            const datos = obtenerDatosFactura();
+            if (!datos) return;
+            
+            const asunto = `Factura Fiscal ${datos.ncf} - Óptica Nvision`;
+            const cuerpo = `Estimado/a ${datos.cliente},\n\nAdjunto encontrará su factura fiscal:\n\nNCF: ${datos.ncf}\nTotal: RD${datos.total.toFixed(2)}\n\nGracias por preferirnos.\n\nÓptica Nvision\n849-797-2424\noopticanvision@gmail.com`;
+            
+            const mailtoUrl = `mailto:${datos.rnc.includes('@') ? datos.rnc : 'cliente@email.com'}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            window.open(mailtoUrl);
+            
+            // Actualizar sistema después del envío
+            facturas.push({...datos, fecha: new Date().toISOString()});
+            actualizarEstadisticas();
+            limpiarFormulario();
+            
+            mostrarAlerta('📧 Email preparado para envío: ' + datos.ncf);
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('nombreCliente').value = '';
+            document.getElementById('rncCliente').value = '';
+            document.getElementById('montoTotal').value = '';
+        }
+
+        function resetearTodo() {
+            if (confirm('¿Está seguro de resetear todo el sistema NCF?')) {
+                rangosNCF = {
+                    B01: { desde: null, hasta: null, actual: null },
+                    B02: { desde: null, hasta: null, actual: null }
+                };
+                facturas = [];
+                
+                ['B01', 'B02'].forEach(tipo => {
+                    document.getElementById(tipo.toLowerCase() + 'Desde').value = '';
+                    document.getElementById(tipo.toLowerCase() + 'Hasta').value = '';
+                });
+                
+                actualizarEstadisticas();
+                mostrarAlerta('🔄 Sistema NCF reseteado completamente');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('tipoComprobante').addEventListener('change', actualizarProximoNCF);
+
+        // Manejo de Enter en login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !isLoggedIn) {
+                iniciarSesion();
+            }
+        });
+
+        // Inicialización
+        console.log('🚀 Sistema NCF Disruptivo cargado correctamente');
+        console.log('💎 Tecnología innovadora para ópticas del futuro');
+    </script>
+</body>
+</html>
