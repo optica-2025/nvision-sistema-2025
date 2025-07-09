@@ -1,0 +1,8 @@
+{
+  "name": "optica-nvision-news",
+  "version": "1.0.0",
+  "description": "Sistema de noticias para Óptica Nvision",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
