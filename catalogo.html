@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 400px; margin: 0 auto; }
+        
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .brand-name { 
+            font-size: 24px; 
+            font-weight: 800; 
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .catalog-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .catalog-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .item-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+            z-index: 999;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="brand-name">👓 Catálogo de Monturas</h1>
+            <p>Encuentra tu estilo perfecto</p>
+        </div>
+
+        <div class="catalog-grid">
+            <div class="catalog-item" onclick="contactarWhatsApp('Ray-Ban Aviator')">
+                <div class="item-icon">🕶️</div>
+                <div class="item-title">Ray-Ban Aviator</div>
+                <div class="item-price">RD$ 8,500</div>
+            </div>
+            
+            <div class="catalog-item" onclick="contactarWhatsApp('Oakley Sport')">
+                <div class="item-icon">🏃‍♂️</div>
+                <div class="item-title">Oakley Sport</div>
+                <div class="item-price">RD$ 12,000</div>
+            </div>
+            
+            <div class="catalog-item" onclick="contactarWhatsApp('Versace Luxury')">
+                <div class="item-icon">💎</div>
+                <div class="item-title">Versace Luxury</div>
+                <div class="item-price">RD$ 15,500</div>
+            </div>
+            
+            <div class="catalog-item" onclick="contactarWhatsApp('Tom Ford Classic')">
+                <div class="item-icon">🎩</div>
+                <div class="item-title">Tom Ford Classic</div>
+                <div class="item-price">RD$ 18,000</div>
+            </div>
+            
+            <div class="catalog-item" onclick="contactarWhatsApp('Prada Modern')">
+                <div class="item-icon">✨</div>
+                <div class="item-title">Prada Modern</div>
+                <div class="item-price">RD$ 13,500</div>
+            </div>
+            
+            <div class="catalog-item" onclick="contactarWhatsApp('Gucci Designer')">
+                <div class="item-icon">👑</div>
+                <div class="item-title">Gucci Designer</div>
+                <div class="item-price">RD$ 16,800</div>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            🏠 Volver al Inicio
+        </button>
+
+        <div class="footer">
+            by fbrugal jrubinstein consultores
+        </div>
+    </div>
+
+    <script>
+        function contactarWhatsApp(producto) {
+            const mensaje = `¡Hola! Me interesa el modelo ${producto} que vi en su catálogo de Óptica Nvision. ¿Podrían darme más información sobre disponibilidad y opciones de graduación? 👓✨`;
+            const url = `https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+
+        console.log('✅ Catálogo Óptica Nvision cargado correctamente');
+    </script>
+</body>
+</html>
