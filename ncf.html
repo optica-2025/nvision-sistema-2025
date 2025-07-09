@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo NCF - Comprobantes Fiscales</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #1e293b 0%, #374151 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ncf-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fbbf24;
+        }
+
+        .ncf-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+
+        .ncf-b01 { border-left-color: #22d3ee; }
+        .ncf-b02 { border-left-color: #10b981; }
+        .ncf-b14 { border-left-color: #8b5cf6; }
+        .ncf-b15 { border-left-color: #f59e0b; }
+
+        .ncf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ncf-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .ncf-status {
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 12px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: monospace;
+            text-align: center;
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .ncf-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #22d3ee, #0891b2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .generator-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .current-ncf {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .ncf-number {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: monospace;
+            color: #22d3ee;
+            margin: 10px 0;
+        }
+
+        .alert {
+            background: rgba(34, 211, 238, 0.2);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: #22d3ee;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+            z-index: 999;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧾 Sistema NCF - Óptica nVision</h1>
+            <p>Comprobantes fiscales para facturación óptica</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Configuración de Rangos NCF -->
+        <div class="ncf-section">
+            <h2 class="section-title">⚙️ Configuración de Rangos NCF</h2>
+            
+            <!-- B01 - Consumidor Final -->
+            <div class="ncf-card ncf-b01">
+                <div class="ncf-header">
+                    <div class="ncf-title">🧾 B01 - Consumidor Final</div>
+                    <div class="ncf-status status-active" id="statusB01">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b01Desde" class="form-input" placeholder="B0100000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b01Hasta" class="form-input" placeholder="B0100010000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b01Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b01Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b01Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B02 - Empresarial -->
+            <div class="ncf-card ncf-b02">
+                <div class="ncf-header">
+                    <div class="ncf-title">🏢 B02 - Empresarial</div>
+                    <div class="ncf-status status-active" id="statusB02">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b02Desde" class="form-input" placeholder="B0200000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b02Hasta" class="form-input" placeholder="B0200010000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b02Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b02Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b02Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B14 - Nota de Crédito -->
+            <div class="ncf-card ncf-b14">
+                <div class="ncf-header">
+                    <div class="ncf-title">🔄 B14 - Nota de Crédito</div>
+                    <div class="ncf-status status-active" id="statusB14">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b14Desde" class="form-input" placeholder="B1400000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b14Hasta" class="form-input" placeholder="B1400001000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b14Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b14Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b14Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B15 - Nota de Débito -->
+            <div class="ncf-card ncf-b15">
+                <div class="ncf-header">
+                    <div class="ncf-title">📈 B15 - Nota de Débito</div>
+                    <div class="ncf-status status-active" id="statusB15">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b15Desde" class="form-input" placeholder="B1500000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b15Hasta" class="form-input" placeholder="B1500001000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b15Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b15Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b15Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="guardarRangos()" class="btn btn-primary">💾 Guardar Configuración</button>
+                <button onclick="resetearTodo()" class="btn btn-danger">🔄 Resetear Todo</button>
+            </div>
+        </div>
+
+        <!-- Generador de Facturas -->
+        <div class="generator-section">
+            <h2 class="section-title">📄 Generar Factura Fiscal</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Tipo de Comprobante:</label>
+                    <select id="tipoComprobante" class="form-input">
+                        <option value="B01">🧾 B01 - Consumidor Final</option>
+                        <option value="B02">🏢 B02 - Empresarial</option>
+                        <option value="B14">🔄 B14 - Nota de Crédito</option>
+                        <option value="B15">📈 B15 - Nota de Débito</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cliente:</label>
+                    <input type="text" id="nombreCliente" class="form-input" placeholder="Nombre del cliente">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">RNC/Cédula:</label>
+                    <input type="text" id="rncCliente" class="form-input" placeholder="000-00000-0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto Total:</label>
+                    <input type="number" id="montoTotal" class="form-input" placeholder="0.00" step="0.01">
+                </div>
+            </div>
+
+            <div class="current-ncf">
+                <div style="font-size: 14px; opacity: 0.8;">Próximo NCF a usar:</div>
+                <div class="ncf-number" id="proximoNCF">Seleccione tipo</div>
+            </div>
+
+            <div style="text-align: center;">
+                <button onclick="generarFactura()" class="btn btn-success">📄 Generar Factura PDF</button>
+                <button onclick="previsualizarFactura()" class="btn btn-secondary">👁️ Vista Previa</button>
+            </div>
+        </div>
+
+        <!-- Reporte de Facturas -->
+        <div class="ncf-section">
+            <h2 class="section-title">📊 Reporte de Facturas</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Mes:</label>
+                    <select id="reporteMes" class="form-input">
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Año:</label>
+                    <input type="number" id="reporteAño" class="form-input" value="2025" min="2020" max="2030">
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 15px 0;">
+                <button onclick="generarReporte()" class="btn btn-primary">📊 Ver Reporte</button>
+                <button onclick="exportarReporte()" class="btn btn-secondary">📥 Exportar Excel</button>
+            </div>
+
+            <div id="reporteContainer" style="display: none;">
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-top: 15px;">
+                    <h4 style="margin-bottom: 15px; text-align: center;">📋 Facturas del Mes</h4>
+                    <div id="reporteContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            by fbrugal jrubinstein consultores
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // Variables globales simples
+        let rangosNCF = {
+            B01: { desde: null, hasta: null, actual: null },
+            B02: { desde: null, hasta: null, actual: null },
+            B14: { desde: null, hasta: null, actual: null },
+            B15: { desde: null, hasta: null, actual: null }
+        };
+        
+        let facturas = [];
+
+        function mostrarAlerta(mensaje, tipo = 'success') {
+            const alertHtml = `<div class="alert alert-${tipo}" style="display: block;">${mensaje}</div>`;
+            document.getElementById('alertContainer').innerHTML = alertHtml;
+            setTimeout(() => {
+                document.getElementById('alertContainer').innerHTML = '';
+            }, 4000);
+        }
+
+        function guardarRangos() {
+            const tipos = ['B01', 'B02', 'B14', 'B15'];
+            let configurado = false;
+
+            tipos.forEach(tipo => {
+                const desde = document.getElementById(tipo.toLowerCase() + 'Desde').value.trim().toUpperCase();
+                const hasta = document.getElementById(tipo.toLowerCase() + 'Hasta').value.trim().toUpperCase();
+                
+                if (desde && hasta) {
+                    // Validar formato NCF
+                    if (validarFormatoNCF(desde, tipo) && validarFormatoNCF(hasta, tipo)) {
+                        rangosNCF[tipo] = {
+                            desde: desde,
+                            hasta: hasta,
+                            actual: desde
+                        };
+                        configurado = true;
+                    } else {
+                        mostrarAlerta(`❌ Formato incorrecto para ${tipo}. Debe ser ${tipo}00000001`, 'error');
+                        return;
+                    }
+                }
+            });
+
+            if (configurado) {
+                actualizarEstadisticas();
+                mostrarAlerta('✅ Rangos NCF configurados correctamente');
+            } else {
+                mostrarAlerta('❌ Configure al menos un rango NCF', 'error');
+            }
+        }
+
+        function validarFormatoNCF(ncf, tipo) {
+            const regex = new RegExp(`^${tipo}\\d{8}$`);
+            return regex.test(ncf);
+        }
+
+        function actualizarEstadisticas() {
+            ['B01', 'B02', 'B14', 'B15'].forEach(tipo => {
+                const rango = rangosNCF[tipo];
+                const actualElement = document.getElementById(tipo.toLowerCase() + 'Actual');
+                const usadosElement = document.getElementById(tipo.toLowerCase() + 'Usados');
+                const disponiblesElement = document.getElementById(tipo.toLowerCase() + 'Disponibles');
+                
+                if (rango.desde && rango.hasta) {
+                    const numDesde = parseInt(rango.desde.substring(3));
+                    const numHasta = parseInt(rango.hasta.substring(3));
+                    const numActual = parseInt(rango.actual.substring(3));
+                    
+                    const usados = numActual - numDesde;
+                    const disponibles = numHasta - numActual + 1;
+                    
+                    actualElement.textContent = rango.actual;
+                    usadosElement.textContent = usados;
+                    disponiblesElement.textContent = disponibles;
+                    
+                    // Actualizar estado
+                    const statusElement = document.getElementById('status' + tipo);
+                    if (disponibles <= 10) {
+                        statusElement.textContent = 'CRÍTICO';
+                        statusElement.className = 'ncf-status status-danger';
+                    } else if (disponibles <= 100) {
+                        statusElement.textContent = 'ADVERTENCIA';
+                        statusElement.className = 'ncf-status status-warning';
+                    } else {
+                        statusElement.textContent = 'ACTIVO';
+                        statusElement.className = 'ncf-status status-active';
+                    }
+                } else {
+                    actualElement.textContent = 'No configurado';
+                    usadosElement.textContent = '0';
+                    disponiblesElement.textContent = '0';
+                }
+            });
+            
+            actualizarProximoNCF();
+        }
+
+        function actualizarProximoNCF() {
+            const tipo = document.getElementById('tipoComprobante').value;
+            const proximoElement = document.getElementById('proximoNCF');
+            
+            if (rangosNCF[tipo] && rangosNCF[tipo].actual) {
+                proximoElement.textContent = rangosNCF[tipo].actual;
+            } else {
+                proximoElement.textContent = 'No configurado';
+            }
+        }
+
+        function obtenerSiguienteNCF(tipo) {
+            const rango = rangosNCF[tipo];
+            if (!rango || !rango.actual) {
+                throw new Error(`Tipo ${tipo} no configurado`);
+            }
+            
+            const numActual = parseInt(rango.actual.substring(3));
+            const numHasta = parseInt(rango.hasta.substring(3));
+            
+            if (numActual > numHasta) {
+                throw new Error(`No quedan comprobantes ${tipo} disponibles`);
+            }
+            
+            const ncfActual = rango.actual;
+            
+            // Incrementar para el próximo
+            const siguienteNum = numActual + 1;
+            rango.actual = tipo + siguienteNum.toString().padStart(8, '0');
+            
+            return ncfActual;
+        }
+
+        function generarFactura() {
+            const tipo = document.getElementById('tipoComprobante').value;
+            const cliente = document.getElementById('nombreCliente').value.trim();
+            const rnc = document.getElementById('rncCliente').value.trim();
+            const monto = parseFloat(document.getElementById('montoTotal').value);
+            
+            if (!cliente || !monto) {
+                mostrarAlerta('❌ Complete cliente y monto', 'error');
+                return;
+            }
+            
+            try {
+                const ncf = obtenerSiguienteNCF(tipo);
+                const fecha = new Date();
+                
+                // Calcular impuestos
+                const subtotal = monto / 1.18;
+                const itbis = monto - subtotal;
+                
+                const factura = {
+                    ncf: ncf,
+                    tipo: tipo,
+                    fecha: fecha.toISOString(),
+                    cliente: cliente,
+                    rnc: rnc || 'N/A',
+                    subtotal: subtotal,
+                    itbis: itbis,
+                    total: monto
+                };
+                
+                facturas.push(factura);
+                generarPDF(factura);
+                actualizarEstadisticas();
+                limpiarFormulario();
+                
+                mostrarAlerta('✅ Factura generada: ' + ncf);
+                
+            } catch (error) {
+                mostrarAlerta('❌ ' + error.message, 'error');
+            }
+        }
+
+        function generarPDF(factura) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Encabezado
+            doc.setFontSize(20);
+            doc.text('FACTURA FISCAL', 105, 30, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.text(`NCF: ${factura.ncf}`, 20, 50);
+            doc.text(`Fecha: ${new Date(factura.fecha).toLocaleDateString()}`, 20, 60);
+            
+            // Cliente
+            doc.text(`Cliente: ${factura.cliente}`, 20, 80);
+            doc.text(`RNC/Cédula: ${factura.rnc}`, 20, 90);
+            
+            // Totales
+            doc.text(`Subtotal: RD$${factura.subtotal.toFixed(2)}`, 20, 120);
+            doc.text(`ITBIS (18%): RD$${factura.itbis.toFixed(2)}`, 20, 130);
+            doc.text(`TOTAL: RD$${factura.total.toFixed(2)}`, 20, 140);
+            
+            // Descargar
+            doc.save(`Factura_${factura.ncf}.pdf`);
+        }
+
+        function previsualizarFactura() {
+            const tipo = document.getElementById('tipoComprobante').value;
+            const cliente = document.getElementById('nombreCliente').value.trim();
+            const monto = parseFloat(document.getElementById('montoTotal').value);
+            
+            if (!cliente || !monto) {
+                mostrarAlerta('❌ Complete los datos para previsualizar', 'error');
+                return;
+            }
+            
+            const proximoNCF = rangosNCF[tipo]?.actual || 'No configurado';
+            const subtotal = monto / 1.18;
+            const itbis = monto - subtotal;
+            
+            alert(`VISTA PREVIA\n\nNCF: ${proximoNCF}\nCliente: ${cliente}\nSubtotal: RD$${subtotal.toFixed(2)}\nITBIS: RD$${itbis.toFixed(2)}\nTotal: RD$${monto.toFixed(2)}`);
+        }
+
+        function generarReporte() {
+            const mes = parseInt(document.getElementById('reporteMes').value);
+            const año = parseInt(document.getElementById('reporteAño').value);
+            
+            const facturasMes = facturas.filter(f => {
+                const fecha = new Date(f.fecha);
+                return fecha.getMonth() + 1 === mes && fecha.getFullYear() === año;
+            });
+            
+            const container = document.getElementById('reporteContainer');
+            const content = document.getElementById('reporteContent');
+            
+            if (facturasMes.length === 0) {
+                content.innerHTML = '<div style="text-align: center; padding: 20px;">No hay facturas para este período</div>';
+            } else {
+                let html = '<table style="width: 100%; font-size: 12px;">';
+                html += '<tr style="background: rgba(255,255,255,0.2);"><th>NCF</th><th>Cliente</th><th>Fecha</th><th>Total</th></tr>';
+                
+                let totalMes = 0;
+                facturasMes.forEach(f => {
+                    html += `<tr><td>${f.ncf}</td><td>${f.cliente}</td><td>${new Date(f.fecha).toLocaleDateString()}</td><td>RD$${f.total.toFixed(2)}</td></tr>`;
+                    totalMes += f.total;
+                });
+                
+                html += `<tr style="background: rgba(255,255,255,0.2); font-weight: bold;"><td colspan="3">TOTAL DEL MES</td><td>RD$${totalMes.toFixed(2)}</td></tr>`;
+                html += '</table>';
+                content.innerHTML = html;
+            }
+            
+            container.style.display = 'block';
+            mostrarAlerta(`📊 Reporte generado: ${facturasMes.length} facturas`);
+        }
+
+        function exportarReporte() {
+            mostrarAlerta('📥 Función de exportar en desarrollo');
+        }
+
+        function resetearTodo() {
+            if (confirm('¿Está seguro de resetear toda la configuración NCF?')) {
+                rangosNCF = {
+                    B01: { desde: null, hasta: null, actual: null },
+                    B02: { desde: null, hasta: null, actual: null },
+                    B14: { desde: null, hasta: null, actual: null },
+                    B15: { desde: null, hasta: null, actual: null }
+                };
+                facturas = [];
+                
+                ['B01', 'B02', 'B14', 'B15'].forEach(tipo => {
+                    document.getElementById(tipo.toLowerCase() + 'Desde').value = '';
+                    document.getElementById(tipo.toLowerCase() + 'Hasta').value = '';
+                });
+                
+                actualizarEstadisticas();
+                document.getElementById('reporteContainer').style.display = 'none';
+                mostrarAlerta('🔄 Sistema NCF reseteado');
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('nombreCliente').value = '';
+            document.getElementById('rncCliente').value = '';
+            document.getElementById('montoTotal').value = '';
+        }
+
+        // Eventos
+        document.getElementById('tipoComprobante').addEventListener('change', actualizarProximoNCF);
+        document.getElementById('reporteMes').value = new Date().getMonth() + 1;
+
+        // Inicialización
+        console.log('✅ Módulo NCF cargado correctamente');
+    </script>
+</body>
+</html>
