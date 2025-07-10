@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing WhatsApp - Óptica Nvision</title>
+    <title>Módulo Marketing - Óptica Nvision</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -146,7 +146,6 @@
             justify-content: center;
             margin: 15px 0;
             position: relative;
-            overflow: hidden;
         }
         .camera-video {
             width: 100%;
@@ -219,12 +218,6 @@
             font-size: 12px;
             border-radius: 8px;
         }
-        .photo-result {
-            width: 100%;
-            border-radius: 10px;
-            margin: 10px 0;
-            display: none;
-        }
         .footer {
             position: fixed;
             bottom: 10px;
@@ -243,9 +236,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📱 MARKETING WHATSAPP NVISION</h1>
+            <h1>📱 ÓPTICA NVISION MARKETING</h1>
             <div>📱 849-797-2424</div>
-            <div>Marketing digital efectivo</div>
+            <div>Marketing inteligente y efectivo</div>
         </div>
 
         <div class="tabs">
@@ -295,7 +288,7 @@
             
             <div class="camera-area">
                 <div class="camera-box" id="cameraBox">
-                    <div id="cameraPlaceholder">
+                    <div>
                         <div style="font-size: 50px;">📷</div>
                         <div>Toca para activar</div>
                     </div>
@@ -306,7 +299,7 @@
                 <button class="btn btn-primary" onclick="startCamera()" id="startBtn">📷 Activar Cámara</button>
                 
                 <canvas id="canvas" style="display: none;"></canvas>
-                <img id="photo" class="photo-result">
+                <img id="photo" style="display: none; width: 100%; border-radius: 10px; margin: 10px 0;">
                 
                 <div id="photoActions" style="display: none;">
                     <input class="input" id="photoCode" placeholder="🔢 Código del producto (ej: NV001)">
@@ -325,7 +318,6 @@
                     
                     <button class="btn btn-whatsapp" onclick="sharePhotoWithMessage()">💬 Enviar con Mensaje</button>
                     <button class="btn btn-secondary" onclick="retake()">🔄 Tomar Otra</button>
-                    <button class="btn btn-primary" onclick="guardarEnCatalogo()">💾 Guardar en Catálogo</button>
                 </div>
             </div>
         </div>
@@ -359,7 +351,7 @@
             
             <div class="upload-section">
                 <div class="upload-title">📤 Subir Nuevo Template</div>
-                <input type="file" id="templateFile" accept=".txt,.json,.doc,.docx" style="display: none;" onchange="uploadTemplate(event)">
+                <input type="file" id="templateFile" accept=".txt,.json" style="display: none;" onchange="uploadTemplate()">
                 <button class="btn btn-upload" onclick="document.getElementById('templateFile').click()">
                     📁 Subir Archivo Template
                 </button>
@@ -374,3 +366,348 @@
             </div>
 
             <div id="templatesList">
+                <!-- Templates guardados aparecen aquí -->
+            </div>
+        </div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
+
+    <script>
+        const templates = {
+            familiar: '👨‍👩‍👧‍👦 CUIDAMOS DE TODA LA FAMILIA 👨‍👩‍👧‍👦\n\nÓptica Nvision\n\n💝 Atención personalizada para cada edad\n👶 Desde bebés hasta abuelos\n👓 Monturas cómodas y resistentes\n🏠 Ambiente familiar y acogedor\n\n📱 849-797-2424\n💬 WhatsApp: 849-797-2424\n🌐 opticanvision.com\n\n❤️ Vea mejor, viva mejor',
+            comunidad: '🤝 COMPROMETIDOS CON LA COMUNIDAD 🤝\n\nÓptica Nvision\n\n🏘️ Parte de tu comunidad desde hace años\n❤️ Precios justos y accesibles\n🚐 Brigadas de salud visual\n👥 Apoyo a organizaciones locales\n\n📱 849-797-2424\n🌐 opticanvision.com\n\nVea mejor, viva mejor',
+            accesible: '💰 CALIDAD AL ALCANCE DE TODOS 💰\n\nÓptica Nvision\n\n✨ Excelente calidad a precios justos\n💳 Planes de pago sin intereses\n🎁 Promociones constantes\n📋 Acepta seguros médicos\n\n📱 849-797-2424\n💬 WhatsApp: 849-797-2424\n🌐 opticanvision.com\n\nVea mejor, viva mejor',
+            urgencia: '🚨 EMERGENCIA OCULAR 🚨\n\nLlame INMEDIATAMENTE:\n📱 849-797-2424\n\n⚠️ SÍNTOMAS URGENTES:\n• Dolor intenso en los ojos\n• Pérdida súbita de visión\n• Golpes o lesiones oculares\n• Destellos o luces extrañas\n\n🏥 Óptica Nvision\nVea mejor, viva mejor'
+        };
+
+        let selectedType = null;
+        let currentMessage = '';
+        let videoStream = null;
+        let photoData = null;
+        let customTemplates = JSON.parse(localStorage.getItem('nvisionTemplates') || '{}');
+
+        function showSection(index, btn) {
+            document.querySelectorAll('.section').forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (index !== 1 && videoStream) {
+                stopCamera();
+            }
+            
+            if (index === 3) {
+                loadTemplatesList();
+            }
+        }
+
+        function selectCard(card, type) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedType = type;
+            showAlert('Template seleccionado: ' + type);
+        }
+
+        function createMessage() {
+            if (!selectedType) {
+                showAlert('Selecciona un tipo de mensaje');
+                return;
+            }
+
+            const custom = document.getElementById('customText').value.trim();
+            
+            if (custom) {
+                currentMessage = custom + '\n\n📱 849-797-2424\n🌐 opticanvision.com\n❤️ Vea mejor, viva mejor';
+            } else {
+                currentMessage = templates[selectedType];
+            }
+
+            document.getElementById('messageText').textContent = currentMessage;
+            document.getElementById('messageResult').classList.add('show');
+            showAlert('Mensaje creado');
+        }
+
+        function copyText() {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(currentMessage);
+                showAlert('Copiado al portapapeles');
+            }
+        }
+
+        function sendWhatsApp() {
+            if (!currentMessage) return;
+            const text = encodeURIComponent(currentMessage);
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                window.location.href = 'whatsapp://send?text=' + text;
+            } else {
+                window.open('https://wa.me/?text=' + text, '_blank');
+            }
+        }
+
+        async function startCamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = videoStream;
+                video.style.display = 'block';
+                document.getElementById('capture').style.display = 'block';
+                document.getElementById('startBtn').style.display = 'none';
+                document.querySelector('#cameraBox > div').style.display = 'none';
+                
+                showAlert('Cámara activada');
+            } catch (e) {
+                showAlert('Error: No se pudo acceder a la cámara');
+            }
+        }
+
+        function takePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photo = document.getElementById('photo');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            photoData = canvas.toDataURL('image/jpeg', 0.8);
+            photo.src = photoData;
+            photo.style.display = 'block';
+            document.getElementById('photoActions').style.display = 'block';
+            
+            stopCamera();
+            showAlert('Foto capturada');
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            document.getElementById('video').style.display = 'none';
+            document.getElementById('capture').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'block';
+            document.querySelector('#cameraBox > div').style.display = 'block';
+        }
+
+        function sharePhotoWithMessage() {
+            if (!photoData) {
+                showAlert('No hay foto para enviar');
+                return;
+            }
+            
+            const codigo = document.getElementById('photoCode').value.trim();
+            const precio = document.getElementById('photoPrice').value.trim();
+            let mensaje = document.getElementById('photoMessage').value.trim();
+            
+            // Personalizar mensaje con datos del producto
+            if (codigo) {
+                mensaje = mensaje.replace(/Código:.*?\n/g, '');
+                mensaje = `📸 *NUEVA MONTURA DISPONIBLE*\n\n🔢 Código: ${codigo}\n` + mensaje;
+            }
+            
+            if (precio) {
+                mensaje = mensaje.replace(/💰.*?\n/g, '');
+                mensaje = mensaje.replace('Precio especial disponible', `Precio: RD$${precio}`);
+            }
+            
+            const text = encodeURIComponent(mensaje);
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile && navigator.share) {
+                fetch(photoData)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'montura_nvision.jpg', { type: 'image/jpeg' });
+                        return navigator.share({
+                            title: 'Nueva montura - Óptica Nvision',
+                            text: mensaje,
+                            files: [file]
+                        });
+                    })
+                    .catch(() => {
+                        if (isMobile) {
+                            window.location.href = 'whatsapp://send?text=' + text;
+                        } else {
+                            window.open('https://wa.me/?text=' + text, '_blank');
+                        }
+                    });
+            } else {
+                if (isMobile) {
+                    window.location.href = 'whatsapp://send?text=' + text;
+                } else {
+                    window.open('https://wa.me/?text=' + text, '_blank');
+                }
+            }
+            
+            showAlert('Foto enviada con mensaje personalizado');
+        }
+
+        function retake() {
+            document.getElementById('photo').style.display = 'none';
+            document.getElementById('photoActions').style.display = 'none';
+            photoData = null;
+            startCamera();
+        }
+
+        function shareLink(platform) {
+            const link = document.getElementById('linkInput').value.trim();
+            const customText = document.getElementById('linkText').value.trim();
+            
+            if (!link) {
+                showAlert('Pega un enlace primero');
+                return;
+            }
+
+            let prefix = '';
+            switch(platform) {
+                case 'youtube': prefix = '📺 Video recomendado en YouTube 📺\n\n'; break;
+                case 'tiktok': prefix = '🎵 Contenido interesante en TikTok 🎵\n\n'; break;
+                case 'instagram': prefix = '📸 Contenido visual en Instagram 📸\n\n'; break;
+                default: prefix = '🔗 Contenido que vale la pena ver 🔗\n\n'; break;
+            }
+
+            const message = prefix + (customText || 'Te compartimos este contenido:') + '\n\n' + link;
+            
+            const text = encodeURIComponent(message);
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                window.location.href = 'whatsapp://send?text=' + text;
+            } else {
+                window.open('https://wa.me/?text=' + text, '_blank');
+            }
+            
+            showAlert('Enlace enviado por WhatsApp');
+        }
+
+        // GESTIÓN DE TEMPLATES
+        function uploadTemplate() {
+            const file = document.getElementById('templateFile').files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    
+                    customTemplates[fileName] = {
+                        name: fileName,
+                        content: content,
+                        created: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('nvisionTemplates', JSON.stringify(customTemplates));
+                    loadTemplatesList();
+                    showAlert('Template subido correctamente');
+                } catch (error) {
+                    showAlert('Error al procesar el archivo');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveTemplate() {
+            const name = document.getElementById('templateName').value.trim();
+            const content = document.getElementById('templateContent').value.trim();
+            
+            if (!name || !content) {
+                showAlert('Complete nombre y contenido del template');
+                return;
+            }
+            
+            customTemplates[name] = {
+                name: name,
+                content: content,
+                created: new Date().toISOString()
+            };
+            
+            localStorage.setItem('nvisionTemplates', JSON.stringify(customTemplates));
+            loadTemplatesList();
+            
+            document.getElementById('templateName').value = '';
+            document.getElementById('templateContent').value = '';
+            
+            showAlert('Template guardado correctamente');
+        }
+
+        function loadTemplatesList() {
+            const container = document.getElementById('templatesList');
+            
+            if (Object.keys(customTemplates).length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">No hay templates guardados</div>';
+                return;
+            }
+            
+            let html = '';
+            Object.values(customTemplates).forEach(template => {
+                const preview = template.content.substring(0, 100) + (template.content.length > 100 ? '...' : '');
+                html += `
+                    <div class="template-preview">
+                        <div class="template-name">${template.name}</div>
+                        <div class="template-text">${preview}</div>
+                        <div class="template-actions">
+                            <button class="btn btn-small btn-whatsapp" onclick="useTemplate('${template.name}')">📱 Usar</button>
+                            <button class="btn btn-small btn-secondary" onclick="deleteTemplate('${template.name}')">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function useTemplate(name) {
+            const template = customTemplates[name];
+            if (template) {
+                const text = encodeURIComponent(template.content);
+                const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    window.location.href = 'whatsapp://send?text=' + text;
+                } else {
+                    window.open('https://wa.me/?text=' + text, '_blank');
+                }
+                
+                showAlert('Template enviado por WhatsApp');
+            }
+        }
+
+        function deleteTemplate(name) {
+            if (confirm(`¿Eliminar template "${name}"?`)) {
+                delete customTemplates[name];
+                localStorage.setItem('nvisionTemplates', JSON.stringify(customTemplates));
+                loadTemplatesList();
+                showAlert('Template eliminado');
+            }
+        }
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 2000);
+        }
+
+        // Inicialización
+        document.getElementById('linkInput').addEventListener('input', function() {
+            this.placeholder = this.value ? 'Enlace detectado ✓' : 'Pega el enlace aquí...';
+        });
+
+        console.log('✅ Módulo Marketing Nvision cargado correctamente');
+    </script>
+</body>
+</html>
