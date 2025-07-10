@@ -44,17 +44,30 @@
 
         .catalog-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .catalog-item:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .item-icon {
@@ -100,6 +113,18 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.7;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -109,42 +134,8 @@
             <p>Encuentra tu estilo perfecto</p>
         </div>
 
-        <div class="catalog-grid">
-            <div class="catalog-item" onclick="contactarWhatsApp('Ray-Ban Aviator')">
-                <div class="item-icon">🕶️</div>
-                <div class="item-title">Ray-Ban Aviator</div>
-                <div class="item-price">RD$ 8,500</div>
-            </div>
-            
-            <div class="catalog-item" onclick="contactarWhatsApp('Oakley Sport')">
-                <div class="item-icon">🏃‍♂️</div>
-                <div class="item-title">Oakley Sport</div>
-                <div class="item-price">RD$ 12,000</div>
-            </div>
-            
-            <div class="catalog-item" onclick="contactarWhatsApp('Versace Luxury')">
-                <div class="item-icon">💎</div>
-                <div class="item-title">Versace Luxury</div>
-                <div class="item-price">RD$ 15,500</div>
-            </div>
-            
-            <div class="catalog-item" onclick="contactarWhatsApp('Tom Ford Classic')">
-                <div class="item-icon">🎩</div>
-                <div class="item-title">Tom Ford Classic</div>
-                <div class="item-price">RD$ 18,000</div>
-            </div>
-            
-            <div class="catalog-item" onclick="contactarWhatsApp('Prada Modern')">
-                <div class="item-icon">✨</div>
-                <div class="item-title">Prada Modern</div>
-                <div class="item-price">RD$ 13,500</div>
-            </div>
-            
-            <div class="catalog-item" onclick="contactarWhatsApp('Gucci Designer')">
-                <div class="item-icon">👑</div>
-                <div class="item-title">Gucci Designer</div>
-                <div class="item-price">RD$ 16,800</div>
-            </div>
+        <div class="catalog-grid" id="catalogoGrid">
+            <!-- Los productos se cargan dinámicamente -->
         </div>
 
         <button class="back-btn" onclick="window.location.href='index.html'">
@@ -157,13 +148,108 @@
     </div>
 
     <script>
-        function contactarWhatsApp(producto) {
-            const mensaje = `¡Hola! Me interesa el modelo ${producto} que vi en su catálogo de Óptica Nvision. ¿Podrían darme más información sobre disponibilidad y opciones de graduación? 👓✨`;
+        // Productos predeterminados
+        const productosDefault = {
+            'RB001': {
+                codigo: 'RB001',
+                nombre: 'Ray-Ban Aviator',
+                precio: 'RD$8,500',
+                categoria: 'sol',
+                icon: '🕶️'
+            },
+            'OK001': {
+                codigo: 'OK001',
+                nombre: 'Oakley Sport',
+                precio: 'RD$12,000',
+                categoria: 'deportivo',
+                icon: '🏃‍♂️'
+            },
+            'VE001': {
+                codigo: 'VE001',
+                nombre: 'Versace Luxury',
+                precio: 'RD$15,500',
+                categoria: 'mujer',
+                icon: '💎'
+            },
+            'TF001': {
+                codigo: 'TF001',
+                nombre: 'Tom Ford Classic',
+                precio: 'RD$18,000',
+                categoria: 'hombre',
+                icon: '🎩'
+            },
+            'PR001': {
+                codigo: 'PR001',
+                nombre: 'Prada Modern',
+                precio: 'RD$13,500',
+                categoria: 'mujer',
+                icon: '✨'
+            },
+            'GU001': {
+                codigo: 'GU001',
+                nombre: 'Gucci Designer',
+                precio: 'RD$16,800',
+                categoria: 'hombre',
+                icon: '👑'
+            }
+        };
+
+        function cargarCatalogo() {
+            const container = document.getElementById('catalogoGrid');
+            
+            // Cargar productos guardados del admin
+            const productosGuardados = JSON.parse(localStorage.getItem('catalogoNvision') || '{}');
+            
+            // Combinar productos predeterminados con guardados
+            const todosLosProductos = { ...productosDefault, ...productosGuardados };
+            
+            if (Object.keys(todosLosProductos).length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div>No hay productos en el catálogo</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            Object.values(todosLosProductos).forEach(producto => {
+                if (producto.imagen) {
+                    // Producto con imagen real (del admin)
+                    html += `
+                        <div class="catalog-item" onclick="contactarWhatsApp('${producto.nombre}', '${producto.precio}')">
+                            <img src="${producto.imagen}" alt="${producto.nombre}" class="item-image">
+                            <div class="item-title">${producto.nombre}</div>
+                            <div class="item-price">${producto.precio}</div>
+                        </div>
+                    `;
+                } else {
+                    // Producto predeterminado con icono
+                    html += `
+                        <div class="catalog-item" onclick="contactarWhatsApp('${producto.nombre}', '${producto.precio}')">
+                            <div class="item-icon">${producto.icon}</div>
+                            <div class="item-title">${producto.nombre}</div>
+                            <div class="item-price">${producto.precio}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function contactarWhatsApp(producto, precio) {
+            const mensaje = `¡Hola! Me interesa el modelo ${producto} (${precio}) que vi en el catálogo de Óptica Nvision. ¿Podrían darme más información sobre disponibilidad y opciones de graduación? 👓✨`;
             const url = `https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         }
 
-        console.log('✅ Catálogo Óptica Nvision cargado correctamente');
+        // Cargar catálogo al iniciar
+        window.addEventListener('DOMContentLoaded', function() {
+            cargarCatalogo();
+            console.log('✅ Catálogo Óptica Nvision cargado con productos del admin');
+        });
     </script>
 </body>
 </html>
