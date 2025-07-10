@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura Proforma - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #134e4a 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        .header { 
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 30px; 
+            border-radius: 20px; 
+            text-align: center; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input, .select {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .exam-section {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            display: none;
+        }
+
+        .exam-section.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .eye-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .eye-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(45deg, #10b981, #059669); 
+            color: white; 
+        }
+        
+        .btn-whatsapp { 
+            background: linear-gradient(45deg, #25d366, #128c7e); 
+            color: white; 
+        }
+        
+        .btn-pdf { 
+            background: linear-gradient(45deg, #ef4444, #dc2626); 
+            color: white; 
+        }
+
+        .btn:hover { transform: scale(1.05); }
+
+        .total-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .total-line.final {
+            font-size: 24px;
+            font-weight: bold;
+            color: #10b981;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .eye-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 FACTURA PROFORMA INTELIGENTE</h1>
+            <p>Sistema integrado con examen visual</p>
+            <p style="margin-top: 10px;">📱 849-797-2424 | 🌐 opticanvision.com</p>
+        </div>
+
+        <div class="form-card">
+            <h3>👤 Datos del Cliente</h3>
+            <div class="grid-2">
+                <div>
+                    <input type="text" id="clienteNombre" class="input" placeholder="Nombre completo">
+                    <input type="text" id="clienteCedula" class="input" placeholder="Cédula/RNC">
+                    <input type="tel" id="clienteTelefono" class="input" placeholder="Teléfono">
+                </div>
+                <div>
+                    <input type="email" id="clienteEmail" class="input" placeholder="Email">
+                    <input type="text" id="clienteDireccion" class="input" placeholder="Dirección">
+                    <select id="clienteTipo" class="select">
+                        <option value="consumidor">Consumidor Final</option>
+                        <option value="credito">Crédito Fiscal</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3>🛍️ Productos y Servicios</h3>
+            
+            <div class="grid-2">
+                <select id="productoSelect" class="select">
+                    <option value="">Seleccionar producto</option>
+                    <option value="montura-premium|8500">Montura Premium - RD$ 8,500</option>
+                    <option value="montura-clasica|4500">Montura Clásica - RD$ 4,500</option>
+                    <option value="lentes-monofocal|3500">Lentes Monofocales - RD$ 3,500</option>
+                    <option value="lentes-progresivos|12000">Lentes Progresivos - RD$ 12,000</option>
+                    <option value="examen-visual|1500">Examen Visual - RD$ 1,500</option>
+                </select>
+                <button class="btn btn-primary" onclick="agregarProducto()">➕ Agregar</button>
+            </div>
+
+            <div id="listaProductos"></div>
+
+            <label class="checkbox-label">
+                <input type="checkbox" id="incluirExamen" class="checkbox" onchange="toggleExamen()">
+                <span>👁️ Incluir examen visual en la factura</span>
+            </label>
+        </div>
+
+        <div class="exam-section" id="examenSection">
+            <h3>🔬 Examen Visual</h3>
+            
+            <div class="eye-grid">
+                <div class="eye-box">
+                    <h4>👁️ Ojo Derecho (OD)</h4>
+                    <input type="text" id="odEsfera" class="input" placeholder="Esfera (ej: -2.50)">
+                    <input type="text" id="odCilindro" class="input" placeholder="Cilindro">
+                    <input type="text" id="odEje" class="input" placeholder="Eje">
+                    <input type="text" id="odAV" class="input" placeholder="Agudeza Visual">
+                </div>
+                
+                <div class="eye-box">
+                    <h4>👁️ Ojo Izquierdo (OI)</h4>
+                    <input type="text" id="oiEsfera" class="input" placeholder="Esfera">
+                    <input type="text" id="oiCilindro" class="input" placeholder="Cilindro">
+                    <input type="text" id="oiEje" class="input" placeholder="Eje">
+                    <input type="text" id="oiAV" class="input" placeholder="Agudeza Visual">
+                </div>
+            </div>
+            
+            <div class="grid-2" style="margin-top: 15px;">
+                <input type="text" id="distanciaPupilar" class="input" placeholder="Distancia Pupilar (DP)">
+                <input type="text" id="adicion" class="input" placeholder="Adición (si aplica)">
+            </div>
+            
+            <textarea id="observaciones" class="input" placeholder="Observaciones y recomendaciones" style="margin-top: 10px; min-height: 80px;"></textarea>
+        </div>
+
+        <div class="total-section">
+            <div class="total-line">
+                <span>Subtotal:</span>
+                <span>RD$ <span id="subtotal">0.00</span></span>
+            </div>
+            <div class="total-line">
+                <span>ITBIS (18%):</span>
+                <span>RD$ <span id="itbis">0.00</span></span>
+            </div>
+            <div class="total-line final">
+                <span>TOTAL:</span>
+                <span>RD$ <span id="total">0.00</span></span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn btn-pdf" onclick="generarPDF()">📄 Generar PDF</button>
+            <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">📱 Enviar WhatsApp</button>
+            <button class="btn btn-primary" onclick="location.href='index.html'">🏠 Volver</button>
+        </div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        let productos = [];
+        let facturaActual = null;
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function toggleExamen() {
+            const examenSection = document.getElementById('examenSection');
+            const checkbox = document.getElementById('incluirExamen');
+            
+            if (checkbox.checked) {
+                examenSection.classList.add('active');
+                const examenExiste = productos.find(p => p.nombre.includes('Examen Visual'));
+                if (!examenExiste) {
+                    productos.push({
+                        id: Date.now(),
+                        nombre: 'Examen Visual Completo',
+                        precio: 1500,
+                        cantidad: 1
+                    });
+                    actualizarLista();
+                }
+            } else {
+                examenSection.classList.remove('active');
+                productos = productos.filter(p => !p.nombre.includes('Examen Visual'));
+                actualizarLista();
+            }
+        }
+
+        function agregarProducto() {
+            const select = document.getElementById('productoSelect');
+            if (!select.value) {
+                showAlert('Seleccione un producto');
+                return;
+            }
+            
+            const [nombre, precio] = select.value.split('|');
+            
+            productos.push({
+                id: Date.now(),
+                nombre: nombre.replace(/-/g, ' ').toUpperCase(),
+                precio: parseFloat(precio),
+                cantidad: 1
+            });
+            
+            actualizarLista();
+            select.value = '';
+        }
+
+        function actualizarLista() {
+            const lista = document.getElementById('listaProductos');
+            
+            lista.innerHTML = productos.map(p => `
+                <div class="product-item">
+                    <div>
+                        <strong>${p.nombre}</strong>
+                        <br>RD$ ${p.precio.toFixed(2)} x ${p.cantidad}
+                    </div>
+                    <div>
+                        <button onclick="cambiarCantidad(${p.id}, -1)">➖</button>
+                        <button onclick="cambiarCantidad(${p.id}, 1)">➕</button>
+                        <button onclick="eliminarProducto(${p.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            calcularTotales();
+        }
+
+        function cambiarCantidad(id, delta) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                producto.cantidad = Math.max(1, producto.cantidad + delta);
+                actualizarLista();
+            }
+        }
+
+        function eliminarProducto(id) {
+            productos = productos.filter(p => p.id !== id);
+            actualizarLista();
+        }
+
+        function calcularTotales() {
+            const subtotal = productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+            const itbis = subtotal * 0.18;
+            const total = subtotal + itbis;
+            
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('itbis').textContent = itbis.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+            
+            return { subtotal, itbis, total };
+        }
+
+        function obtenerDatosFactura() {
+            const totales = calcularTotales();
+            
+            const factura = {
+                fecha: new Date().toISOString(),
+                numero: 'PF-' + Date.now().toString().slice(-8),
+                cliente: {
+                    nombre: document.getElementById('clienteNombre').value || 'Cliente',
+                    cedula: document.getElementById('clienteCedula').value,
+                    telefono: document.getElementById('clienteTelefono').value,
+                    email: document.getElementById('clienteEmail').value,
+                    direccion: document.getElementById('clienteDireccion').value,
+                    tipo: document.getElementById('clienteTipo').value
+                },
+                productos: productos,
+                totales: totales,
+                examen: null
+            };
+            
+            if (document.getElementById('incluirExamen').checked) {
+                factura.examen = {
+                    od: {
+                        esfera: document.getElementById('odEsfera').value,
+                        cilindro: document.getElementById('odCilindro').value,
+                        eje: document.getElementById('odEje').value,
+                        av: document.getElementById('odAV').value
+                    },
+                    oi: {
+                        esfera: document.getElementById('oiEsfera').value,
+                        cilindro: document.getElementById('oiCilindro').value,
+                        eje: document.getElementById('oiEje').value,
+                        av: document.getElementById('oiAV').value
+                    },
+                    dp: document.getElementById('distanciaPupilar').value,
+                    add: document.getElementById('adicion').value,
+                    observaciones: document.getElementById('observaciones').value
+                };
+            }
+            
+            return factura;
+        }
+
+        function generarPDF() {
+            if (productos.length === 0) {
+                showAlert('Agregue productos a la factura');
+                return;
+            }
+            
+            facturaActual = obtenerDatosFactura();
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Header
+            doc.setFillColor(16, 185, 129);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.text('ÓPTICA NVISION', 105, 20, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('FACTURA PROFORMA', 105, 30, { align: 'center' });
+            
+            // Info factura
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text(`No. ${facturaActual.numero}`, 20, 50);
+            doc.text(`Fecha: ${new Date(facturaActual.fecha).toLocaleDateString()}`, 20, 60);
+            
+            // Cliente
+            doc.setFontSize(14);
+            doc.text('CLIENTE:', 20, 75);
+            doc.setFontSize(12);
+            doc.text(facturaActual.cliente.nombre, 20, 85);
+            if (facturaActual.cliente.cedula) doc.text(`Cédula/RNC: ${facturaActual.cliente.cedula}`, 20, 95);
+            if (facturaActual.cliente.telefono) doc.text(`Tel: ${facturaActual.cliente.telefono}`, 20, 105);
+            
+            // Productos
+            let y = 120;
+            doc.setFontSize(10);
+            doc.text('DESCRIPCIÓN', 20, y);
+            doc.text('CANT.', 100, y);
+            doc.text('PRECIO', 130, y);
+            doc.text('TOTAL', 170, y);
+            
+            y += 10;
+            facturaActual.productos.forEach(p => {
+                doc.text(p.nombre, 20, y);
+                doc.text(p.cantidad.toString(), 100, y);
+                doc.text(`RD$ ${p.precio.toFixed(2)}`, 130, y);
+                doc.text(`RD$ ${(p.precio * p.cantidad).toFixed(2)}`, 170, y);
+                y += 8;
+            });
+            
+            // Totales
+            y += 10;
+            doc.text(`Subtotal: RD$ ${facturaActual.totales.subtotal.toFixed(2)}`, 120, y);
+            y += 8;
+            doc.text(`ITBIS (18%): RD$ ${facturaActual.totales.itbis.toFixed(2)}`, 120, y);
+            y += 10;
+            doc.setFontSize(14);
+            doc.setTextColor(16, 185, 129);
+            doc.text(`TOTAL: RD$ ${facturaActual.totales.total.toFixed(2)}`, 120, y);
+            
+            // Examen si existe
+            if (facturaActual.examen) {
+                y += 20;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(14);
+                doc.text('EXAMEN VISUAL', 20, y);
+                
+                y += 10;
+                doc.setFontSize(10);
+                doc.text('OJO DERECHO (OD)', 20, y);
+                doc.text('OJO IZQUIERDO (OI)', 110, y);
+                
+                y += 8;
+                doc.text(`Esfera: ${facturaActual.examen.od.esfera || 'N/A'}`, 20, y);
+                doc.text(`Esfera: ${facturaActual.examen.oi.esfera || 'N/A'}`, 110, y);
+                
+                y += 6;
+                doc.text(`Cilindro: ${facturaActual.examen.od.cilindro || 'N/A'}`, 20, y);
+                doc.text(`Cilindro: ${facturaActual.examen.oi.cilindro || 'N/A'}`, 110, y);
+                
+                y += 6;
+                doc.text(`Eje: ${facturaActual.examen.od.eje || 'N/A'}`, 20, y);
+                doc.text(`Eje: ${facturaActual.examen.oi.eje || 'N/A'}`, 110, y);
+                
+                if (facturaActual.examen.dp) {
+                    y += 10;
+                    doc.text(`Distancia Pupilar: ${facturaActual.examen.dp}`, 20, y);
+                }
+            }
+            
+            // Footer
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text('📱 849-797-2424 | 🌐 opticanvision.com', 105, 280, { align: 'center' });
+            
+            // Guardar
+            doc.save(`Factura_${facturaActual.numero}.pdf`);
+            
+            // Guardar en backup
+            guardarBackup();
+            
+            showAlert('PDF generado y guardado');
+        }
+
+        function enviarWhatsApp() {
+            if (productos.length === 0) {
+                showAlert('Agregue productos a la factura');
+                return;
+            }
+            
+            facturaActual = obtenerDatosFactura();
+            
+            let mensaje = `🧾 *FACTURA PROFORMA*\n`;
+            mensaje += `No. ${facturaActual.numero}\n\n`;
+            
+            mensaje += `*CLIENTE:*\n`;
+            mensaje += `${facturaActual.cliente.nombre}\n`;
+            if (facturaActual.cliente.cedula) mensaje += `Cédula/RNC: ${facturaActual.cliente.cedula}\n`;
+            mensaje += `\n*PRODUCTOS:*\n`;
+            
+            facturaActual.productos.forEach(p => {
+                mensaje += `• ${p.nombre}\n  ${p.cantidad} x RD$ ${p.precio.toFixed(2)} = RD$ ${(p.precio * p.cantidad).toFixed(2)}\n`;
+            });
+            
+            mensaje += `\n*TOTALES:*\n`;
+            mensaje += `Subtotal: RD$ ${facturaActual.totales.subtotal.toFixed(2)}\n`;
+            mensaje += `ITBIS (18%): RD$ ${facturaActual.totales.itbis.toFixed(2)}\n`;
+            mensaje += `*TOTAL: RD$ ${facturaActual.totales.total.toFixed(2)}*\n`;
+            
+            if (facturaActual.examen) {
+                mensaje += `\n👁️ *EXAMEN VISUAL INCLUIDO*\n`;
+                mensaje += `*OD:* Esf ${facturaActual.examen.od.esfera || 'N/A'} | Cil ${facturaActual.examen.od.cilindro || 'N/A'} | Eje ${facturaActual.examen.od.eje || 'N/A'}\n`;
+                mensaje += `*OI:* Esf ${facturaActual.examen.oi.esfera || 'N/A'} | Cil ${facturaActual.examen.oi.cilindro || 'N/A'} | Eje ${facturaActual.examen.oi.eje || 'N/A'}\n`;
+                if (facturaActual.examen.dp) mensaje += `*DP:* ${facturaActual.examen.dp}\n`;
+                if (facturaActual.examen.observaciones) mensaje += `*Obs:* ${facturaActual.examen.observaciones}\n`;
+            }
+            
+            mensaje += `\n📱 Óptica Nvision\n`;
+            mensaje += `☎️ 849-797-2424\n`;
+            mensaje += `✨ Vea mejor, viva mejor`;
+            
+            const tel = facturaActual.cliente.telefono ? 
+                facturaActual.cliente.telefono.replace(/\D/g, '') : '';
+            
+            const url = tel ? 
+                `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}` :
+                `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+            
+            window.open(url, '_blank');
+            
+            guardarBackup();
+            showAlert('Factura enviada por WhatsApp');
+        }
+
+        function guardarBackup() {
+            let facturas = JSON.parse(localStorage.getItem('nvisionFacturas') || '[]');
+            facturas.push(facturaActual);
+            localStorage.setItem('nvisionFacturas', JSON.stringify(facturas));
+        }
+
+        // Cargar productos del inventario si existen
+        window.addEventListener('load', function() {
+            const inventario = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
+            if (inventario.length > 0) {
+                const select = document.getElementById('productoSelect');
+                inventario.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = `${p.nombre}|${p.precio}`;
+                    option.textContent = `${p.nombre} - RD$ ${p.precio}`;
+                    select.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
