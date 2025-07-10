@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-secondary { background: #666; color: white; }
+        .camera-box {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border: 2px dashed #666;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .product-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .product-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 INVENTARIO INTELIGENTE</h1>
+            <p>Sistema con captura fotográfica</p>
+            <button class="btn btn-secondary" onclick="location.href='admin.html'">⬅️ Volver</button>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📸 Agregar Producto</h3>
+                
+                <div class="camera-box" id="cameraBox">
+                    <div id="placeholder">
+                        <div style="font-size: 50px;">📷</div>
+                        <div>Click para activar</div>
+                    </div>
+                    <video id="video" style="display: none;" class="camera-video" autoplay playsinline></video>
+                </div>
+                
+                <button class="btn btn-primary" onclick="toggleCamera()" id="cameraBtn">📷 Activar Cámara</button>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <img id="preview" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
+                
+                <input type="text" id="codigo" class="input" placeholder="Código (ej: NV001)">
+                <input type="text" id="nombre" class="input" placeholder="Nombre del producto">
+                <input type="number" id="precio" class="input" placeholder="Precio RD$">
+                <input type="number" id="stock" class="input" placeholder="Stock">
+                <select id="categoria" class="input">
+                    <option value="">Categoría</option>
+                    <option value="monturas">Monturas</option>
+                    <option value="lentes">Lentes</option>
+                    <option value="accesorios">Accesorios</option>
+                </select>
+                
+                <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar</button>
+                <button class="btn btn-secondary" onclick="limpiar()">🔄 Limpiar</button>
+            </div>
+
+            <div class="card">
+                <h3>📋 Buscar en Inventario</h3>
+                <input type="text" class="input" placeholder="🔍 Buscar..." onkeyup="buscar(this.value)">
+                
+                <div id="stats" style="margin: 20px 0;">
+                    <p>Total productos: <strong id="totalProd">0</strong></p>
+                    <p>Valor inventario: <strong>RD$ <span id="valorTotal">0</span></strong></p>
+                    <p>Stock bajo: <strong id="stockBajo">0</strong></p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="exportar()">📥 Exportar Excel</button>
+                <button class="btn btn-primary" onclick="sincronizarCatalogo()">🔄 Sincronizar Catálogo</button>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 30px;">📦 Productos en Inventario</h3>
+        <div class="product-list" id="productList"></div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <script>
+        let productos = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
+        let stream = null;
+        let fotoActual = null;
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        async function toggleCamera() {
+            const video = document.getElementById('video');
+            const btn = document.getElementById('cameraBtn');
+            const placeholder = document.getElementById('placeholder');
+            
+            if (!stream) {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '📸 Tomar Foto';
+                    btn.onclick = tomarFoto;
+                } catch (err) {
+                    showAlert('Error al acceder a la cámara');
+                }
+            } else {
+                tomarFoto();
+            }
+        }
+
+        function tomarFoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const preview = document.getElementById('preview');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            fotoActual = canvas.toDataURL('image/jpeg', 0.8);
+            preview.src = fotoActual;
+            preview.style.display = 'block';
+            
+            // Detener cámara
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            video.style.display = 'none';
+            document.getElementById('placeholder').style.display = 'block';
+            document.getElementById('cameraBtn').textContent = '📷 Activar Cámara';
+            document.getElementById('cameraBtn').onclick = toggleCamera;
+            
+            showAlert('Foto capturada');
+        }
+
+        function guardarProducto() {
+            const producto = {
+                id: Date.now(),
+                codigo: document.getElementById('codigo').value,
+                nombre: document.getElementById('nombre').value,
+                precio: parseFloat(document.getElementById('precio').value) || 0,
+                stock: parseInt(document.getElementById('stock').value) || 0,
+                categoria: document.getElementById('categoria').value,
+                imagen: fotoActual || 'https://via.placeholder.com/200x150/10b981/ffffff?text=Sin+Foto',
+                fecha: new Date().toISOString()
+            };
+            
+            if (!producto.codigo || !producto.nombre) {
+                showAlert('Complete código y nombre');
+                return;
+            }
+            
+            productos.push(producto);
+            guardarDatos();
+            cargarProductos();
+            sincronizarConCatalogo(producto);
+            limpiar();
+            showAlert('Producto guardado en inventario y catálogo');
+        }
+
+        function guardarDatos() {
+            localStorage.setItem('nvisionInventario', JSON.stringify(productos));
+            actualizarEstadisticas();
+        }
+
+        function sincronizarConCatalogo(producto) {
+            // Sincronizar con el catálogo principal
+            let catalogo = JSON.parse(localStorage.getItem('nvisionCatalogo') || '[]');
+            catalogo.push({
+                id: producto.id,
+                codigo: producto.codigo,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                imagen: producto.imagen,
+                categoria: producto.categoria
+            });
+            localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
+        }
+
+        function cargarProductos(filtro = '') {
+            const lista = document.getElementById('productList');
+            let productosFiltrados = productos;
+            
+            if (filtro) {
+                productosFiltrados = productos.filter(p => 
+                    p.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+                    p.codigo.toLowerCase().includes(filtro.toLowerCase())
+                );
+            }
+            
+            lista.innerHTML = productosFiltrados.map(p => `
+                <div class="product-item">
+                    <img src="${p.imagen}" class="product-img" alt="${p.nombre}">
+                    <h4>${p.nombre}</h4>
+                    <p>Código: ${p.codigo}</p>
+                    <p>Precio: RD$ ${p.precio.toFixed(2)}</p>
+                    <p>Stock: ${p.stock} ${p.stock < 5 ? '⚠️' : '✓'}</p>
+                    <button class="btn btn-secondary" onclick="editarProducto(${p.id})">✏️</button>
+                    <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
+                    <button class="btn btn-primary" onclick="compartirWhatsApp(${p.id})">📱</button>
+                </div>
+            `).join('');
+        }
+
+        function buscar(termino) {
+            cargarProductos(termino);
+        }
+
+        function eliminarProducto(id) {
+            if (confirm('¿Eliminar este producto?')) {
+                productos = productos.filter(p => p.id !== id);
+                guardarDatos();
+                cargarProductos();
+                
+                // También eliminar del catálogo
+                let catalogo = JSON.parse(localStorage.getItem('nvisionCatalogo') || '[]');
+                catalogo = catalogo.filter(p => p.id !== id);
+                localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
+                
+                showAlert('Producto eliminado');
+            }
+        }
+
+        function compartirWhatsApp(id) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                const mensaje = `🛍️ *PRODUCTO DISPONIBLE*\n\n` +
+                              `📦 ${producto.nombre}\n` +
+                              `🔢 Código: ${producto.codigo}\n` +
+                              `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n` +
+                              `📊 Stock: ${producto.stock} unidades\n\n` +
+                              `📱 Óptica Nvision\n` +
+                              `☎️ 849-797-2424`;
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            }
+        }
+
+        function actualizarEstadisticas() {
+            const totalProd = productos.length;
+            const valorTotal = productos.reduce((sum, p) => sum + (p.precio * p.stock), 0);
+            const stockBajo = productos.filter(p => p.stock < 5).length;
+            
+            document.getElementById('totalProd').textContent = totalProd;
+            document.getElementById('valorTotal').textContent = valorTotal.toFixed(2);
+            document.getElementById('stockBajo').textContent = stockBajo;
+        }
+
+        function sincronizarCatalogo() {
+            // Sincronizar todo el inventario con el catálogo
+            const catalogo = productos.map(p => ({
+                id: p.id,
+                codigo: p.codigo,
+                nombre: p.nombre,
+                precio: p.precio,
+                imagen: p.imagen,
+                categoria: p.categoria
+            }));
+            
+            localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
+            showAlert('Catálogo sincronizado');
+        }
+
+        function exportar() {
+            let csv = 'Código,Nombre,Precio,Stock,Categoría\n';
+            productos.forEach(p => {
+                csv += `${p.codigo},${p.nombre},${p.precio},${p.stock},${p.categoria}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `inventario_nvision_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            showAlert('Inventario exportado');
+        }
+
+        function limpiar() {
+            document.getElementById('codigo').value = '';
+            document.getElementById('nombre').value = '';
+            document.getElementById('precio').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('preview').style.display = 'none';
+            fotoActual = null;
+        }
+
+        // Cargar al iniciar
+        cargarProductos();
+        actualizarEstadisticas();
+    </script>
+</body>
+</html>
