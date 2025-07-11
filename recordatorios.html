@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorios Inteligentes - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 25px; 
+            border-radius: 15px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .reminder-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #10b981;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .reminder-item:hover {
+            transform: translateX(5px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .reminder-urgent {
+            border-left-color: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-whatsapp { background: #25d366; color: white; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.7;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .quick-message {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .quick-message:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 RECORDATORIOS INTELIGENTES</h1>
+            <p>Sistema automático de seguimiento</p>
+            <p>📱 849-797-2424</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="pendientes">0</div>
+                <div>Pendientes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="urgentes">0</div>
+                <div>Urgentes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="enviados">0</div>
+                <div>Enviados Hoy</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📅 Recordatorios del Día</h3>
+            <button class="btn btn-primary" onclick="generarRecordatorios()">🔄 Actualizar Lista</button>
+            <div id="listaRecordatorios"></div>
+        </div>
+
+        <div class="card">
+            <h3>💬 Mensajes Rápidos</h3>
+            <div class="quick-message" onclick="enviarMensajeRapido('cumpleanos')">
+                🎂 Mensaje de Cumpleaños
+            </div>
+            <div class="quick-message" onclick="enviarMensajeRapido('cita')">
+                📅 Recordatorio de Cita
+            </div>
+            <div class="quick-message" onclick="enviarMensajeRapido('examen')">
+                👁️ Examen Anual Pendiente
+            </div>
+            <div class="quick-message" onclick="enviarMensajeRapido('promocion')">
+                🎁 Promoción Especial
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📊 Campañas Automáticas</h3>
+            <button class="btn btn-whatsapp" onclick="enviarCampanaMasiva()">📤 Enviar Campaña del Día</button>
+            <button class="btn btn-primary" onclick="programarCampana()">⏰ Programar Campaña</button>
+        </div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+    
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
+
+    <script>
+        let recordatorios = [];
+        let mensajesEnviados = JSON.parse(localStorage.getItem('nvisionMensajesEnviados') || '[]');
+
+        const plantillasMensajes = {
+            cumpleanos: '🎂 *¡FELIZ CUMPLEAÑOS {nombre}!* 🎂\n\nÓptica Nvision te desea un día maravilloso.\n\n🎁 Te tenemos un regalo especial:\n20% de descuento en tu próxima compra\n\n📱 849-797-2424\n✨ Vea mejor, viva mejor',
+            cita: '📅 *RECORDATORIO DE CITA*\n\nHola {nombre},\n\nTe recordamos tu cita en Óptica Nvision:\n📆 {fecha}\n⏰ {hora}\n\n📱 849-797-2424\n✨ Vea mejor, viva mejor',
+            examen: '👁️ *TIEMPO DE TU EXAMEN ANUAL*\n\nHola {nombre},\n\nHa pasado un año desde tu último examen visual.\n\n✅ Agenda tu cita GRATIS\n📱 849-797-2424\n\n✨ Vea mejor, viva mejor',
+            promocion: '🎁 *PROMOCIÓN ESPECIAL*\n\n{nombre}, tenemos una oferta exclusiva para ti:\n\n• 2x1 en lentes\n• 30% dto. en monturas\n• Examen visual GRATIS\n\n📱 849-797-2424\n✨ Vea mejor, viva mejor'
+        };
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function generarRecordatorios() {
+            const clientes = JSON.parse(localStorage.getItem('nvisionClientes') || '[]');
+            const examenes = JSON.parse(localStorage.getItem('nvisionExamenes') || '[]');
+            const hoy = new Date();
+            
+            recordatorios = [];
+
+            // Revisar cumpleaños
+            clientes.forEach(cliente => {
+                if (cliente.fechaNac) {
+                    const cumple = new Date(cliente.fechaNac);
+                    if (cumple.getDate() === hoy.getDate() && cumple.getMonth() === hoy.getMonth()) {
+                        recordatorios.push({
+                            tipo: 'cumpleanos',
+                            cliente: cliente,
+                            mensaje: 'Cumpleaños hoy',
+                            urgente: true
+                        });
+                    }
+                }
+            });
+
+            // Revisar exámenes vencidos (más de 1 año)
+            clientes.forEach(cliente => {
+                const ultimoExamen = examenes
+                    .filter(e => e.clienteId === cliente.id)
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+                
+                if (ultimoExamen) {
+                    const fechaExamen = new Date(ultimoExamen.fecha);
+                    const diasDesdeExamen = Math.floor((hoy - fechaExamen) / (1000 * 60 * 60 * 24));
+                    
+                    if (diasDesdeExamen > 365) {
+                        recordatorios.push({
+                            tipo: 'examen',
+                            cliente: cliente,
+                            mensaje: `Examen vencido hace ${diasDesdeExamen - 365} días`,
+                            urgente: diasDesdeExamen > 400
+                        });
+                    }
+                } else {
+                    // Cliente sin examen
+                    recordatorios.push({
+                        tipo: 'examen',
+                        cliente: cliente,
+                        mensaje: 'Sin examen registrado',
+                        urgente: false
+                    });
+                }
+            });
+
+            // Clientes inactivos (más de 6 meses sin compra)
+            const facturas = JSON.parse(localStorage.getItem('nvisionFacturas') || '[]');
+            clientes.forEach(cliente => {
+                const ultimaFactura = facturas
+                    .filter(f => f.cliente === cliente.nombre)
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+                
+                if (ultimaFactura) {
+                    const diasInactivo = Math.floor((hoy - new Date(ultimaFactura.fecha)) / (1000 * 60 * 60 * 24));
+                    if (diasInactivo > 180) {
+                        recordatorios.push({
+                            tipo: 'promocion',
+                            cliente: cliente,
+                            mensaje: `Inactivo ${diasInactivo} días`,
+                            urgente: false
+                        });
+                    }
+                }
+            });
+
+            mostrarRecordatorios();
+            actualizarEstadisticas();
+        }
+
+        function mostrarRecordatorios() {
+            const lista = document.getElementById('listaRecordatorios');
+            
+            if (recordatorios.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; opacity: 0.7;">No hay recordatorios pendientes</p>';
+                return;
+            }
+
+            // Ordenar por urgencia
+            recordatorios.sort((a, b) => b.urgente - a.urgente);
+
+            lista.innerHTML = recordatorios.map((r, index) => `
+                <div class="reminder-item ${r.urgente ? 'reminder-urgent' : ''}" onclick="enviarRecordatorio(${index})">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>${getTipoIcon(r.tipo)} ${r.cliente.nombre}</h4>
+                            <p>📱 ${r.cliente.telefono}</p>
+                            <p style="font-size: 12px; opacity: 0.8;">${r.mensaje}</p>
+                        </div>
+                        <button class="btn btn-whatsapp" onclick="event.stopPropagation(); enviarRecordatorio(${index})">
+                            📱 Enviar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTipoIcon(tipo) {
+            const icons = {
+                cumpleanos: '🎂',
+                cita: '📅',
+                examen: '👁️',
+                promocion: '🎁'
+            };
+            return icons[tipo] || '📌';
+        }
+
+        function enviarRecordatorio(index) {
+            const recordatorio = recordatorios[index];
+            const plantilla = plantillasMensajes[recordatorio.tipo];
+            
+            let mensaje = plantilla
+                .replace('{nombre}', recordatorio.cliente.nombre)
+                .replace('{fecha}', new Date().toLocaleDateString())
+                .replace('{hora}', '10:00 AM');
+            
+            const url = `https://wa.me/${recordatorio.cliente.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+            
+            // Registrar envío
+            mensajesEnviados.push({
+                clienteId: recordatorio.cliente.id,
+                tipo: recordatorio.tipo,
+                fecha: new Date().toISOString()
+            });
+            
+            localStorage.setItem('nvisionMensajesEnviados', JSON.stringify(mensajesEnviados));
+            
+            // Quitar de la lista
+            recordatorios.splice(index, 1);
+            mostrarRecordatorios();
+            actualizarEstadisticas();
+            
+            showAlert('Recordatorio enviado');
+        }
+
+        function enviarMensajeRapido(tipo) {
+            const mensaje = plantillasMensajes[tipo]
+                .replace('{nombre}', 'Cliente')
+                .replace('{fecha}', new Date().toLocaleDateString())
+                .replace('{hora}', '10:00 AM');
+            
+            const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+
+        function enviarCampanaMasiva() {
+            if (recordatorios.length === 0) {
+                showAlert('No hay recordatorios pendientes');
+                return;
+            }
+            
+            if (confirm(`¿Enviar ${recordatorios.length} mensajes de forma manual?`)) {
+                recordatorios.forEach((r, index) => {
+                    setTimeout(() => {
+                        enviarRecordatorio(0); // Siempre el primero porque se va eliminando
+                    }, index * 2000); // 2 segundos entre cada mensaje
+                });
+                
+                showAlert('Abriendo mensajes... Envíe manualmente');
+            }
+        }
+
+        function actualizarEstadisticas() {
+            document.getElementById('pendientes').textContent = recordatorios.length;
+            document.getElementById('urgentes').textContent = recordatorios.filter(r => r.urgente).length;
+            
+            const hoy = new Date().toDateString();
+            const enviadosHoy = mensajesEnviados.filter(m => 
+                new Date(m.fecha).toDateString() === hoy
+            ).length;
+            
+            document.getElementById('enviados').textContent = enviadosHoy;
+        }
+
+        function programarCampana() {
+            showAlert('Sistema de programación en desarrollo');
+            // Aquí podrías agregar localStorage para guardar campañas programadas
+            // y verificarlas cada vez que se abre la página
+        }
+
+        // Cargar al iniciar
+        generarRecordatorios();
+
+        // Auto-actualizar cada minuto
+        setInterval(generarRecordatorios, 60000);
+    </script>
+</body>
+</html>
