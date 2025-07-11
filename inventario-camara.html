@@ -51,6 +51,7 @@
         .btn-primary { background: #10b981; color: white; }
         .btn-danger { background: #ef4444; color: white; }
         .btn-secondary { background: #666; color: white; }
+        .btn-whatsapp { background: #25d366; color: white; }
         .camera-box {
             width: 100%;
             height: 200px;
@@ -97,13 +98,25 @@
             border-radius: 10px;
             display: none;
         }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.7;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📦 INVENTARIO INTELIGENTE</h1>
-            <p>Sistema con captura fotográfica</p>
+            <h1>📦 INVENTARIO Y CATÁLOGO</h1>
+            <p>Sistema integrado con captura fotográfica</p>
             <button class="btn btn-secondary" onclick="location.href='admin.html'">⬅️ Volver</button>
         </div>
 
@@ -134,22 +147,21 @@
                     <option value="accesorios">Accesorios</option>
                 </select>
                 
-                <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar</button>
+                <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar en Inventario y Catálogo</button>
                 <button class="btn btn-secondary" onclick="limpiar()">🔄 Limpiar</button>
             </div>
 
             <div class="card">
-                <h3>📋 Buscar en Inventario</h3>
+                <h3>📋 Información</h3>
                 <input type="text" class="input" placeholder="🔍 Buscar..." onkeyup="buscar(this.value)">
                 
-                <div id="stats" style="margin: 20px 0;">
+                <div style="margin: 20px 0;">
                     <p>Total productos: <strong id="totalProd">0</strong></p>
                     <p>Valor inventario: <strong>RD$ <span id="valorTotal">0</span></strong></p>
-                    <p>Stock bajo: <strong id="stockBajo">0</strong></p>
+                    <p>Stock bajo (&lt;5): <strong id="stockBajo">0</strong></p>
                 </div>
                 
-                <button class="btn btn-primary" onclick="exportar()">📥 Exportar Excel</button>
-                <button class="btn btn-primary" onclick="sincronizarCatalogo()">🔄 Sincronizar Catálogo</button>
+                <button class="btn btn-primary" onclick="sincronizarCatalogo()">🔄 Actualizar Catálogo</button>
             </div>
         </div>
 
@@ -158,6 +170,10 @@
     </div>
 
     <div class="alert" id="alert"></div>
+    
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
 
     <script>
         let productos = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
@@ -207,7 +223,6 @@
             preview.src = fotoActual;
             preview.style.display = 'block';
             
-            // Detener cámara
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
@@ -240,9 +255,9 @@
             productos.push(producto);
             guardarDatos();
             cargarProductos();
-            sincronizarConCatalogo(producto);
+            sincronizarConCatalogo();
             limpiar();
-            showAlert('Producto guardado en inventario y catálogo');
+            showAlert('✅ Guardado en inventario y catálogo');
         }
 
         function guardarDatos() {
@@ -250,17 +265,18 @@
             actualizarEstadisticas();
         }
 
-        function sincronizarConCatalogo(producto) {
-            // Sincronizar con el catálogo principal
-            let catalogo = JSON.parse(localStorage.getItem('nvisionCatalogo') || '[]');
-            catalogo.push({
-                id: producto.id,
-                codigo: producto.codigo,
-                nombre: producto.nombre,
-                precio: producto.precio,
-                imagen: producto.imagen,
-                categoria: producto.categoria
-            });
+        function sincronizarConCatalogo() {
+            // Crear catálogo solo con productos con imagen
+            const catalogo = productos.filter(p => p.imagen && !p.imagen.includes('placeholder'))
+                .map(p => ({
+                    id: p.id,
+                    codigo: p.codigo,
+                    nombre: p.nombre,
+                    precio: p.precio,
+                    imagen: p.imagen,
+                    categoria: p.categoria
+                }));
+            
             localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
         }
 
@@ -284,7 +300,7 @@
                     <p>Stock: ${p.stock} ${p.stock < 5 ? '⚠️' : '✓'}</p>
                     <button class="btn btn-secondary" onclick="editarProducto(${p.id})">✏️</button>
                     <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
-                    <button class="btn btn-primary" onclick="compartirWhatsApp(${p.id})">📱</button>
+                    <button class="btn btn-whatsapp" onclick="compartirWhatsApp(${p.id})">📱</button>
                 </div>
             `).join('');
         }
@@ -298,12 +314,7 @@
                 productos = productos.filter(p => p.id !== id);
                 guardarDatos();
                 cargarProductos();
-                
-                // También eliminar del catálogo
-                let catalogo = JSON.parse(localStorage.getItem('nvisionCatalogo') || '[]');
-                catalogo = catalogo.filter(p => p.id !== id);
-                localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
-                
+                sincronizarConCatalogo();
                 showAlert('Producto eliminado');
             }
         }
@@ -317,9 +328,36 @@
                               `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n` +
                               `📊 Stock: ${producto.stock} unidades\n\n` +
                               `📱 Óptica Nvision\n` +
-                              `☎️ 849-797-2424`;
+                              `☎️ 849-797-2424\n` +
+                              `🌐 opticanvision.com\n\n` +
+                              `✨ Vea mejor, viva mejor`;
                 
-                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                // Si el producto tiene imagen real (no placeholder)
+                if (producto.imagen && !producto.imagen.includes('placeholder')) {
+                    // En móvil con soporte para compartir
+                    if (navigator.share && navigator.canShare) {
+                        fetch(producto.imagen)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                const file = new File([blob], `${producto.codigo}.jpg`, { type: 'image/jpeg' });
+                                return navigator.share({
+                                    title: producto.nombre,
+                                    text: mensaje,
+                                    files: [file]
+                                });
+                            })
+                            .catch(() => {
+                                // Si falla, enviar solo texto
+                                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                            });
+                    } else {
+                        // En desktop, solo texto con nota
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + '\n\n📷 Ver foto en el catálogo web')}`, '_blank');
+                    }
+                } else {
+                    // Sin imagen, solo texto
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
             }
         }
 
@@ -334,34 +372,56 @@
         }
 
         function sincronizarCatalogo() {
-            // Sincronizar todo el inventario con el catálogo
-            const catalogo = productos.map(p => ({
-                id: p.id,
-                codigo: p.codigo,
-                nombre: p.nombre,
-                precio: p.precio,
-                imagen: p.imagen,
-                categoria: p.categoria
-            }));
-            
-            localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
-            showAlert('Catálogo sincronizado');
+            sincronizarConCatalogo();
+            showAlert('✅ Catálogo actualizado');
         }
 
-        function exportar() {
-            let csv = 'Código,Nombre,Precio,Stock,Categoría\n';
-            productos.forEach(p => {
-                csv += `${p.codigo},${p.nombre},${p.precio},${p.stock},${p.categoria}\n`;
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `inventario_nvision_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            
-            showAlert('Inventario exportado');
+        function editarProducto(id) {
+            const producto = productos.find(p => p.id === id);
+            if (producto) {
+                document.getElementById('codigo').value = producto.codigo;
+                document.getElementById('nombre').value = producto.nombre;
+                document.getElementById('precio').value = producto.precio;
+                document.getElementById('stock').value = producto.stock;
+                document.getElementById('categoria').value = producto.categoria;
+                if (producto.imagen && !producto.imagen.includes('placeholder')) {
+                    document.getElementById('preview').src = producto.imagen;
+                    document.getElementById('preview').style.display = 'block';
+                    fotoActual = producto.imagen;
+                }
+                
+                // Cambiar botón para actualizar
+                const btnGuardar = document.querySelector('[onclick="guardarProducto()"]');
+                btnGuardar.textContent = '✏️ Actualizar Producto';
+                btnGuardar.onclick = () => actualizarProducto(id);
+            }
+        }
+
+        function actualizarProducto(id) {
+            const index = productos.findIndex(p => p.id === id);
+            if (index !== -1) {
+                productos[index] = {
+                    ...productos[index],
+                    codigo: document.getElementById('codigo').value,
+                    nombre: document.getElementById('nombre').value,
+                    precio: parseFloat(document.getElementById('precio').value) || 0,
+                    stock: parseInt(document.getElementById('stock').value) || 0,
+                    categoria: document.getElementById('categoria').value,
+                    imagen: fotoActual || productos[index].imagen
+                };
+                
+                guardarDatos();
+                cargarProductos();
+                sincronizarConCatalogo();
+                limpiar();
+                
+                // Restaurar botón
+                const btnGuardar = document.querySelector('[onclick*="actualizarProducto"]');
+                btnGuardar.textContent = '💾 Guardar en Inventario y Catálogo';
+                btnGuardar.onclick = guardarProducto;
+                
+                showAlert('✅ Producto actualizado');
+            }
         }
 
         function limpiar() {
