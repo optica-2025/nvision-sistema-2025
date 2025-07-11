@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: system-ui, -apple-system, sans-serif; 
             background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
             min-height: 100vh; 
             color: white; 
@@ -34,14 +34,15 @@
             background-clip: text;
         }
 
-        .generator-section {
-            background: rgba(16, 185, 129, 0.1);
-            border: 2px solid rgba(16, 185, 129, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 25px;
+        .ncf-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
         }
-
+        
         .section-title {
             font-size: 18px;
             font-weight: 700;
@@ -78,6 +79,10 @@
             border-radius: 8px;
             font-size: 14px;
         }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
 
         .btn {
             padding: 12px 20px;
@@ -86,16 +91,22 @@
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
+            transition: all 0.3s ease;
             margin: 5px;
         }
         
-        .btn-success {
+        .btn-primary {
             background: linear-gradient(45deg, #10b981, #059669);
             color: white;
         }
 
-        .btn-whatsapp {
-            background: linear-gradient(45deg, #25d366, #128c7e);
+        .btn-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
             color: white;
         }
 
@@ -103,6 +114,19 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .generator-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
         }
 
         .current-ncf {
@@ -121,13 +145,6 @@
             margin: 10px 0;
         }
 
-        .share-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
         .alert {
             background: rgba(16, 185, 129, 0.2);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -138,6 +155,12 @@
             text-align: center;
             font-weight: 600;
             display: none;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
         }
 
         .footer {
@@ -152,6 +175,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -188,21 +218,14 @@
                     <input type="text" id="rncCliente" class="form-input" placeholder="000-00000-0">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Monto (sin ITBIS):</label>
-                    <input type="number" id="montoSubtotal" class="form-input" placeholder="0.00" step="0.01" onchange="calcularTotal()">
+                    <label class="form-label">Monto Total:</label>
+                    <input type="number" id="montoTotal" class="form-input" placeholder="0.00" step="0.01">
                 </div>
             </div>
 
             <div class="current-ncf">
                 <div style="font-size: 14px; opacity: 0.8;">Próximo NCF:</div>
                 <div class="ncf-number" id="proximoNCF">B0100000001</div>
-                <div style="margin-top: 10px;">
-                    <div>Subtotal: RD$ <span id="displaySubtotal">0.00</span></div>
-                    <div>ITBIS (18%): RD$ <span id="displayItbis">0.00</span></div>
-                    <div style="font-size: 18px; font-weight: bold; color: #10b981;">
-                        Total: RD$ <span id="displayTotal">0.00</span>
-                    </div>
-                </div>
             </div>
 
             <div style="text-align: center;">
@@ -211,7 +234,7 @@
 
             <div class="share-buttons">
                 <button onclick="compartirCliente()" class="btn btn-whatsapp">📱 Enviar Cliente</button>
-                <button onclick="enviarEmail()" class="btn btn-secondary">📧 Email</button>
+                <button onclick="enviarEmail()" class="btn btn-primary">📧 Email</button>
                 <button onclick="copiarTexto()" class="btn btn-secondary">📋 Copiar</button>
             </div>
         </div>
@@ -224,41 +247,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <script>
-        let contadorNCF = parseInt(localStorage.getItem('nvisionNCFCounter') || '1');
+        let contadorNCF = 1;
         let ultimaFactura = null;
 
         function mostrarAlerta(mensaje, tipo = 'success') {
-            const alertHtml = `<div class="alert" style="display: block; ${tipo === 'error' ? 'background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;' : ''}">${mensaje}</div>`;
+            const alertHtml = `<div class="alert ${tipo === 'error' ? 'alert-error' : ''}" style="display: block;">${mensaje}</div>`;
             document.getElementById('alertContainer').innerHTML = alertHtml;
             setTimeout(() => {
                 document.getElementById('alertContainer').innerHTML = '';
             }, 4000);
         }
 
-        function calcularTotal() {
-            const subtotal = parseFloat(document.getElementById('montoSubtotal').value) || 0;
-            const itbis = subtotal * 0.18;
-            const total = subtotal + itbis;
-            
-            document.getElementById('displaySubtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('displayItbis').textContent = itbis.toFixed(2);
-            document.getElementById('displayTotal').textContent = total.toFixed(2);
-        }
-
         function obtenerDatosFactura() {
             const tipo = document.getElementById('tipoComprobante').value;
             const cliente = document.getElementById('nombreCliente').value.trim();
             const rnc = document.getElementById('rncCliente').value.trim();
-            const subtotal = parseFloat(document.getElementById('montoSubtotal').value) || 0;
+            const monto = parseFloat(document.getElementById('montoTotal').value);
             
-            if (!cliente || !subtotal) {
+            if (!cliente || !monto) {
                 mostrarAlerta('❌ Complete cliente y monto', 'error');
                 return null;
             }
             
             const ncf = tipo + contadorNCF.toString().padStart(8, '0');
-            const itbis = subtotal * 0.18;
-            const total = subtotal + itbis;
+            contadorNCF++;
+            
+            const subtotal = monto / 1.18;
+            const itbis = monto - subtotal;
             
             return {
                 ncf: ncf,
@@ -266,7 +281,7 @@
                 rnc: rnc || 'N/A',
                 subtotal: subtotal,
                 itbis: itbis,
-                total: total
+                total: monto
             };
         }
 
@@ -275,8 +290,6 @@
             if (!datos) return;
             
             ultimaFactura = datos;
-            contadorNCF++;
-            localStorage.setItem('nvisionNCFCounter', contadorNCF.toString());
             actualizarNCF();
             
             const { jsPDF } = window.jspdf;
@@ -325,10 +338,17 @@
             }
             
             const datos = ultimaFactura;
-            const mensaje = `🧾 *FACTURA FISCAL*\n\nÓptica Nvision\nNCF: ${datos.ncf}\nCliente: ${datos.cliente}\n\nSubtotal: RD$${datos.subtotal.toFixed(2)}\nITBIS (18%): RD$${datos.itbis.toFixed(2)}\nTotal: RD$${datos.total.toFixed(2)}\n\n📱 849-797-2424\n✨ Vea mejor, viva mejor`;
+            const mensaje = `🧾 *FACTURA FISCAL*\n\nÓptica Nvision\nNCF: ${datos.ncf}\nCliente: ${datos.cliente}\nTotal: RD$${datos.total.toFixed(2)}\n\n📱 849-797-2424\n✨ Vea mejor, viva mejor`;
             
-            const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
+            if (navigator.share) {
+                navigator.share({
+                    title: `Factura ${datos.ncf}`,
+                    text: mensaje
+                });
+            } else {
+                const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+                window.open(url, '_blank');
+            }
             
             mostrarAlerta('📱 Listo para compartir');
         }
@@ -373,17 +393,15 @@
         function limpiarFormulario() {
             document.getElementById('nombreCliente').value = '';
             document.getElementById('rncCliente').value = '';
-            document.getElementById('montoSubtotal').value = '';
-            calcularTotal();
+            document.getElementById('montoTotal').value = '';
         }
 
         // Actualizar NCF al cambiar tipo
         document.getElementById('tipoComprobante').addEventListener('change', actualizarNCF);
 
         // Inicializar
-        actualizarNCF();
-        mostrarAlerta('✅ Sistema NCF listo - Acceso directo');
-        console.log('Sistema NCF Nvision - Sin login requerido');
+        mostrarAlerta('✅ Sistema NCF listo - SIN LOGIN');
+        console.log('Sistema NCF Nvision - Acceso directo');
     </script>
 </body>
 </html>
