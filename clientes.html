@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Óptica Nvision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #10b981;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .input, .select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-whatsapp { background: #25d366; color: white; }
+        .btn-secondary { background: #666; color: white; }
+        .client-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #10b981;
+        }
+        .exam-record {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .prescription {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .eye-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 25px;
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.7;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 GESTIÓN DE CLIENTES Y EXÁMENES</h1>
+            <p>Sistema integral de historial médico</p>
+            <button class="btn btn-secondary" onclick="location.href='admin.html'">⬅️ Volver</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="cambiarTab('clientes', this)">👥 Clientes</button>
+            <button class="tab" onclick="cambiarTab('examenes', this)">👁️ Exámenes</button>
+            <button class="tab" onclick="cambiarTab('historial', this)">📋 Historiales</button>
+        </div>
+
+        <!-- SECCIÓN CLIENTES -->
+        <div class="section active" id="clientes">
+            <div class="grid">
+                <div class="card">
+                    <h3>➕ Registrar Cliente</h3>
+                    <input type="text" id="nombre" class="input" placeholder="Nombre completo">
+                    <input type="text" id="cedula" class="input" placeholder="Cédula">
+                    <input type="tel" id="telefono" class="input" placeholder="Teléfono">
+                    <input type="email" id="email" class="input" placeholder="Email">
+                    <input type="date" id="fechaNac" class="input">
+                    <select id="tipo" class="select">
+                        <option value="regular">Cliente Regular</option>
+                        <option value="vip">Cliente VIP</option>
+                        <option value="corporativo">Corporativo</option>
+                    </select>
+                    <textarea id="notas" class="input" placeholder="Condiciones médicas o alergias"></textarea>
+                    
+                    <button class="btn btn-primary" onclick="guardarCliente()">💾 Guardar Cliente</button>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Lista de Clientes</h3>
+                    <input type="text" class="input" placeholder="🔍 Buscar cliente..." onkeyup="buscarCliente(this.value)">
+                    <div id="listaClientes" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Lista de clientes -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN EXÁMENES -->
+        <div class="section" id="examenes">
+            <div class="card">
+                <h3>🔬 Nuevo Examen Visual</h3>
+                <select id="clienteExamen" class="select">
+                    <option value="">Seleccionar cliente</option>
+                </select>
+                
+                <div class="prescription">
+                    <div class="eye-section">
+                        <h4>👁️ Ojo Derecho (OD)</h4>
+                        <input type="text" id="odEsfera" class="input" placeholder="Esfera (ej: -2.50)">
+                        <input type="text" id="odCilindro" class="input" placeholder="Cilindro (ej: -0.75)">
+                        <input type="text" id="odEje" class="input" placeholder="Eje (ej: 180°)">
+                        <input type="text" id="odAV" class="input" placeholder="Agudeza Visual (20/20)">
+                    </div>
+                    
+                    <div class="eye-section">
+                        <h4>👁️ Ojo Izquierdo (OI)</h4>
+                        <input type="text" id="oiEsfera" class="input" placeholder="Esfera">
+                        <input type="text" id="oiCilindro" class="input" placeholder="Cilindro">
+                        <input type="text" id="oiEje" class="input" placeholder="Eje">
+                        <input type="text" id="oiAV" class="input" placeholder="Agudeza Visual">
+                    </div>
+                </div>
+                
+                <input type="text" id="dp" class="input" placeholder="Distancia Pupilar (DP) en mm">
+                <input type="text" id="add" class="input" placeholder="Adición (si aplica)">
+                
+                <select id="tipoLente" class="select">
+                    <option value="">Tipo de lente recomendado</option>
+                    <option value="monofocal">Monofocal</option>
+                    <option value="bifocal">Bifocal</option>
+                    <option value="progresivo">Progresivo</option>
+                </select>
+                
+                <textarea id="observaciones" class="input" placeholder="Observaciones y recomendaciones"></textarea>
+                
+                <button class="btn btn-primary" onclick="guardarExamen()">💾 Guardar Examen</button>
+                <button class="btn btn-whatsapp" onclick="enviarReceta()">📱 Enviar Receta WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN HISTORIALES -->
+        <div class="section" id="historial">
+            <div class="card">
+                <h3>📊 Historiales Médicos</h3>
+                <select id="clienteHistorial" class="select" onchange="cargarHistorial()">
+                    <option value="">Seleccionar cliente</option>
+                </select>
+                
+                <div id="historialCompleto" style="margin-top: 20px;">
+                    <!-- Historial del cliente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+    
+    <div class="footer">
+        by fbrugal jrubinstein consultores
+    </div>
+
+    <script>
+        let clientes = JSON.parse(localStorage.getItem('nvisionClientes') || '[]');
+        let examenes = JSON.parse(localStorage.getItem('nvisionExamenes') || '[]');
+
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function cambiarTab(tab, elemento) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Mostrar la sección seleccionada
+            document.getElementById(tab).classList.add('active');
+            elemento.classList.add('active');
+            
+            // Cargar datos según la pestaña
+            if (tab === 'examenes' || tab === 'historial') {
+                cargarSelectClientes();
+            }
+        }
+
+        function guardarCliente() {
+            const cliente = {
+                id: Date.now(),
+                nombre: document.getElementById('nombre').value,
+                cedula: document.getElementById('cedula').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                fechaNac: document.getElementById('fechaNac').value,
+                tipo: document.getElementById('tipo').value,
+                notas: document.getElementById('notas').value,
+                fechaRegistro: new Date().toISOString()
+            };
+            
+            if (!cliente.nombre || !cliente.telefono) {
+                showAlert('Complete nombre y teléfono');
+                return;
+            }
+            
+            clientes.push(cliente);
+            localStorage.setItem('nvisionClientes', JSON.stringify(clientes));
+            cargarClientes();
+            limpiarFormCliente();
+            showAlert('Cliente registrado exitosamente');
+        }
+
+        function cargarClientes(filtro = '') {
+            const lista = document.getElementById('listaClientes');
+            let clientesFiltrados = clientes;
+            
+            if (filtro) {
+                clientesFiltrados = clientes.filter(c => 
+                    c.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+                    c.telefono.includes(filtro)
+                );
+            }
+            
+            lista.innerHTML = clientesFiltrados.map(c => `
+                <div class="client-card">
+                    <h4>${c.nombre}</h4>
+                    <p>📞 ${c.telefono}</p>
+                    <p>📧 ${c.email || 'Sin email'}</p>
+                    <p>🎂 ${c.fechaNac ? new Date(c.fechaNac).toLocaleDateString() : 'Sin fecha'}</p>
+                    <p>Tipo: ${c.tipo}</p>
+                    ${c.notas ? `<p>📝 ${c.notas}</p>` : ''}
+                    <button class="btn btn-whatsapp" onclick="contactar(${c.id})">📱 Contactar</button>
+                    <button class="btn btn-secondary" onclick="verHistorialCliente(${c.id})">📋 Historial</button>
+                </div>
+            `).join('');
+        }
+
+        function buscarCliente(termino) {
+            cargarClientes(termino);
+        }
+
+        function contactar(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (cliente) {
+                const mensaje = `Hola ${cliente.nombre}! 👋\n\n` +
+                              `Soy de Óptica Nvision. ¿Cómo podemos ayudarte hoy?\n\n` +
+                              `📱 849-797-2424\n` +
+                              `🌐 opticanvision.com\n` +
+                              `✨ Vea mejor, viva mejor`;
+                
+                window.open(`https://wa.me/${cliente.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            }
+        }
+
+        function cargarSelectClientes() {
+            const selects = ['clienteExamen', 'clienteHistorial'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Seleccionar cliente</option>' +
+                        clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+                }
+            });
+        }
+
+        function guardarExamen() {
+            const clienteId = document.getElementById('clienteExamen').value;
+            if (!clienteId) {
+                showAlert('Seleccione un cliente');
+                return;
+            }
+            
+            const examen = {
+                id: Date.now(),
+                clienteId: parseInt(clienteId),
+                fecha: new Date().toISOString(),
+                od: {
+                    esfera: document.getElementById('odEsfera').value,
+                    cilindro: document.getElementById('odCilindro').value,
+                    eje: document.getElementById('odEje').value,
+                    av: document.getElementById('odAV').value
+                },
+                oi: {
+                    esfera: document.getElementById('oiEsfera').value,
+                    cilindro: document.getElementById('oiCilindro').value,
+                    eje: document.getElementById('oiEje').value,
+                    av: document.getElementById('oiAV').value
+                },
+                dp: document.getElementById('dp').value,
+                add: document.getElementById('add').value,
+                tipoLente: document.getElementById('tipoLente').value,
+                observaciones: document.getElementById('observaciones').value
+            };
+            
+            examenes.push(examen);
+            localStorage.setItem('nvisionExamenes', JSON.stringify(examenes));
+            limpiarFormExamen();
+            showAlert('Examen guardado exitosamente');
+        }
+
+        function enviarReceta() {
+            const clienteId = document.getElementById('clienteExamen').value;
+            if (!clienteId) {
+                showAlert('Seleccione un cliente primero');
+                return;
+            }
+            
+            const cliente = clientes.find(c => c.id == clienteId);
+            if (!cliente) return;
+            
+            const od = {
+                esfera: document.getElementById('odEsfera').value || 'N/A',
+                cilindro: document.getElementById('odCilindro').value || 'N/A',
+                eje: document.getElementById('odEje').value || 'N/A',
+                av: document.getElementById('odAV').value || 'N/A'
+            };
+            
+            const oi = {
+                esfera: document.getElementById('oiEsfera').value || 'N/A',
+                cilindro: document.getElementById('oiCilindro').value || 'N/A',
+                eje: document.getElementById('oiEje').value || 'N/A',
+                av: document.getElementById('oiAV').value || 'N/A'
+            };
+            
+            let mensaje = `👁️ *RECETA OFTÁLMICA*\n\n`;
+            mensaje += `*Paciente:* ${cliente.nombre}\n`;
+            mensaje += `*Fecha:* ${new Date().toLocaleDateString()}\n\n`;
+            
+            mensaje += `*OJO DERECHO (OD):*\n`;
+            mensaje += `Esfera: ${od.esfera} | Cilindro: ${od.cilindro} | Eje: ${od.eje}\n`;
+            mensaje += `Agudeza Visual: ${od.av}\n\n`;
+            
+            mensaje += `*OJO IZQUIERDO (OI):*\n`;
+            mensaje += `Esfera: ${oi.esfera} | Cilindro: ${oi.cilindro} | Eje: ${oi.eje}\n`;
+            mensaje += `Agudeza Visual: ${oi.av}\n\n`;
+            
+            const dp = document.getElementById('dp').value;
+            if (dp) mensaje += `*DP:* ${dp} mm\n`;
+            
+            const add = document.getElementById('add').value;
+            if (add) mensaje += `*Adición:* ${add}\n`;
+            
+            const tipoLente = document.getElementById('tipoLente').value;
+            if (tipoLente) mensaje += `*Lente recomendado:* ${tipoLente}\n`;
+            
+            const obs = document.getElementById('observaciones').value;
+            if (obs) mensaje += `\n*Observaciones:* ${obs}\n`;
+            
+            mensaje += `\n📱 Óptica Nvision\n`;
+            mensaje += `☎️ 849-797-2424\n`;
+            mensaje += `✨ Vea mejor, viva mejor`;
+            
+            window.open(`https://wa.me/${cliente.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function cargarHistorial() {
+            const clienteId = document.getElementById('clienteHistorial').value;
+            if (!clienteId) return;
+            
+            const cliente = clientes.find(c => c.id == clienteId);
+            const examenesCliente = examenes.filter(e => e.clienteId == clienteId);
+            
+            let html = `<h4>Historial de: ${cliente.nombre}</h4>`;
+            
+            if (examenesCliente.length === 0) {
+                html += '<p>No hay exámenes registrados</p>';
+            } else {
+                examenesCliente.forEach(exam => {
+                    html += `
+                        <div class="exam-record">
+                            <h5>Examen del ${new Date(exam.fecha).toLocaleDateString()}</h5>
+                            <p><strong>OD:</strong> ${exam.od.esfera}/${exam.od.cilindro}/${exam.od.eje}</p>
+                            <p><strong>OI:</strong> ${exam.oi.esfera}/${exam.oi.cilindro}/${exam.oi.eje}</p>
+                            ${exam.dp ? `<p><strong>DP:</strong> ${exam.dp}</p>` : ''}
+                            ${exam.observaciones ? `<p><strong>Obs:</strong> ${exam.observaciones}</p>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('historialCompleto').innerHTML = html;
+        }
+
+        function verHistorialCliente(clienteId) {
+            cambiarTab('historial', document.querySelectorAll('.tab')[2]);
+            document.getElementById('clienteHistorial').value = clienteId;
+            cargarHistorial();
+        }
+
+        function limpiarFormCliente() {
+            document.getElementById('nombre').value = '';
+            document.getElementById('cedula').value = '';
+            document.getElementById('telefono').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('fechaNac').value = '';
+            document.getElementById('tipo').value = 'regular';
+            document.getElementById('notas').value = '';
+        }
+
+        function limpiarFormExamen() {
+            document.getElementById('clienteExamen').value = '';
+            document.getElementById('odEsfera').value = '';
+            document.getElementById('odCilindro').value = '';
+            document.getElementById('odEje').value = '';
+            document.getElementById('odAV').value = '';
+            document.getElementById('oiEsfera').value = '';
+            document.getElementById('oiCilindro').value = '';
+            document.getElementById('oiEje').value = '';
+            document.getElementById('oiAV').value = '';
+            document.getElementById('dp').value = '';
+            document.getElementById('add').value = '';
+            document.getElementById('tipoLente').value = '';
+            document.getElementById('observaciones').value = '';
+        }
+
+        // Cargar clientes al iniciar
+        cargarClientes();
+    </script>
+</body>
+</html>
