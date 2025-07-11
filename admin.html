@@ -3,789 +3,718 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Óptica Nvision</title>
+    <title>Panel Admin - Óptica Nvision</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: system-ui, -apple-system, sans-serif; 
+            font-family: Arial, sans-serif; 
             background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
-            min-height: 100vh; 
             color: white; 
             padding: 20px;
         }
-        .container { max-width: 500px; margin: 0 auto; }
-        
-        .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #10b981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .nav-btn {
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-
-        .nav-btn:hover {
-            background: rgba(16, 185, 129, 0.3);
-        }
-
-        .admin-grid {
-            display: grid;
-            gap: 15px;
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            text-align: center; 
             margin-bottom: 20px;
         }
-
-        .admin-card {
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+        .btn-primary { background: #10b981; }
+        .btn-danger { background: #ef4444; }
+        .btn-secondary { background: #666; }
+        .btn-whatsapp { background: #25d366; }
+        .section {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .admin-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .card-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .card-desc {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        .form-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #10b981;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #e2e8f0;
-            font-size: 14px;
-        }
-        
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
             border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        
-        .form-input::placeholder, .form-textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .camera-upload {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .camera-upload:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #10b981;
-        }
-        
-        .camera-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .preview-image {
-            max-width: 100%;
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
             display: none;
         }
-        
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-whatsapp {
-            background: linear-gradient(45deg, #25d366, #128c7e);
-            color: white;
-        }
-
-        .share-buttons {
+        .section.active { display: block; }
+        .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .input, .select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .table th, .table td {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            text-align: left;
+        }
+        .table th {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            padding: 15px;
+            border-radius: 10px;
             display: none;
         }
-
-        .products-list {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-
-        .product-item {
-            background: rgba(255, 255, 255, 0.1);
+        .camera-box {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border: 2px dashed #666;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
         }
-
-        .product-image {
-            width: 80px;
+        .product-img {
+            width: 100px;
             height: 80px;
-            border-radius: 8px;
             object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
         }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 700;
-            color: #10b981;
-            margin-bottom: 5px;
-        }
-
-        .product-price {
-            color: #22d3ee;
-            font-weight: 600;
-        }
-
-        .product-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .btn-small {
-            padding: 6px 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .btn-share {
-            background: #25d366;
-            color: white;
-        }
-
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-        }
-
-        .alert {
+        .stat-box {
             background: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10b981;
-            padding: 12px;
+            padding: 20px;
             border-radius: 10px;
-            margin-bottom: 15px;
             text-align: center;
-            font-weight: 600;
         }
-        
-        .alert-success {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(16, 185, 129, 0.3);
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
             color: #10b981;
         }
-        
-        .alert-error {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            opacity: 0.7;
-        }
-        
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
         .footer {
             position: fixed;
             bottom: 10px;
             right: 25px;
             font-size: 10px;
             font-weight: 600;
-            opacity: 0.6;
-            z-index: 999;
+            opacity: 0.7;
             background: linear-gradient(45deg, #8B4513, #DAA520);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        .camera-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .camera-content {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .camera-video {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 15px;
-            background: #000;
-        }
-
-        .camera-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Panel de Administración</h1>
-            <p>Gestión completa - Óptica Nvision</p>
+            <h1>⚙️ PANEL ADMINISTRATIVO NVISION</h1>
+            <p>Sistema completo de gestión</p>
+        </div>
+
+        <!-- MENÚ PRINCIPAL -->
+        <div id="menu" class="section active">
+            <div class="grid">
+                <div class="card">
+                    <h3>📊 Dashboard</h3>
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalProductos">0</div>
+                        <div>Productos</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number" id="totalClientes">0</div>
+                        <div>Clientes</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number">RD$ <span id="ventasHoy">0</span></div>
+                        <div>Ventas Hoy</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📦 Inventario</h3>
+                    <button class="btn btn-primary" onclick="mostrar('inventario')">📦 Ver Inventario</button>
+                    <button class="btn btn-primary" onclick="mostrar('camara')">📷 Cámara Rápida</button>
+                    <button class="btn btn-secondary" onclick="window.open('catalogo.html', '_blank')">🛍️ Ver Catálogo</button>
+                </div>
+
+                <div class="card">
+                    <h3>👥 Gestión</h3>
+                    <button class="btn btn-primary" onclick="window.open('clientes.html', '_blank')">👥 Clientes</button>
+                    <button class="btn btn-primary" onclick="window.open('recordatorios.html', '_blank')">🔔 Recordatorios</button>
+                    <button class="btn btn-secondary" onclick="mostrar('ventas')">💰 Ventas</button>
+                </div>
+
+                <div class="card">
+                    <h3>📄 Documentos</h3>
+                    <button class="btn btn-primary" onclick="window.open('factura-proforma.html', '_blank')">📄 Factura Proforma</button>
+                    <button class="btn btn-primary" onclick="window.open('ncf.html', '_blank')">🧾 Sistema NCF</button>
+                    <button class="btn btn-secondary" onclick="mostrar('reportes')">📊 Reportes</button>
+                </div>
+            </div>
             
-            <div class="nav-buttons">
-                <button class="nav-btn" onclick="irAInicio()">🏠 Sitio Principal</button>
-                <button class="nav-btn" onclick="irAPOS()">💼 Sistema POS</button>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-danger" onclick="location.href='index.html'">🏠 Volver al Inicio</button>
             </div>
         </div>
 
-        <div id="alertContainer"></div>
-
-        <button class="btn btn-primary" onclick="location.href='inventario.html'">📦 Inventario</button>
-<button class="btn btn-primary" onclick="location.href='clientes.html'">👥 Clientes</button>
-        
-        <!-- SECCIÓN DE ACCESOS RÁPIDOS -->
-        <div class="form-section">
-            <h2 class="section-title">🚀 Accesos Rápidos</h2>
+        <!-- INVENTARIO -->
+        <div id="inventario" class="section">
+            <h2>📦 Inventario de Productos</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
             
-            <div class="admin-grid">
-                <div class="admin-card" onclick="window.open('info-nvision.html', '_blank')">
-                    <div class="card-icon">📰</div>
-                    <div class="card-title">Gestionar InfoFlash</div>
-                    <div class="card-desc">Administrar sistema de noticias</div>
-                </div>
-                
-                <div class="admin-card" onclick="window.open('marketing.html', '_blank')">
-                    <div class="card-icon">📱</div>
-                    <div class="card-title">Marketing WhatsApp</div>
-                    <div class="card-desc">Herramientas de promoción</div>
-                </div>
-
-                <div class="admin-card" onclick="abrirCamaraRapida()">
-                    <div class="card-icon">📷</div>
-                    <div class="card-title">Cámara Rápida</div>
-                    <div class="card-desc">Tomar fotos de monturas</div>
-                </div>
-                
-                <div class="admin-card" onclick="window.open('catalogo.html', '_blank')">
-                    <div class="card-icon">👓</div>
-                    <div class="card-title">Ver Catálogo</div>
-                    <div class="card-desc">Productos guardados</div>
-                </div>
-                
-                <div class="admin-card" onclick="alert('👥 Módulo en desarrollo')">
-                    <div class="card-icon">👥</div>
-                    <div class="card-title">Gestión de Clientes</div>
-                    <div class="card-desc">Base de datos de clientes</div>
-                </div>
-                
-                <div class="admin-card" onclick="alert('📦 Módulo en desarrollo')">
-                    <div class="card-icon">📦</div>
-                    <div class="card-title">Inventario</div>
-                    <div class="card-desc">Control de stock y productos</div>
-                </div>
+            <div style="margin: 20px 0;">
+                <input type="text" class="input" placeholder="🔍 Buscar producto..." onkeyup="buscarProducto(this.value)">
             </div>
+            
+            <div id="listaInventario"></div>
         </div>
 
-        <!-- SECCIÓN DE GESTIÓN DE PRODUCTOS -->
-        <div class="form-section">
-            <h2 class="section-title">➕ Agregar Producto al Catálogo</h2>
+        <!-- CÁMARA RÁPIDA -->
+        <div id="camara" class="section">
+            <h2>📷 Agregar Producto con Cámara</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
             
-            <div class="form-group">
-                <label class="form-label">📸 Foto del Producto</label>
-                <div class="camera-upload" onclick="abrirCamara()">
-                    <span class="camera-icon">📷</span>
-                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Tomar/Subir Foto</div>
-                    <div style="font-size: 12px; opacity: 0.8;">Toque para activar cámara</div>
-                    <img id="vistaPrevia" class="preview-image">
+            <div class="camera-box" id="cameraBox">
+                <div id="placeholder">
+                    <div style="font-size: 50px;">📷</div>
+                    <div>Click para activar</div>
                 </div>
-                <input type="file" id="inputFoto" accept="image/*" capture="environment" style="display: none;">
-                
-                <div id="botonesCompartir" class="share-buttons">
-                    <button type="button" onclick="copiarEnlace()" class="btn btn-secondary">📋 Copiar Enlace</button>
-                    <button type="button" onclick="compartirWhatsApp()" class="btn btn-whatsapp">📱 Compartir</button>
-                </div>
+                <video id="video" style="display: none; width: 100%; height: 100%;" autoplay></video>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">🔢 Código del Producto</label>
-                <input type="text" id="codigoProducto" class="form-input" placeholder="NV001" style="text-transform: uppercase;">
-            </div>
+            <button class="btn btn-primary" onclick="toggleCamera()" id="cameraBtn">📷 Activar Cámara</button>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <img id="preview" style="display: none; width: 100%; max-width: 400px; margin: 10px auto; border-radius: 5px;">
             
-            <div class="form-group">
-                <label class="form-label">👓 Nombre/Descripción</label>
-                <input type="text" id="nombreProducto" class="form-input" placeholder="Monturas deportivas polarizadas">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">💰 Precio (RD$)</label>
-                <input type="number" id="precioProducto" class="form-input" placeholder="2500.00" step="0.01">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">📂 Categoría</label>
-                <select id="categoriaProducto" class="form-select">
-                    <option value="hombre">👨 Hombres</option>
-                    <option value="mujer">👩 Mujeres</option>
-                    <option value="deportivo">🏃 Deportivos</option>
-                    <option value="niños">👶 Niños</option>
-                    <option value="lectura">📖 Lectura</option>
-                    <option value="sol">🕶️ Sol</option>
-                    <option value="trabajo">💼 Trabajo</option>
+            <div style="margin-top: 20px;">
+                <input type="text" id="codigo" class="input" placeholder="Código (ej: NV001)">
+                <input type="text" id="nombre" class="input" placeholder="Nombre del producto">
+                <input type="number" id="precio" class="input" placeholder="Precio RD$">
+                <input type="number" id="stock" class="input" placeholder="Stock">
+                <select id="categoria" class="input">
+                    <option value="">Categoría</option>
+                    <option value="monturas">Monturas</option>
+                    <option value="lentes">Lentes</option>
+                    <option value="accesorios">Accesorios</option>
                 </select>
+                
+                <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar en Inventario</button>
+                <button class="btn btn-secondary" onclick="limpiarCamara()">🔄 Limpiar</button>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">📝 Comentarios</label>
-                <textarea id="comentariosProducto" class="form-textarea" rows="3" placeholder="Características especiales, material, garantía, etc."></textarea>
-            </div>
-            
-            <button type="button" onclick="guardarProducto()" class="btn btn-primary">💾 Guardar en Catálogo</button>
-            <button type="button" onclick="limpiarFormulario()" class="btn btn-secondary">🗑️ Limpiar Formulario</button>
         </div>
 
-        <div class="products-list">
-            <h2 class="section-title">📦 Productos en Catálogo</h2>
-            <div id="listaProductos">
-                <div class="empty-state">
-                    <div class="empty-icon">📦</div>
-                    <div>No hay productos registrados</div>
+        <!-- VENTAS -->
+        <div id="ventas" class="section">
+            <h2>💰 Registro de Ventas</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div style="margin: 20px 0;">
+                <select id="clienteVenta" class="select">
+                    <option value="">Seleccionar cliente</option>
+                </select>
+                <select id="productoVenta" class="select">
+                    <option value="">Seleccionar producto</option>
+                </select>
+                <input type="number" id="cantidadVenta" class="input" placeholder="Cantidad" value="1">
+                <input type="number" id="precioVenta" class="input" placeholder="Precio total">
+                
+                <button class="btn btn-primary" onclick="registrarVenta()">💰 Registrar Venta</button>
+            </div>
+            
+            <div id="listaVentas"></div>
+        </div>
+
+        <!-- REPORTES -->
+        <div id="reportes" class="section">
+            <h2>📊 Reportes y Análisis</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>📈 Ventas del Mes</h3>
+                    <canvas id="chartVentas" width="300" height="200"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Resumen</h3>
+                    <p>Total Facturas: <strong id="totalFacturas">0</strong></p>
+                    <p>Total Ventas: <strong>RD$ <span id="totalVentasMes">0</span></strong></p>
+                    <p>Promedio: <strong>RD$ <span id="promedioVenta">0</span></strong></p>
+                    <p>Stock Bajo: <strong id="stockBajo">0</strong> productos</p>
+                    
+                    <button class="btn btn-whatsapp" onclick="enviarReporteWhatsApp()">📱 Enviar Reporte</button>
                 </div>
             </div>
-        </div>
-
-        <div class="footer">
-            by fbrugal jrubinstein consultores
+            
+            <h3 style="margin-top: 20px;">📋 Últimas Transacciones</h3>
+            <div id="ultimasTransacciones"></div>
         </div>
     </div>
 
-    <!-- MODAL DE CÁMARA RÁPIDA -->
-    <div id="cameraModal" class="camera-modal">
-        <div class="camera-content">
-            <h3 style="margin-bottom: 15px; color: #10b981;">📷 Cámara Rápida</h3>
-            <video id="cameraVideo" class="camera-video" autoplay playsinline></video>
-            <canvas id="cameraCanvas" style="display: none;"></canvas>
-            <img id="cameraPhoto" class="camera-video" style="display: none;">
-            
-            <div class="camera-buttons">
-                <button id="captureBtn" onclick="tomarFotoRapida()" class="btn btn-primary">📸 Capturar</button>
-                <button onclick="cerrarCamara()" class="btn btn-secondary">❌ Cancelar</button>
-            </div>
-            
-            <div id="photoActions" style="display: none; margin-top: 15px;">
-                <button onclick="enviarFotoRapida()" class="btn btn-whatsapp">📱 Enviar por WhatsApp</button>
-                <button onclick="reiniciarCamara()" class="btn btn-secondary">🔄 Tomar otra</button>
-            </div>
-        </div>
+    <div class="alert" id="alert"></div>
+    
+    <div class="footer">
+        by fbrugal jrubinstein consultores
     </div>
 
     <script>
-        // Configuración
-        const CONFIG = {
-            whatsapp: '18497972424',
-            empresa: 'Óptica Nvision'
-        };
+        // BASE DE DATOS
+        let productos = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
+        let clientes = JSON.parse(localStorage.getItem('nvisionClientes') || '[]');
+        let ventas = JSON.parse(localStorage.getItem('nvisionVentas') || '[]');
+        let facturas = JSON.parse(localStorage.getItem('nvisionFacturas') || '[]');
+        
+        let stream = null;
+        let fotoActual = null;
 
-        // Variables
-        let imagenCapturada = null;
-        let productos = JSON.parse(localStorage.getItem('catalogoNvision') || '{}');
-        let streamRapida = null;
-        let fotoRapida = null;
-
-        function mostrarAlerta(mensaje, tipo = 'success') {
-            const alertHtml = `<div class="alert alert-${tipo}">${mensaje}</div>`;
-            document.getElementById('alertContainer').innerHTML = alertHtml;
-            setTimeout(() => {
-                document.getElementById('alertContainer').innerHTML = '';
-            }, 4000);
+        function showAlert(msg) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
         }
 
-        function irAInicio() {
-            mostrarAlerta('🏠 Redirigiendo al sitio principal...');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
-        }
-
-        function irAPOS() {
-            mostrarAlerta('💼 Abriendo sistema POS...');
-            setTimeout(() => {
-                window.location.href = 'pos.html';
-            }, 1000);
-        }
-
-        function abrirCamara() {
-            document.getElementById('inputFoto').click();
-        }
-
-        // CÁMARA RÁPIDA CON MENSAJE
-        async function abrirCamaraRapida() {
-            try {
-                streamRapida = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment', width: 640, height: 480 }
-                });
-                
-                const video = document.getElementById('cameraVideo');
-                video.srcObject = streamRapida;
-                
-                document.getElementById('cameraModal').style.display = 'flex';
-                document.getElementById('captureBtn').style.display = 'block';
-                document.getElementById('photoActions').style.display = 'none';
-                document.getElementById('cameraVideo').style.display = 'block';
-                document.getElementById('cameraPhoto').style.display = 'none';
-                
-                mostrarAlerta('📷 Cámara activada');
-            } catch (error) {
-                mostrarAlerta('❌ Error al acceder a la cámara', 'error');
-                console.error('Error:', error);
+        function mostrar(seccion) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(seccion).classList.add('active');
+            
+            switch(seccion) {
+                case 'menu': actualizarDashboard(); break;
+                case 'inventario': cargarInventario(); break;
+                case 'ventas': cargarVentas(); break;
+                case 'reportes': cargarReportes(); break;
             }
         }
 
-        function tomarFotoRapida() {
-            const video = document.getElementById('cameraVideo');
-            const canvas = document.getElementById('cameraCanvas');
-            const photo = document.getElementById('cameraPhoto');
+        function actualizarDashboard() {
+            document.getElementById('totalProductos').textContent = productos.length;
+            document.getElementById('totalClientes').textContent = clientes.length;
+            
+            const hoy = new Date().toDateString();
+            const ventasHoy = ventas.filter(v => new Date(v.fecha).toDateString() === hoy);
+            const totalHoy = ventasHoy.reduce((sum, v) => sum + v.total, 0);
+            document.getElementById('ventasHoy').textContent = totalHoy.toFixed(2);
+        }
+
+        // FUNCIONES DE CÁMARA
+        async function toggleCamera() {
+            const video = document.getElementById('video');
+            const btn = document.getElementById('cameraBtn');
+            const placeholder = document.getElementById('placeholder');
+            
+            if (!stream) {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '📸 Tomar Foto';
+                    btn.onclick = tomarFoto;
+                } catch (err) {
+                    showAlert('Error al acceder a la cámara');
+                }
+            } else {
+                tomarFoto();
+            }
+        }
+
+        function tomarFoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const preview = document.getElementById('preview');
             
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
             
-            fotoRapida = canvas.toDataURL('image/jpeg', 0.8);
-            photo.src = fotoRapida;
+            fotoActual = canvas.toDataURL('image/jpeg', 0.8);
+            preview.src = fotoActual;
+            preview.style.display = 'block';
             
-            // Mostrar foto y ocultar video
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
             video.style.display = 'none';
-            photo.style.display = 'block';
-            document.getElementById('captureBtn').style.display = 'none';
-            document.getElementById('photoActions').style.display = 'block';
+            document.getElementById('placeholder').style.display = 'block';
+            document.getElementById('cameraBtn').textContent = '📷 Activar Cámara';
+            document.getElementById('cameraBtn').onclick = toggleCamera;
             
-            // Detener stream
-            if (streamRapida) {
-                streamRapida.getTracks().forEach(track => track.stop());
-            }
-            
-            mostrarAlerta('📸 Foto capturada correctamente');
+            showAlert('Foto capturada');
         }
-
-        function enviarFotoRapida() {
-            if (!fotoRapida) {
-                mostrarAlerta('❌ No hay foto para enviar', 'error');
-                return;
-            }
-            
-            const mensaje = `📸 *NUEVA MONTURA DISPONIBLE*\n\n👁️ Óptica Nvision\n👓 ¿Te interesa esta montura?\n💰 Consulta precios y disponibilidad\n\n📱 Responde "ME INTERESA" para más información\n📞 849-797-2424\n🌐 opticanvision.com\n\n✨ Vea mejor, viva mejor`;
-            
-            const url = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-            
-            mostrarAlerta('✅ Enviando por WhatsApp...');
-            cerrarCamara();
-        }
-
-        function reiniciarCamara() {
-            abrirCamaraRapida();
-        }
-
-        function cerrarCamara() {
-            if (streamRapida) {
-                streamRapida.getTracks().forEach(track => track.stop());
-                streamRapida = null;
-            }
-            
-            document.getElementById('cameraModal').style.display = 'none';
-            fotoRapida = null;
-        }
-
-        // Manejar selección de archivo
-        document.getElementById('inputFoto').addEventListener('change', function(event) {
-            const archivo = event.target.files[0];
-            if (archivo) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagenCapturada = e.target.result;
-                    const preview = document.getElementById('vistaPrevia');
-                    preview.src = imagenCapturada;
-                    preview.style.display = 'block';
-                    document.getElementById('botonesCompartir').style.display = 'grid';
-                    mostrarAlerta('✅ Imagen cargada correctamente');
-                };
-                reader.readAsDataURL(archivo);
-            }
-        });
 
         function guardarProducto() {
-            const codigo = document.getElementById('codigoProducto').value.trim().toUpperCase();
-            const nombre = document.getElementById('nombreProducto').value.trim();
-            const precio = document.getElementById('precioProducto').value.trim();
-            const categoria = document.getElementById('categoriaProducto').value;
-            const comentarios = document.getElementById('comentariosProducto').value.trim();
-            
-            if (!codigo || !nombre || !precio) {
-                mostrarAlerta('❌ Código, nombre y precio son obligatorios', 'error');
-                return;
-            }
-            
-            if (!imagenCapturada) {
-                mostrarAlerta('❌ Debe agregar una foto del producto', 'error');
-                return;
-            }
-
             const producto = {
-                codigo: codigo,
-                nombre: nombre,
-                precio: 'RD$' + parseFloat(precio).toFixed(2),
-                categoria: categoria,
-                imagen: imagenCapturada,
-                comentarios: comentarios,
-                fechaCreacion: new Date().toISOString()
+                id: Date.now(),
+                codigo: document.getElementById('codigo').value,
+                nombre: document.getElementById('nombre').value,
+                precio: parseFloat(document.getElementById('precio').value) || 0,
+                stock: parseInt(document.getElementById('stock').value) || 0,
+                categoria: document.getElementById('categoria').value,
+                imagen: fotoActual || 'https://via.placeholder.com/200x150/10b981/ffffff?text=Sin+Foto',
+                fecha: new Date().toISOString()
             };
-
-            productos[codigo] = producto;
             
-            // GUARDAR EN LOCALSTORAGE PARA QUE APAREZCA EN CATÁLOGO
-            localStorage.setItem('catalogoNvision', JSON.stringify(productos));
-            
-            mostrarAlerta('✅ Producto guardado en catálogo correctamente');
-            limpiarFormulario();
-            cargarProductos();
-        }
-
-        function limpiarFormulario() {
-            document.getElementById('codigoProducto').value = '';
-            document.getElementById('nombreProducto').value = '';
-            document.getElementById('precioProducto').value = '';
-            document.getElementById('categoriaProducto').value = 'hombre';
-            document.getElementById('comentariosProducto').value = '';
-            document.getElementById('vistaPrevia').style.display = 'none';
-            document.getElementById('botonesCompartir').style.display = 'none';
-            imagenCapturada = null;
-        }
-
-        function cargarProductos() {
-            const container = document.getElementById('listaProductos');
-            
-            if (Object.keys(productos).length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div>No hay productos registrados</div></div>';
+            if (!producto.codigo || !producto.nombre) {
+                showAlert('Complete código y nombre');
                 return;
             }
+            
+            productos.push(producto);
+            guardarDatos();
+            sincronizarCatalogo();
+            limpiarCamara();
+            showAlert('✅ Producto guardado en inventario y catálogo');
+        }
 
-            let html = '';
-            Object.values(productos).forEach(producto => {
+        function guardarDatos() {
+            localStorage.setItem('nvisionInventario', JSON.stringify(productos));
+            localStorage.setItem('nvisionVentas', JSON.stringify(ventas));
+            localStorage.setItem('nvisionFacturas', JSON.stringify(facturas));
+        }
+
+        function sincronizarCatalogo() {
+            const catalogo = productos.map(p => ({
+                id: p.id,
+                codigo: p.codigo,
+                nombre: p.nombre,
+                precio: p.precio,
+                imagen: p.imagen,
+                categoria: p.categoria || 'personalizadas'
+            }));
+            localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
+        }
+
+        function limpiarCamara() {
+            document.getElementById('codigo').value = '';
+            document.getElementById('nombre').value = '';
+            document.getElementById('precio').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('preview').style.display = 'none';
+            fotoActual = null;
+        }
+
+        // FUNCIONES DE INVENTARIO
+        function cargarInventario() {
+            const lista = document.getElementById('listaInventario');
+            
+            if (productos.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay productos en el inventario</p>';
+                return;
+            }
+            
+            let html = '<table class="table"><thead><tr><th>Foto</th><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>';
+            
+            productos.forEach(p => {
                 html += `
-                    <div class="product-item">
-                        <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image">
-                        <div class="product-info">
-                            <div class="product-name">${producto.codigo}</div>
-                            <div style="margin-bottom: 5px;">${producto.nombre}</div>
-                            <div class="product-price">${producto.precio}</div>
-                        </div>
-                        <div class="product-actions">
-                            <button onclick="compartirProducto('${producto.codigo}')" class="btn-small btn-share">📱 Compartir</button>
-                            <button onclick="eliminarProducto('${producto.codigo}')" class="btn-small btn-delete">🗑️ Eliminar</button>
-                        </div>
-                    </div>
+                    <tr>
+                        <td><img src="${p.imagen}" class="product-img"></td>
+                        <td>${p.codigo}</td>
+                        <td>${p.nombre}</td>
+                        <td>RD$ ${p.precio.toFixed(2)}</td>
+                        <td>${p.stock} ${p.stock < 5 ? '⚠️' : ''}</td>
+                        <td>
+                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱</button>
+                            <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
+                        </td>
+                    </tr>
                 `;
             });
             
-            container.innerHTML = html;
+            html += '</tbody></table>';
+            lista.innerHTML = html;
         }
 
-        function eliminarProducto(codigo) {
-            if (confirm('¿Eliminar producto ' + codigo + '?')) {
-                delete productos[codigo];
-                localStorage.setItem('catalogoNvision', JSON.stringify(productos));
-                cargarProductos();
-                mostrarAlerta('🗑️ Producto eliminado');
+        function buscarProducto(termino) {
+            const filtrados = productos.filter(p => 
+                p.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                p.codigo.toLowerCase().includes(termino.toLowerCase())
+            );
+            
+            const lista = document.getElementById('listaInventario');
+            if (filtrados.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No se encontraron productos</p>';
+                return;
             }
+            
+            let html = '<table class="table"><thead><tr><th>Foto</th><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>';
+            
+            filtrados.forEach(p => {
+                html += `
+                    <tr>
+                        <td><img src="${p.imagen}" class="product-img"></td>
+                        <td>${p.codigo}</td>
+                        <td>${p.nombre}</td>
+                        <td>RD$ ${p.precio.toFixed(2)}</td>
+                        <td>${p.stock} ${p.stock < 5 ? '⚠️' : ''}</td>
+                        <td>
+                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱</button>
+                            <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
         }
 
-        function compartirProducto(codigo) {
-            const producto = productos[codigo];
+        function compartirProducto(id) {
+            const producto = productos.find(p => p.id === id);
             if (producto) {
-                const mensaje = `👁️ *ÓPTICA NVISION* 👁️\n\n📸 Te comparto esta montura:\n🔢 Código: ${producto.codigo}\n💰 Precio: ${producto.precio}\n📝 Descripción: ${producto.nombre}\n\n✨ Vea mejor, viva mejor\n📱 849-797-2424`;
-                const url = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
-                window.open(url, '_blank');
-                mostrarAlerta('✅ Compartiendo por WhatsApp');
+                const mensaje = `🛍️ *PRODUCTO DISPONIBLE*\n\n` +
+                              `📦 ${producto.nombre}\n` +
+                              `🔢 Código: ${producto.codigo}\n` +
+                              `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n` +
+                              `📊 Stock: ${producto.stock} unidades\n\n` +
+                              `📱 Óptica Nvision\n` +
+                              `☎️ 849-797-2424\n` +
+                              `🌐 opticanvision.com\n` +
+                              `✨ Vea mejor, viva mejor`;
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
         }
 
-        function copiarEnlace() {
-            const codigo = document.getElementById('codigoProducto').value.trim().toUpperCase();
-            if (!codigo) {
-                mostrarAlerta('❌ Primero ingrese el código del producto', 'error');
-                return;
-            }
-            
-            const enlace = window.location.origin + '/catalogo.html?codigo=' + codigo;
-            
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(enlace).then(() => {
-                    mostrarAlerta('✅ Enlace copiado al portapapeles');
-                }).catch(() => {
-                    mostrarAlerta('❌ No se pudo copiar', 'error');
-                });
-            } else {
-                mostrarAlerta('✅ Enlace: ' + enlace);
+        function eliminarProducto(id) {
+            if (confirm('¿Eliminar este producto?')) {
+                productos = productos.filter(p => p.id !== id);
+                guardarDatos();
+                sincronizarCatalogo();
+                cargarInventario();
+                showAlert('Producto eliminado');
             }
         }
 
-        function compartirWhatsApp() {
-            const codigo = document.getElementById('codigoProducto').value.trim().toUpperCase();
-            const nombre = document.getElementById('nombreProducto').value.trim();
-            const precio = document.getElementById('precioProducto').value.trim();
+        // FUNCIONES DE VENTAS
+        function cargarVentas() {
+            // Cargar selects
+            const selectCliente = document.getElementById('clienteVenta');
+            const selectProducto = document.getElementById('productoVenta');
             
-            if (!codigo || !nombre || !precio) {
-                mostrarAlerta('❌ Complete los datos del producto primero', 'error');
+            selectCliente.innerHTML = '<option value="">Seleccionar cliente</option>' +
+                clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+            
+            selectProducto.innerHTML = '<option value="">Seleccionar producto</option>' +
+                productos.map(p => `<option value="${p.id}" data-precio="${p.precio}">${p.nombre} - RD$ ${p.precio}</option>`).join('');
+            
+            // Mostrar ventas del día
+            const hoy = new Date().toDateString();
+            const ventasHoy = ventas.filter(v => new Date(v.fecha).toDateString() === hoy);
+            
+            const lista = document.getElementById('listaVentas');
+            if (ventasHoy.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; margin-top: 20px;">No hay ventas hoy</p>';
                 return;
             }
             
-            const mensaje = `👁️ *ÓPTICA NVISION* 👁️\n\n📸 Te comparto esta montura:\n🔢 Código: ${codigo}\n💰 Precio: RD${parseFloat(precio).toFixed(2)}\n📝 Descripción: ${nombre}\n\n✨ Vea mejor, viva mejor\n📱 849-797-2424`;
-            const url = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
-            mostrarAlerta('✅ Compartiendo por WhatsApp');
+            let html = '<h3>Ventas de Hoy</h3><table class="table"><thead><tr><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Total</th></tr></thead><tbody>';
+            
+            ventasHoy.forEach(v => {
+                html += `
+                    <tr>
+                        <td>${v.clienteNombre}</td>
+                        <td>${v.productoNombre}</td>
+                        <td>${v.cantidad}</td>
+                        <td>RD$ ${v.total.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            const totalHoy = ventasHoy.reduce((sum, v) => sum + v.total, 0);
+            html += `<tr><td colspan="3"><strong>TOTAL</strong></td><td><strong>RD$ ${totalHoy.toFixed(2)}</strong></td></tr>`;
+            html += '</tbody></table>';
+            
+            lista.innerHTML = html;
+        }
+
+        function registrarVenta() {
+            const clienteId = document.getElementById('clienteVenta').value;
+            const productoId = document.getElementById('productoVenta').value;
+            const cantidad = parseInt(document.getElementById('cantidadVenta').value) || 0;
+            const total = parseFloat(document.getElementById('precioVenta').value) || 0;
+            
+            if (!clienteId || !productoId || !cantidad || !total) {
+                showAlert('Complete todos los campos');
+                return;
+            }
+            
+            const cliente = clientes.find(c => c.id == clienteId);
+            const producto = productos.find(p => p.id == productoId);
+            
+            if (producto.stock < cantidad) {
+                showAlert('Stock insuficiente');
+                return;
+            }
+            
+            const venta = {
+                id: Date.now(),
+                clienteId: clienteId,
+                clienteNombre: cliente.nombre,
+                productoId: productoId,
+                productoNombre: producto.nombre,
+                cantidad: cantidad,
+                total: total,
+                fecha: new Date().toISOString()
+            };
+            
+            ventas.push(venta);
+            producto.stock -= cantidad;
+            guardarDatos();
+            cargarVentas();
+            
+            // Limpiar form
+            document.getElementById('clienteVenta').value = '';
+            document.getElementById('productoVenta').value = '';
+            document.getElementById('cantidadVenta').value = '1';
+            document.getElementById('precioVenta').value = '';
+            
+            showAlert('Venta registrada');
+        }
+
+        // FUNCIONES DE REPORTES
+        function cargarReportes() {
+            // Estadísticas
+            const totalFacturas = facturas.length;
+            const totalVentas = ventas.reduce((sum, v) => sum + v.total, 0);
+            const promedio = totalFacturas > 0 ? totalVentas / totalFacturas : 0;
+            const stockBajo = productos.filter(p => p.stock < 5).length;
+            
+            document.getElementById('totalFacturas').textContent = totalFacturas;
+            document.getElementById('totalVentasMes').textContent = totalVentas.toFixed(2);
+            document.getElementById('promedioVenta').textContent = promedio.toFixed(2);
+            document.getElementById('stockBajo').textContent = stockBajo;
+            
+            // Últimas transacciones
+            const ultimas = [...ventas, ...facturas]
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                .slice(0, 10);
+            
+            const lista = document.getElementById('ultimasTransacciones');
+            if (ultimas.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay transacciones</p>';
+                return;
+            }
+            
+            let html = '<table class="table"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Total</th></tr></thead><tbody>';
+            
+            ultimas.forEach(t => {
+                const tipo = t.ncf ? 'Factura' : 'Venta';
+                const cliente = t.cliente || t.clienteNombre || 'N/A';
+                html += `
+                    <tr>
+                        <td>${new Date(t.fecha).toLocaleDateString()}</td>
+                        <td>${tipo}</td>
+                        <td>${cliente}</td>
+                        <td>RD$ ${(t.total || t.precio || 0).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+            
+            // Gráfico simple
+            dibujarGrafico();
+        }
+
+        function dibujarGrafico() {
+            const canvas = document.getElementById('chartVentas');
+            const ctx = canvas.getContext('2d');
+            
+            // Datos de los últimos 7 días
+            const dias = [];
+            const valores = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const fecha = new Date();
+                fecha.setDate(fecha.getDate() - i);
+                const fechaStr = fecha.toDateString();
+                
+                const ventasDia = ventas.filter(v => new Date(v.fecha).toDateString() === fechaStr);
+                const totalDia = ventasDia.reduce((sum, v) => sum + v.total, 0);
+                
+                dias.push(fecha.toLocaleDateString('es', { weekday: 'short' }));
+                valores.push(totalDia);
+            }
+            
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Dibujar barras
+            const maxValor = Math.max(...valores, 1);
+            const barWidth = canvas.width / dias.length - 10;
+            
+            valores.forEach((valor, index) => {
+                const barHeight = (valor / maxValor) * (canvas.height - 40);
+                const x = index * (barWidth + 10) + 5;
+                const y = canvas.height - barHeight - 20;
+                
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(dias[index], x + barWidth/2, canvas.height - 5);
+                
+                if (valor > 0) {
+                    ctx.fillText(`$${valor.toFixed(0)}`, x + barWidth/2, y - 5);
+                }
+            });
+        }
+
+        function enviarReporteWhatsApp() {
+            const totalFacturas = facturas.length;
+            const totalVentas = ventas.reduce((sum, v) => sum + v.total, 0);
+            const stockBajo = productos.filter(p => p.stock < 5).length;
+            
+            const mensaje = `📊 *REPORTE DIARIO - ÓPTICA NVISION*\n\n` +
+                          `📅 Fecha: ${new Date().toLocaleDateString()}\n\n` +
+                          `📦 Productos: ${productos.length}\n` +
+                          `👥 Clientes: ${clientes.length}\n` +
+                          `💰 Ventas totales: RD$ ${totalVentas.toFixed(2)}\n` +
+                          `📄 Facturas emitidas: ${totalFacturas}\n` +
+                          `⚠️ Productos con stock bajo: ${stockBajo}\n\n` +
+                          `📱 849-797-2424\n` +
+                          `🌐 opticanvision.com\n` +
+                          `✨ Vea mejor, viva mejor`;
+            
+            window.open(`https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         // Inicialización
-        window.addEventListener('DOMContentLoaded', function() {
-            cargarProductos();
-            console.log('✅ Panel Admin Nvision con catálogo integrado');
-        });
+        actualizarDashboard();
+        console.log('✅ Panel Administrativo Nvision cargado');
     </script>
 </body>
 </html>
