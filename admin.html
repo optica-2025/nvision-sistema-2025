@@ -604,9 +604,10 @@
                 </div>
 
                 <div class="card" style="background: linear-gradient(45deg, #0f766e, #059669); border: 2px solid #10b981;">
-                    <h3>🔬 Laboratorio Simple</h3>
-                    <button class="btn btn-primary" onclick="mostrar('labSimple')" style="background: linear-gradient(45deg, #0f766e, #10b981);">🔬 Enviar a Confección</button>
-                    <button class="btn btn-secondary" onclick="mostrar('entregas')" style="background: linear-gradient(45deg, #dc2626, #ef4444);">💰 Control Entregas</button>
+                    <h3>🔬 Laboratorio</h3>
+                    <button class="btn btn-primary" onclick="mostrar('laboratorio')" style="background: linear-gradient(45deg, #0f766e, #10b981);">🔬 Enviar a Confección</button>
+                    <button class="btn btn-primary" onclick="mostrar('recibidos')" style="background: linear-gradient(45deg, #7c3aed, #a855f7);">📦 Trabajos Recibidos</button>
+                    <button class="btn btn-secondary" onclick="mostrar('porCobrar')" style="background: linear-gradient(45deg, #dc2626, #ef4444);">💰 Por Cobrar</button>
                 </div>
             </div>
             
@@ -1012,91 +1013,183 @@ Es muy fácil de entender.
             <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
         </div>
 
-        <!-- 🔬 LABORATORIO SIMPLE -->
-        <div id="labSimple" class="section">
-            <h2>🔬 Enviar a Laboratorio (Simple)</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
-            
-            <div class="card" style="background: rgba(15, 118, 110, 0.1); border: 2px solid #0f766e;">
-                <h3>👤 Cliente y Receta</h3>
-                <select id="clienteLab" class="input" onchange="autocompletarCliente()">
-                    <option value="">Seleccionar cliente</option>
-                </select>
-                <input type="text" id="nombreLab" class="input" placeholder="Nombre del cliente">
-                <input type="tel" id="telefonoLab" class="input" placeholder="Teléfono">
-                
-                <h4 style="margin-top: 15px;">📸 Foto de la Receta</h4>
-                <div class="camera-box" id="cameraBoxLab">
-                    <div id="placeholderLab">
-                        <div style="font-size: 50px;">📷</div>
-                        <div>Foto de receta con medidas</div>
-                    </div>
-                    <video id="videoLab" style="display: none; width: 100%; height: 100%;" autoplay></video>
-                </div>
-                <button class="btn btn-primary" onclick="tomarFotoLab()" id="btnFotoLab">📷 Tomar Foto</button>
-                <img id="previewLab" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
-                
-                <div style="margin-top: 15px;">
-                    <input type="text" id="monturaLab" class="input" placeholder="Montura (ej: Ray-Ban Classic)">
-                    <select id="tipoLab" class="input">
-                        <option value="">Tipo de lente</option>
-                        <option value="Monofocal">Monofocal</option>
-                        <option value="Bifocal">Bifocal</option>
-                        <option value="Progresivo">Progresivo</option>
-                        <option value="Transición">Transición</option>
-                    </select>
-                    <textarea id="observacionesLab" class="textarea" placeholder="Observaciones para el laboratorio..."></textarea>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="enviarALaboratorio()" style="font-size: 18px; padding: 15px 30px;">
-                        🔬 ENVIAR A LABORATORIO POR WHATSAPP
-                    </button>
-                </div>
+        <!-- 🔬 MÓDULO DE LABORATORIO -->
+        <div id="laboratorio" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #0f766e, #10b981, #0f766e); color: white;">
+                <h2>🔬 Enviar Orden a Laboratorio</h2>
+                <p><strong>🇩🇴 PARA LABORATORIOS INFORMALES:</strong> Control total por WhatsApp</p>
             </div>
-        </div>
-
-        <!-- 💰 CONTROL DE ENTREGAS -->
-        <div id="entregas" class="section">
-            <h2>💰 Control de Entregas</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
             
             <div class="grid">
                 <div class="card">
-                    <h3>📝 Registrar Entrega</h3>
-                    <input type="text" id="numeroEntrega" class="input" placeholder="Número de orden (ej: NV-456)">
-                    <input type="text" id="clienteEntrega" class="input" placeholder="Nombre del cliente">
-                    <input type="number" id="montoEntrega" class="input" placeholder="Monto a cobrar (RD$)">
-                    <select id="metodoPagoEntrega" class="input">
-                        <option value="">Método de pago</option>
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Transferencia">Transferencia</option>
-                        <option value="Tarjeta">Tarjeta</option>
+                    <h3>👤 Datos del Cliente</h3>
+                    <select id="clienteLaboratorio" class="input" onchange="cargarDatosClienteExistente()">
+                        <option value="">Seleccionar cliente existente</option>
                     </select>
-                    <button class="btn btn-primary" onclick="registrarEntrega()">✅ Registrar Entrega</button>
+                    <input type="text" id="nombreClienteLab" class="input" placeholder="O escribir nombre">
+                    <input type="tel" id="telefonoClienteLab" class="input" placeholder="Teléfono del cliente">
+                    
+                    <h4 style="margin-top: 20px;">👓 Montura Seleccionada</h4>
+                    <select id="monturaLaboratorio" class="input">
+                        <option value="">Seleccionar montura</option>
+                    </select>
+                    <input type="text" id="monturaPersonalizada" class="input" placeholder="O describir montura">
                 </div>
                 
                 <div class="card">
-                    <h3>📊 Resumen</h3>
-                    <div class="stat-box">
-                        <div class="stat-number" id="totalEnviado">0</div>
-                        <div>Enviados a Lab</div>
+                    <h3>📏 Medidas de Visión</h3>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                        <div>
+                            <h4>👁️ Ojo Derecho</h4>
+                            <input type="text" id="esferaDerecho" class="input" placeholder="Esfera (ej: -2.25)">
+                            <input type="text" id="cilindroDerecho" class="input" placeholder="Cilindro (ej: -0.75)">
+                            <input type="text" id="ejeDerecho" class="input" placeholder="Eje (ej: 180°)">
+                            <input type="text" id="adicionDerecho" class="input" placeholder="Adición (ej: +1.50)">
+                        </div>
+                        <div>
+                            <h4>👁️ Ojo Izquierdo</h4>
+                            <input type="text" id="esferaIzquierdo" class="input" placeholder="Esfera (ej: -1.75)">
+                            <input type="text" id="cilindroIzquierdo" class="input" placeholder="Cilindro (ej: -0.50)">
+                            <input type="text" id="ejeIzquierdo" class="input" placeholder="Eje (ej: 90°)">
+                            <input type="text" id="adicionIzquierdo" class="input" placeholder="Adición (ej: +1.50)">
+                        </div>
                     </div>
-                    <div class="stat-box" style="margin-top: 10px;">
-                        <div class="stat-number" id="totalEntregado">0</div>
-                        <div>Entregados</div>
-                    </div>
-                    <div class="stat-box" style="margin-top: 10px;">
-                        <div class="stat-number">RD$ <span id="totalCobrado">0</span></div>
-                        <div>Total Cobrado</div>
+                    
+                    <div style="margin-top: 15px;">
+                        <input type="text" id="distanciaPupilar" class="input" placeholder="Distancia pupilar (ej: 64mm)">
+                        <input type="text" id="alturaSegmento" class="input" placeholder="Altura del segmento (ej: 18mm)">
                     </div>
                 </div>
             </div>
             
             <div class="card">
-                <h3>📋 Últimos 10 Envíos</h3>
-                <div id="listaUltimosEnvios"></div>
+                <h3>📷 Foto de la Prescripción</h3>
+                <div class="camera-box" id="cameraBoxLab">
+                    <div id="placeholderLab">
+                        <div style="font-size: 50px;">📷</div>
+                        <div>Tomar foto de la receta con medidas</div>
+                    </div>
+                    <video id="videoLab" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                </div>
+                
+                <button class="btn btn-primary" onclick="toggleCameraLab()" id="cameraBtnLab">📷 Activar Cámara</button>
+                <canvas id="canvasLab" style="display: none;"></canvas>
+                <img id="previewLab" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
+                
+                <div style="margin-top: 15px;">
+                    <select id="tipoLente" class="input">
+                        <option value="">Tipo de lente</option>
+                        <option value="monofocal">Monofocal</option>
+                        <option value="bifocal">Bifocal</option>
+                        <option value="progresivo">Progresivo</option>
+                        <option value="transicion">Transición</option>
+                        <option value="antireflejo">Antireflejo</option>
+                    </select>
+                    
+                    <textarea id="observacionesLab" class="textarea" placeholder="Observaciones especiales para el laboratorio..."></textarea>
+                </div>
             </div>
+            
+            <div class="card" style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981;">
+                <h3>🎯 Generar Orden</h3>
+                <div id="vistaOrden" style="display: none;">
+                    <div class="numero-orden" id="numeroOrdenDisplay">NV-000</div>
+                    <div class="qr-orden" id="qrOrdenDisplay">
+                        <div style="font-size: 100px;">📱</div>
+                        <p>QR de la orden</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generarOrdenLaboratorio()" style="font-size: 18px; padding: 15px 30px;">
+                    🔬 GENERAR ORDEN Y ENVIAR POR WHATSAPP
+                </button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- 📦 TRABAJOS RECIBIDOS -->
+        <div id="recibidos" class="section">
+            <h2>📦 Trabajos Recibidos del Laboratorio</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="card">
+                <h3>📱 Escanear QR de Trabajo Terminado</h3>
+                <div class="camera-box" id="cameraBoxScan">
+                    <div id="placeholderScan">
+                        <div style="font-size: 50px;">📱</div>
+                        <div>Escanear QR de la orden terminada</div>
+                    </div>
+                    <video id="videoScan" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                </div>
+                
+                <button class="btn btn-primary" onclick="toggleCameraScan()" id="cameraBtnScan">📱 Activar Escáner</button>
+                <canvas id="canvasScan" style="display: none;"></canvas>
+                
+                <div style="margin-top: 15px;">
+                    <input type="text" id="numeroOrdenManual" class="input" placeholder="O escribir número de orden (ej: NV-456)">
+                    <button class="btn btn-whatsapp" onclick="marcarComoRecibido()">✅ Marcar como Recibido</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Órdenes en Proceso</h3>
+                <div id="listaOrdenesEnProceso"></div>
+            </div>
+            
+            <div class="card">
+                <h3>✅ Trabajos Listos para Entregar</h3>
+                <div id="listaTrabajosList"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- 💰 POR COBRAR -->
+        <div id="porCobrar" class="section">
+            <h2>💰 Cuentas por Cobrar</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>💵 Registrar Pago</h3>
+                    <select id="ordenPago" class="input">
+                        <option value="">Seleccionar orden lista</option>
+                    </select>
+                    <input type="number" id="montoPago" class="input" placeholder="Monto a cobrar (RD$)">
+                    <select id="metodoPago" class="input">
+                        <option value="">Método de pago</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="transferencia">Transferencia</option>
+                        <option value="tarjeta">Tarjeta</option>
+                    </select>
+                    
+                    <button class="btn btn-primary" onclick="registrarPago()">💰 Registrar Pago</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumen de Cuentas</h3>
+                    <div class="stat-box">
+                        <div class="stat-number" id="ordenesEnLab">0</div>
+                        <div>En Laboratorio</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number" id="ordenesListas">0</div>
+                        <div>Listas para Entregar</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number">RD$ <span id="totalPorCobrar">0</span></div>
+                        <div>Total por Cobrar</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Cuentas por Cobrar</h3>
+                <div id="listaCuentasPorCobrar"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
         </div>
 
         <!-- GESTIÓN DE CLIENTES REAL -->
@@ -1358,10 +1451,12 @@ Es muy fácil de entender.
             audiosPersonalizados: 0
         };
 
-        // VARIABLES MÓDULO LABORATORIO SIMPLE
-        let ordenesLab = [];
+        // VARIABLES MÓDULO LABORATORIO
+        let ordenesLaboratorio = [];
         let streamLab = null;
-        let fotoRecetaLab = null;
+        let streamScan = null;
+        let fotoReceta = null;
+        let numeroOrdenActual = null;
         
         // Mensajes para clipboard RD
         const mensajesClipboardRD = {
@@ -1452,7 +1547,7 @@ Tenemos disponibilidad:
                 templates = JSON.parse(localStorage.getItem('nvisionTemplates') || '[]');
                 estadisticas = JSON.parse(localStorage.getItem('nvisionEstadisticas') || '{"mensajesHoy": 0, "promociones": 0}');
                 estadisticasRD = JSON.parse(localStorage.getItem('nvisionEstadisticasRD') || '{"audiosEnviados": 0, "enlacesEnviados": 0, "audiosPersonalizados": 0}');
-                ordenesLab = JSON.parse(localStorage.getItem('nvisionOrdenesLab') || '[]');
+                ordenesLaboratorio = JSON.parse(localStorage.getItem('nvisionOrdenesLab') || '[]');
                 
                 if (clientes.length === 0) {
                     crearDatosEjemplo();
@@ -1558,8 +1653,9 @@ Tenemos disponibilidad:
                 case 'qrRD': cargarQRRD(); break;
                 case 'visualRD': cargarVisualRD(); break;
                 case 'clipboardRD': cargarClipboardRD(); break;
-                case 'labSimple': cargarLabSimple(); break;
-                case 'entregas': cargarEntregas(); break;
+                case 'laboratorio': cargarLaboratorio(); break;
+                case 'recibidos': cargarRecibidos(); break;
+                case 'porCobrar': cargarPorCobrar(); break;
             }
         }
 
@@ -3210,258 +3306,748 @@ Tenemos disponibilidad:
         }
 
         // ========================================
-        // 🔬 FUNCIONES LABORATORIO SIMPLE
+        // 🔬 FUNCIONES MÓDULO LABORATORIO
         // ========================================
 
-        function cargarLabSimple() {
+        function cargarLaboratorio() {
             // Cargar clientes en select
-            const clienteSelect = document.getElementById('clienteLab');
+            const clienteSelect = document.getElementById('clienteLaboratorio');
             if (clienteSelect) {
-                clienteSelect.innerHTML = '<option value="">Seleccionar cliente</option>';
+                clienteSelect.innerHTML = '<option value="">Seleccionar cliente existente</option>';
                 clientes.forEach(c => {
                     clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre} - ${c.telefono}</option>`;
                 });
             }
-            console.log('🔬 Laboratorio simple cargado');
-        }
-
-        function cargarEntregas() {
-            cargarResumenEntregas();
-            cargarUltimosEnvios();
-            console.log('💰 Control entregas cargado');
-        }
-
-        function autocompletarCliente() {
-            const select = document.getElementById('clienteLab');
-            const nombreInput = document.getElementById('nombreLab');
-            const telefonoInput = document.getElementById('telefonoLab');
             
-            if (!select || !nombreInput || !telefonoInput) return;
-            
-            if (select.value) {
-                const cliente = clientes.find(c => c.id == select.value);
-                if (cliente) {
-                    nombreInput.value = cliente.nombre;
-                    telefonoInput.value = cliente.telefono;
-                }
+            // Cargar productos/monturas
+            const monturaSelect = document.getElementById('monturaLaboratorio');
+            if (monturaSelect) {
+                monturaSelect.innerHTML = '<option value="">Seleccionar montura</option>';
+                productos.forEach(p => {
+                    if (p.categoria === 'monturas') {
+                        monturaSelect.innerHTML += `<option value="${p.id}">${p.nombre} - ${p.codigo}</option>`;
+                    }
+                });
             }
+            
+            console.log('🔬 Módulo laboratorio cargado');
         }
 
-        async function tomarFotoLab() {
+        function cargarRecibidos() {
+            cargarOrdenesEnProceso();
+            cargarTrabajosListos();
+            console.log('📦 Módulo recibidos cargado');
+        }
+
+        function cargarPorCobrar() {
+            cargarResumenCuentas();
+            cargarListaCuentasPorCobrar();
+            cargarOrdenesParaPago();
+            console.log('💰 Módulo por cobrar cargado');
+        }
+
+        // FUNCIONES DE CÁMARA LABORATORIO
+        async function toggleCameraLab() {
             const video = document.getElementById('videoLab');
-            const btn = document.getElementById('btnFotoLab');
+            const btn = document.getElementById('cameraBtnLab');
             const placeholder = document.getElementById('placeholderLab');
-            const preview = document.getElementById('previewLab');
             
-            if (!video || !btn || !placeholder || !preview) {
-                showAlert('Error: elementos no encontrados');
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de cámara no encontrados');
                 return;
             }
             
-            try {
-                if (!streamLab) {
-                    // Activar cámara
+            if (!streamLab) {
+                try {
                     streamLab = await navigator.mediaDevices.getUserMedia({ 
                         video: { facingMode: 'environment' } 
                     });
                     video.srcObject = streamLab;
                     video.style.display = 'block';
                     placeholder.style.display = 'none';
-                    btn.textContent = '📸 Capturar';
-                } else {
-                    // Tomar foto
-                    const canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth || 640;
-                    canvas.height = video.videoHeight || 480;
-                    canvas.getContext('2d').drawImage(video, 0, 0);
-                    
-                    fotoRecetaLab = canvas.toDataURL('image/jpeg', 0.8);
-                    preview.src = fotoRecetaLab;
-                    preview.style.display = 'block';
-                    
-                    // Detener cámara
-                    streamLab.getTracks().forEach(track => track.stop());
-                    streamLab = null;
-                    video.style.display = 'none';
-                    placeholder.style.display = 'block';
-                    btn.textContent = '📷 Tomar Foto';
-                    
-                    showAlert('✅ Foto capturada');
+                    btn.textContent = '📸 Tomar Foto de Receta';
+                    btn.onclick = tomarFotoReceta;
+                } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
+                    showAlert('Error al acceder a la cámara');
                 }
-            } catch (error) {
-                console.error('Error con cámara:', error);
-                showAlert('Error al acceder a la cámara');
+            } else {
+                tomarFotoReceta();
             }
         }
 
-        function enviarALaboratorio() {
-            const nombre = document.getElementById('nombreLab')?.value?.trim();
-            const telefono = document.getElementById('telefonoLab')?.value?.trim();
-            const montura = document.getElementById('monturaLab')?.value?.trim();
-            const tipo = document.getElementById('tipoLab')?.value;
-            const observaciones = document.getElementById('observacionesLab')?.value?.trim();
+        function tomarFotoReceta() {
+            const video = document.getElementById('videoLab');
+            const canvas = document.getElementById('canvasLab');
+            const preview = document.getElementById('previewLab');
+            const btn = document.getElementById('cameraBtnLab');
+            const placeholder = document.getElementById('placeholderLab');
             
-            // Validaciones básicas
-            if (!nombre) {
-                showAlert('Complete el nombre del cliente');
-                return;
-            }
-            
-            if (!telefono) {
-                showAlert('Complete el teléfono del cliente');
-                return;
-            }
-            
-            if (!fotoRecetaLab) {
-                showAlert('Tome una foto de la receta');
+            if (!video || !canvas || !preview) {
+                showAlert('Error: elementos de cámara no encontrados');
                 return;
             }
             
             try {
-                // Generar número simple
-                const numero = `NV-${Math.floor(Math.random() * 900) + 100}`;
+                // Validaciones robustas
+                const videoWidth = video.videoWidth || 640;
+                const videoHeight = video.videoHeight || 480;
                 
-                // Crear orden simple
+                if (videoWidth === 0 || videoHeight === 0) {
+                    showAlert('Error: cámara no está lista. Intente de nuevo.');
+                    return;
+                }
+                
+                canvas.width = videoWidth;
+                canvas.height = videoHeight;
+                
+                const context = canvas.getContext('2d');
+                if (!context) {
+                    showAlert('Error: no se puede acceder al canvas');
+                    return;
+                }
+                
+                context.drawImage(video, 0, 0, videoWidth, videoHeight);
+                
+                // Verificar que la imagen se capturó
+                const imageData = context.getImageData(0, 0, videoWidth, videoHeight);
+                if (!imageData || imageData.data.length === 0) {
+                    showAlert('Error: no se pudo capturar la imagen');
+                    return;
+                }
+                
+                fotoReceta = canvas.toDataURL('image/jpeg', 0.9);
+                
+                if (!fotoReceta || fotoReceta.length < 1000) {
+                    showAlert('Error: imagen capturada está vacía');
+                    return;
+                }
+                
+                preview.src = fotoReceta;
+                preview.style.display = 'block';
+                
+                // Limpiar stream de forma segura
+                try {
+                    detenerCamara(streamLab);
+                    streamLab = null;
+                } catch (cleanupError) {
+                    console.error('Error al limpiar stream:', cleanupError);
+                }
+                
+                // Resetear UI
+                if (video) video.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'block';
+                if (btn) {
+                    btn.textContent = '📷 Activar Cámara';
+                    btn.onclick = toggleCameraLab;
+                }
+                
+                showAlert('✅ Foto de receta capturada correctamente');
+                
+            } catch (error) {
+                console.error('Error crítico al tomar foto:', error);
+                showAlert('Error al capturar foto. Verifique la cámara y reintente.');
+                
+                // Cleanup en caso de error
+                try {
+                    detenerCamara(streamLab);
+                    streamLab = null;
+                } catch (cleanupError) {
+                    console.error('Error en cleanup:', cleanupError);
+                }
+            }
+        }
+
+        // GENERACIÓN DE NÚMERO DE ORDEN ÚNICO
+        function generarNumeroOrden() {
+            let numero;
+            do {
+                // Generar número aleatorio de 3 dígitos (100-999)
+                const aleatorio = Math.floor(Math.random() * 900) + 100;
+                numero = `NV-${aleatorio}`;
+            } while (ordenesLaboratorio.some(o => o.numero === numero));
+            
+            return numero;
+        }
+
+        // GENERAR ORDEN SIMPLIFICADA Y CORREGIDA
+        function generarOrdenLaboratorio() {
+            // Validación simplificada
+            if (!validarOrdenCompleta()) {
+                return;
+            }
+            
+            try {
+                // Obtener datos básicos
+                const nombreEl = document.getElementById('nombreClienteLab');
+                const telefonoEl = document.getElementById('telefonoClienteLab');
+                
+                const nombre = nombreEl.value.trim();
+                const telefono = telefonoEl.value.trim();
+                
+                // Generar número único
+                numeroOrdenActual = generarNumeroOrden();
+                
+                // Crear orden simplificada
                 const orden = {
-                    numero: numero,
-                    cliente: nombre,
-                    telefono: telefono,
-                    montura: montura || 'No especificada',
-                    tipo: tipo || 'No especificado',
-                    observaciones: observaciones || '',
-                    foto: fotoRecetaLab,
-                    fecha: new Date().toISOString(),
-                    estado: 'enviado'
+                    numero: numeroOrdenActual,
+                    cliente: {
+                        nombre: nombre,
+                        telefono: telefono
+                    },
+                    montura: obtenerDatosMontura(),
+                    medidas: obtenerMedidasVision(),
+                    tipoLente: document.getElementById('tipoLente')?.value || 'monofocal',
+                    observaciones: document.getElementById('observacionesLab')?.value?.trim() || '',
+                    fotoReceta: fotoReceta,
+                    fechaEnvio: new Date().toISOString(),
+                    estado: 'enviado',
+                    monto: 0
                 };
                 
-                // Guardar
-                ordenesLab.push(orden);
-                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLab));
+                // Guardar orden
+                ordenesLaboratorio.push(orden);
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
                 
-                // Crear mensaje correcto para WhatsApp
-                const mensaje = `🔬 *ORDEN DE LABORATORIO*\n\n` +
-                              `📋 Número: *${numero}*\n` +
-                              `👤 Cliente: ${nombre}\n` +
-                              `📱 Teléfono: ${telefono}\n` +
-                              `👓 Montura: ${orden.montura}\n` +
-                              `🔍 Tipo: ${orden.tipo}\n\n` +
-                              `${observaciones ? `📝 Observaciones: ${observaciones}\n\n` : ''}` +
-                              `📅 ${new Date().toLocaleDateString()}\n\n` +
-                              `📱 Confirma recepción y tiempo estimado\n` +
-                              `🏭 Óptica Nvision - 849-797-2424`;
+                // Mostrar vista previa
+                mostrarVistaOrden(orden);
                 
-                // Enviar por WhatsApp
-                if (navigator.share) {
-                    fetch(fotoRecetaLab)
-                        .then(res => res.blob())
+                // Enviar por WhatsApp (con mensaje corregido)
+                enviarOrdenWhatsApp(orden);
+                
+                // Limpiar formulario
+                limpiarFormularioLaboratorio();
+                
+                showAlert(`✅ Orden ${numeroOrdenActual} generada y enviada correctamente`);
+                
+            } catch (error) {
+                console.error('Error crítico al generar orden:', error);
+                showAlert('❌ Error al generar orden. Verifique los datos e intente nuevamente.');
+            }
+        }
+
+        function limpiarFormularioLaboratorio() {
+            try {
+                // Limpiar campos básicos
+                const campos = [
+                    'clienteLaboratorio', 'nombreClienteLab', 'telefonoClienteLab',
+                    'monturaLaboratorio', 'monturaPersonalizada',
+                    'esferaDerecho', 'cilindroDerecho', 'ejeDerecho', 'adicionDerecho',
+                    'esferaIzquierdo', 'cilindroIzquierdo', 'ejeIzquierdo', 'adicionIzquierdo',
+                    'distanciaPupilar', 'alturaSegmento', 'tipoLente', 'observacionesLab'
+                ];
+                
+                campos.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) {
+                        elemento.value = '';
+                        if (elemento.selectedIndex !== undefined) elemento.selectedIndex = 0;
+                    }
+                });
+                
+                // Limpiar foto
+                const preview = document.getElementById('previewLab');
+                if (preview) {
+                    preview.style.display = 'none';
+                    preview.src = '';
+                }
+                
+                fotoReceta = null;
+                
+                // Ocultar vista de orden
+                const vistaOrden = document.getElementById('vistaOrden');
+                if (vistaOrden) {
+                    vistaOrden.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error al limpiar formulario:', error);
+            }
+        }
+
+        function obtenerDatosMontura() {
+            const monturaSelect = document.getElementById('monturaLaboratorio');
+            const monturaPersonalizada = document.getElementById('monturaPersonalizada');
+            
+            if (monturaSelect && monturaSelect.value) {
+                const producto = productos.find(p => p.id == monturaSelect.value);
+                return producto ? `${producto.nombre} (${producto.codigo})` : 'Montura no encontrada';
+            } else if (monturaPersonalizada && monturaPersonalizada.value.trim()) {
+                return monturaPersonalizada.value.trim();
+            }
+            
+            return 'No especificada';
+        }
+
+        function obtenerMedidasVision() {
+            const elementos = [
+                'esferaDerecho', 'cilindroDerecho', 'ejeDerecho', 'adicionDerecho',
+                'esferaIzquierdo', 'cilindroIzquierdo', 'ejeIzquierdo', 'adicionIzquierdo',
+                'distanciaPupilar', 'alturaSegmento'
+            ];
+            
+            const medidas = {};
+            elementos.forEach(id => {
+                const el = document.getElementById(id);
+                medidas[id] = el ? el.value.trim() : '';
+            });
+            
+            return medidas;
+        }
+
+        function mostrarVistaOrden(orden) {
+            const vistaOrden = document.getElementById('vistaOrden');
+            const numeroDisplay = document.getElementById('numeroOrdenDisplay');
+            const qrDisplay = document.getElementById('qrOrdenDisplay');
+            
+            if (!vistaOrden || !numeroDisplay || !qrDisplay) {
+                showAlert('Error: elementos de vista no encontrados');
+                return;
+            }
+            
+            try {
+                numeroDisplay.textContent = orden.numero;
+                
+                // Generar QR con fallback
+                const qrData = encodeURIComponent(orden.numero);
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
+                
+                // QR con fallback
+                qrDisplay.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${qrUrl}" 
+                             style="max-width: 200px;" 
+                             onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div style="display: none; padding: 20px; background: #f0f0f0; border-radius: 10px; color: #333;">
+                            <div style="font-size: 24px; font-weight: bold; margin: 10px 0;">${orden.numero}</div>
+                            <div style="font-size: 12px;">Mostrar este número al laboratorio</div>
+                        </div>
+                    </div>
+                    <p><strong>${orden.numero}</strong></p>
+                    <p style="font-size: 12px;">Número de identificación</p>
+                `;
+                
+                vistaOrden.style.display = 'block';
+                
+                // Scroll suave hacia la vista
+                vistaOrden.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+            } catch (error) {
+                console.error('Error al mostrar vista de orden:', error);
+                // Fallback simple
+                qrDisplay.innerHTML = `
+                    <div style="padding: 30px; background: #0f766e; color: white; border-radius: 15px; text-align: center;">
+                        <div style="font-size: 48px; font-weight: bold;">${orden.numero}</div>
+                        <div style="font-size: 16px; margin-top: 10px;">Número de Orden</div>
+                        <div style="font-size: 12px; margin-top: 5px; opacity: 0.8;">Mostrar al laboratorio</div>
+                    </div>
+                `;
+                vistaOrden.style.display = 'block';
+                showAlert('⚠️ Vista de orden generada (modo texto)');
+            }
+        }
+
+        // FUNCIÓN SIMPLIFICADA DE VALIDACIÓN
+        function validarOrdenCompleta() {
+            const errores = [];
+            
+            // Validar cliente
+            const nombre = document.getElementById('nombreClienteLab')?.value?.trim();
+            const telefono = document.getElementById('telefonoClienteLab')?.value?.trim();
+            
+            if (!nombre) errores.push('Nombre del cliente');
+            if (!telefono) errores.push('Teléfono del cliente');
+            
+            // Validar foto
+            if (!fotoReceta) errores.push('Foto de la receta');
+            
+            // Validar al menos una medida
+            const medidas = obtenerMedidasVision();
+            const hayMedidas = Object.values(medidas).some(valor => valor && valor.trim() !== '');
+            if (!hayMedidas) errores.push('Al menos una medida de visión');
+            
+            if (errores.length > 0) {
+                showAlert(`❌ Faltan campos obligatorios:\n• ${errores.join('\n• ')}`);
+                return false;
+            }
+            
+            return true;
+        }
+
+        function enviarOrdenWhatsApp(orden) {
+            if (!orden || !orden.medidas) {
+                showAlert('Error: datos de orden incompletos');
+                return;
+            }
+            
+            const medidas = orden.medidas;
+            
+            // MENSAJE CORRECTO PARA LABORATORIO
+            const mensaje = `🔬 *ORDEN DE LABORATORIO - ${orden.numero}*\n\n` +
+                          `👤 *CLIENTE:* ${orden.cliente.nombre}\n` +
+                          `📱 Tel: ${orden.cliente.telefono}\n\n` +
+                          `👓 *MONTURA:* ${orden.montura}\n` +
+                          `🔍 *TIPO LENTE:* ${orden.tipoLente || 'Monofocal'}\n\n` +
+                          `👁️ *OJO DERECHO (OD)*\n` +
+                          `   Esfera: ${medidas.esferaDerecho || 'PLANO'}\n` +
+                          `   Cilindro: ${medidas.cilindroDerecho || 'PLANO'}\n` +
+                          `   Eje: ${medidas.ejeDerecho || '---'}\n` +
+                          `   ${orden.tipoLente === 'progresivo' ? `Adición: ${medidas.adicionDerecho || '+1.00'}` : ''}\n\n` +
+                          `👁️ *OJO IZQUIERDO (OI)*\n` +
+                          `   Esfera: ${medidas.esferaIzquierdo || 'PLANO'}\n` +
+                          `   Cilindro: ${medidas.cilindroIzquierdo || 'PLANO'}\n` +
+                          `   Eje: ${medidas.ejeIzquierdo || '---'}\n` +
+                          `   ${orden.tipoLente === 'progresivo' ? `Adición: ${medidas.adicionIzquierdo || '+1.00'}` : ''}\n\n` +
+                          `📏 *MEDIDAS:*\n` +
+                          `   Distancia Pupilar: ${medidas.distanciaPupilar || '64mm'}\n` +
+                          `   ${orden.tipoLente === 'progresivo' || orden.tipoLente === 'bifocal' ? `Altura Seg: ${medidas.alturaSegmento || '18mm'}` : ''}\n\n` +
+                          `${orden.observaciones ? `📝 *OBSERVACIONES:*\n${orden.observaciones}\n\n` : ''}` +
+                          `📅 *FECHA:* ${new Date(orden.fechaEnvio).toLocaleDateString()}\n` +
+                          `⏰ *HORA:* ${new Date(orden.fechaEnvio).toLocaleTimeString()}\n\n` +
+                          `🔢 *NÚMERO DE ORDEN: ${orden.numero}*\n\n` +
+                          `📱 *CONFIRMA RECEPCIÓN Y TIEMPO ESTIMADO*\n` +
+                          `🏭 Óptica Nvision - 849-797-2424`;
+            
+            try {
+                if (navigator.share && orden.fotoReceta) {
+                    // Intentar compartir con foto
+                    fetch(orden.fotoReceta)
+                        .then(res => {
+                            if (!res.ok) throw new Error('Error al procesar imagen');
+                            return res.blob();
+                        })
                         .then(blob => {
-                            const file = new File([blob], `${numero}-receta.jpg`, { type: 'image/jpeg' });
+                            const file = new File([blob], `ORDEN-${orden.numero}-RECETA.jpg`, { type: 'image/jpeg' });
                             return navigator.share({
-                                title: `Orden ${numero}`,
+                                title: `Orden ${orden.numero} - ${orden.cliente.nombre}`,
                                 text: mensaje,
                                 files: [file]
                             });
                         })
-                        .catch(() => {
+                        .catch(error => {
+                            console.error('Error al compartir con imagen:', error);
+                            // Fallback a WhatsApp sin imagen
                             window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                            showAlert('📱 Orden enviada por WhatsApp (sin imagen)');
                         });
                 } else {
+                    // WhatsApp sin imagen
                     window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    showAlert('📱 Orden enviada por WhatsApp');
                 }
                 
-                // Actualizar estadísticas
                 actualizarEstadisticas('mensaje');
                 
-                // Limpiar formulario
-                limpiarFormularioLab();
-                
-                showAlert(`✅ Orden ${numero} enviada por WhatsApp`);
-                
             } catch (error) {
-                console.error('Error al enviar:', error);
-                showAlert('Error al enviar orden');
+                console.error('Error al enviar orden:', error);
+                // Fallback final
+                const mensajeSimple = `🔬 ORDEN ${orden.numero}\nCliente: ${orden.cliente.nombre}\nTel: ${orden.cliente.telefono}\nMontura: ${orden.montura}\n\nÓptica Nvision 849-797-2424`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensajeSimple)}`, '_blank');
+                showAlert('📱 Orden enviada (modo básico)');
             }
         }
 
-        function limpiarFormularioLab() {
-            const elementos = ['clienteLab', 'nombreLab', 'telefonoLab', 'monturaLab', 'tipoLab', 'observacionesLab'];
-            elementos.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
+        // FUNCIÓN PARA AUTOCOMPLETAR DATOS DEL CLIENTE
+        function cargarDatosClienteExistente() {
+            const selectCliente = document.getElementById('clienteLaboratorio');
+            const nombreEl = document.getElementById('nombreClienteLab');
+            const telefonoEl = document.getElementById('telefonoClienteLab');
             
-            const preview = document.getElementById('previewLab');
-            if (preview) preview.style.display = 'none';
+            if (!selectCliente || !nombreEl || !telefonoEl) return;
             
-            fotoRecetaLab = null;
-        }
-
-        function registrarEntrega() {
-            const numero = document.getElementById('numeroEntrega')?.value?.trim();
-            const cliente = document.getElementById('clienteEntrega')?.value?.trim();
-            const monto = parseFloat(document.getElementById('montoEntrega')?.value) || 0;
-            const metodo = document.getElementById('metodoPagoEntrega')?.value;
-            
-            if (!numero || !cliente || monto <= 0 || !metodo) {
-                showAlert('Complete todos los campos');
+            const clienteId = selectCliente.value;
+            if (!clienteId) {
+                // Limpiar campos si no hay selección
+                nombreEl.value = '';
+                telefonoEl.value = '';
                 return;
             }
             
             try {
-                // Buscar orden
-                const orden = ordenesLab.find(o => o.numero === numero);
-                if (orden) {
-                    orden.estado = 'entregado';
-                    orden.fechaEntrega = new Date().toISOString();
-                    orden.monto = monto;
-                    orden.metodoPago = metodo;
+                const cliente = clientes.find(c => c.id == clienteId);
+                if (cliente) {
+                    nombreEl.value = cliente.nombre;
+                    telefonoEl.value = cliente.telefono;
+                    
+                    // Si tiene exámenes previos, precargar medidas
+                    const examenPrevio = examenes.find(e => e.clienteId == clienteId);
+                    if (examenPrevio && examenPrevio.medidas) {
+                        precargarMedidasPrevias(examenPrevio.medidas);
+                    }
+                    
+                    showAlert(`✅ Datos de ${cliente.nombre} cargados`);
                 }
-                
-                // Registrar como venta
-                const venta = {
-                    id: Date.now(),
-                    clienteId: null,
-                    productoId: null,
-                    cantidad: 1,
-                    total: monto,
-                    fecha: new Date().toISOString(),
-                    descripcion: `Entrega laboratorio ${numero} - ${cliente} (${metodo})`
-                };
-                ventas.push(venta);
-                
-                // Guardar
-                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLab));
-                guardarDatos();
-                
-                // Limpiar formulario
-                ['numeroEntrega', 'clienteEntrega', 'montoEntrega', 'metodoPagoEntrega'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.value = '';
-                });
-                
-                // Actualizar resumen
-                cargarResumenEntregas();
-                cargarUltimosEnvios();
-                
-                showAlert(`✅ Entrega ${numero} registrada - RD$ ${monto}`);
-                
             } catch (error) {
-                console.error('Error al registrar entrega:', error);
-                showAlert('Error al registrar entrega');
+                console.error('Error al cargar datos del cliente:', error);
+                showAlert('Error al cargar datos del cliente');
             }
         }
 
-        function cargarResumenEntregas() {
-            const totalEnviado = ordenesLab.length;
-            const totalEntregado = ordenesLab.filter(o => o.estado === 'entregado').length;
-            const totalCobrado = ordenesLab
-                .filter(o => o.estado === 'entregado')
+        function precargarMedidasPrevias(medidas) {
+            const campos = [
+                'esferaDerecho', 'cilindroDerecho', 'ejeDerecho', 'adicionDerecho',
+                'esferaIzquierdo', 'cilindroIzquierdo', 'ejeIzquierdo', 'adicionIzquierdo',
+                'distanciaPupilar', 'alturaSegmento'
+            ];
+            
+            campos.forEach(campo => {
+                const element = document.getElementById(campo);
+                if (element && medidas[campo]) {
+                    element.value = medidas[campo];
+                }
+            });
+            
+            showAlert('📋 Medidas previas precargadas');
+        }
+
+        // FUNCIONES DE ESCANEO Y RECEPCIÓN
+        async function toggleCameraScan() {
+            const video = document.getElementById('videoScan');
+            const btn = document.getElementById('cameraBtnScan');
+            const placeholder = document.getElementById('placeholderScan');
+            
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de escáner no encontrados');
+                return;
+            }
+            
+            if (!streamScan) {
+                try {
+                    streamScan = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = streamScan;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '🔍 Escaneando...';
+                    
+                    // Simular escaneo automático después de 3 segundos
+                    setTimeout(() => {
+                        simularEscaneoQR();
+                    }, 3000);
+                    
+                } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
+                    showAlert('Error al acceder a la cámara');
+                }
+            }
+        }
+
+        function simularEscaneoQR() {
+            // Buscar una orden en proceso para simular
+            const ordenEnProceso = ordenesLaboratorio.find(o => o.estado === 'enviado' || o.estado === 'proceso');
+            
+            if (ordenEnProceso) {
+                document.getElementById('numeroOrdenManual').value = ordenEnProceso.numero;
+                showAlert(`📱 QR escaneado: ${ordenEnProceso.numero}`);
+            } else {
+                showAlert('No hay órdenes pendientes para escanear');
+            }
+            
+            // Detener cámara
+            detenerCamara(streamScan);
+            streamScan = null;
+            document.getElementById('videoScan').style.display = 'none';
+            document.getElementById('placeholderScan').style.display = 'block';
+            document.getElementById('cameraBtnScan').textContent = '📱 Activar Escáner';
+            document.getElementById('cameraBtnScan').onclick = toggleCameraScan;
+        }
+
+        function marcarComoRecibido() {
+            const numeroEl = document.getElementById('numeroOrdenManual');
+            if (!numeroEl) {
+                showAlert('Error: elemento no encontrado');
+                return;
+            }
+            
+            const numero = numeroEl.value.trim();
+            if (!numero) {
+                showAlert('Escriba o escanee el número de orden');
+                return;
+            }
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            if (orden.estado === 'entregado') {
+                showAlert('Esta orden ya fue entregada');
+                return;
+            }
+            
+            try {
+                // Cambiar estado a listo
+                orden.estado = 'listo';
+                orden.fechaRecibido = new Date().toISOString();
+                
+                // Solicitar monto si no está establecido
+                if (!orden.monto || orden.monto <= 0) {
+                    const monto = prompt(`Monto a cobrar por la orden ${numero}:`, '3500');
+                    if (monto && !isNaN(monto)) {
+                        orden.monto = parseFloat(monto);
+                    }
+                }
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                
+                // Limpiar campo
+                numeroEl.value = '';
+                
+                // Recargar listas
+                cargarOrdenesEnProceso();
+                cargarTrabajosListos();
+                cargarResumenCuentas();
+                
+                showAlert(`✅ Orden ${numero} marcada como lista para entregar`);
+                
+            } catch (error) {
+                console.error('Error al marcar como recibido:', error);
+                showAlert('Error al procesar orden');
+            }
+        }
+
+        function cargarOrdenesEnProceso() {
+            const lista = document.getElementById('listaOrdenesEnProceso');
+            if (!lista) return;
+            
+            const ordenesEnProceso = ordenesLaboratorio.filter(o => 
+                o.estado === 'enviado' || o.estado === 'proceso'
+            );
+            
+            if (ordenesEnProceso.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay órdenes en proceso</p>';
+                return;
+            }
+            
+            lista.innerHTML = ordenesEnProceso.map(orden => `
+                <div class="orden-item">
+                    <div class="numero-orden">${orden.numero}</div>
+                    <div class="estado-orden ${orden.estado === 'enviado' ? 'estado-enviado' : 'estado-proceso'}">${orden.estado.toUpperCase()}</div>
+                    <p><strong>Cliente:</strong> ${orden.cliente.nombre}</p>
+                    <p><strong>Enviado:</strong> ${new Date(orden.fechaEnvio).toLocaleDateString()}</p>
+                    <p><strong>Montura:</strong> ${orden.montura}</p>
+                    <button class="btn btn-warning" onclick="cambiarEstadoOrden('${orden.numero}', 'proceso')">⏳ Marcar en Proceso</button>
+                </div>
+            `).join('');
+        }
+
+        function cargarTrabajosListos() {
+            const lista = document.getElementById('listaTrabajosList');
+            if (!lista) return;
+            
+            const trabajosListos = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            if (trabajosListos.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay trabajos listos</p>';
+                return;
+            }
+            
+            lista.innerHTML = trabajosListos.map(orden => `
+                <div class="orden-item">
+                    <div class="numero-orden">${orden.numero}</div>
+                    <div class="estado-orden estado-listo">LISTO</div>
+                    <p><strong>Cliente:</strong> ${orden.cliente.nombre}</p>
+                    <p><strong>Teléfono:</strong> ${orden.cliente.telefono}</p>
+                    <p><strong>Montura:</strong> ${orden.montura}</p>
+                    <p><strong>Monto:</strong> RD$ ${orden.monto || 0}</p>
+                    <button class="btn btn-whatsapp" onclick="contactarClienteEntrega('${orden.numero}')">📱 Avisar Cliente</button>
+                    <button class="btn btn-primary" onclick="entregarOrden('${orden.numero}')">✅ Entregar</button>
+                </div>
+            `).join('');
+        }
+
+        function cambiarEstadoOrden(numero, nuevoEstado) {
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (orden) {
+                orden.estado = nuevoEstado;
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                cargarOrdenesEnProceso();
+                showAlert(`Estado de ${numero} actualizado a ${nuevoEstado}`);
+            }
+        }
+
+        function contactarClienteEntrega(numero) {
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            const mensaje = `✅ ¡Buenas noticias! ${orden.cliente.nombre}\n\n` +
+                          `Su orden ${numero} está lista para recoger.\n\n` +
+                          `👓 ${orden.montura}\n` +
+                          `💰 Monto: RD$ ${orden.monto || 0}\n\n` +
+                          `📍 Puede pasar cuando guste\n` +
+                          `📱 849-797-2424\n` +
+                          `🏭 Óptica Nvision`;
+            
+            const telefono = orden.cliente.telefono.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+        }
+
+        function entregarOrden(numero) {
+            if (!confirm(`¿Confirmar entrega de la orden ${numero}?`)) return;
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            try {
+                orden.estado = 'entregado';
+                orden.fechaEntrega = new Date().toISOString();
+                
+                // Registrar venta si hay monto
+                if (orden.monto > 0) {
+                    const venta = {
+                        id: Date.now(),
+                        clienteId: null, // Cliente de laboratorio
+                        productoId: null, // Servicio de laboratorio
+                        cantidad: 1,
+                        total: orden.monto,
+                        fecha: new Date().toISOString(),
+                        descripcion: `Entrega orden laboratorio ${numero}`,
+                        numeroOrden: numero
+                    };
+                    ventas.push(venta);
+                }
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                guardarDatos();
+                
+                cargarTrabajosListos();
+                cargarResumenCuentas();
+                cargarListaCuentasPorCobrar();
+                
+                showAlert(`✅ Orden ${numero} entregada correctamente`);
+                
+            } catch (error) {
+                console.error('Error al entregar orden:', error);
+                showAlert('Error al procesar entrega');
+            }
+        }
+
+        // FUNCIONES DE CUENTAS POR COBRAR
+        function cargarResumenCuentas() {
+            const ordenesEnLab = ordenesLaboratorio.filter(o => 
+                o.estado === 'enviado' || o.estado === 'proceso'
+            ).length;
+            
+            const ordenesListas = ordenesLaboratorio.filter(o => o.estado === 'listo').length;
+            
+            const totalPorCobrar = ordenesLaboratorio
+                .filter(o => o.estado === 'listo')
                 .reduce((sum, o) => sum + (o.monto || 0), 0);
             
             const elementos = [
-                { id: 'totalEnviado', valor: totalEnviado },
-                { id: 'totalEntregado', valor: totalEntregado },
-                { id: 'totalCobrado', valor: totalCobrado.toFixed(2) }
+                { id: 'ordenesEnLab', valor: ordenesEnLab },
+                { id: 'ordenesListas', valor: ordenesListas },
+                { id: 'totalPorCobrar', valor: totalPorCobrar.toFixed(2) }
             ];
             
             elementos.forEach(({ id, valor }) => {
@@ -3470,36 +4056,118 @@ Tenemos disponibilidad:
             });
         }
 
-        function cargarUltimosEnvios() {
-            const lista = document.getElementById('listaUltimosEnvios');
+        function cargarOrdenesParaPago() {
+            const select = document.getElementById('ordenPago');
+            if (!select) return;
+            
+            const ordenesListas = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            select.innerHTML = '<option value="">Seleccionar orden lista</option>';
+            ordenesListas.forEach(orden => {
+                select.innerHTML += `<option value="${orden.numero}">${orden.numero} - ${orden.cliente.nombre} - RD$ ${orden.monto || 0}</option>`;
+            });
+        }
+
+        function cargarListaCuentasPorCobrar() {
+            const lista = document.getElementById('listaCuentasPorCobrar');
             if (!lista) return;
             
-            if (ordenesLab.length === 0) {
-                lista.innerHTML = '<p style="text-align: center;">No hay envíos registrados</p>';
+            const cuentasPorCobrar = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            if (cuentasPorCobrar.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay cuentas pendientes por cobrar</p>';
                 return;
             }
             
-            const ultimos = ordenesLab.slice(-10).reverse();
+            let html = '<table class="table"><thead><tr><th>Orden</th><th>Cliente</th><th>Fecha Lista</th><th>Monto</th><th>Días Pendiente</th><th>Acciones</th></tr></thead><tbody>';
             
-            let html = '<table class="table"><thead><tr><th>Número</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Monto</th></tr></thead><tbody>';
-            
-            ultimos.forEach(orden => {
-                const estado = orden.estado === 'entregado' ? '✅ Entregado' : '⏳ En proceso';
-                const monto = orden.monto ? `RD$ ${orden.monto}` : 'Pendiente';
+            cuentasPorCobrar.forEach(orden => {
+                const diasPendientes = Math.floor((new Date() - new Date(orden.fechaRecibido || orden.fechaEnvio)) / (1000 * 60 * 60 * 24));
+                const urgente = diasPendientes > 7;
                 
                 html += `
-                    <tr>
+                    <tr ${urgente ? 'style="background: rgba(239, 68, 68, 0.1);"' : ''}>
                         <td><strong>${orden.numero}</strong></td>
-                        <td>${orden.cliente}<br><small>${orden.telefono}</small></td>
-                        <td>${new Date(orden.fecha).toLocaleDateString()}</td>
-                        <td>${estado}</td>
-                        <td>${monto}</td>
+                        <td>${orden.cliente.nombre}<br><small>${orden.cliente.telefono}</small></td>
+                        <td>${new Date(orden.fechaRecibido || orden.fechaEnvio).toLocaleDateString()}</td>
+                        <td><strong>RD$ ${orden.monto || 0}</strong></td>
+                        <td>${diasPendientes} días ${urgente ? '⚠️' : ''}</td>
+                        <td>
+                            <button class="btn btn-whatsapp" onclick="contactarClienteEntrega('${orden.numero}')">📱</button>
+                            <button class="btn btn-primary" onclick="entregarOrden('${orden.numero}')">✅</button>
+                        </td>
                     </tr>
                 `;
             });
             
             html += '</tbody></table>';
             lista.innerHTML = html;
+        }
+
+        function registrarPago() {
+            const ordenEl = document.getElementById('ordenPago');
+            const montoEl = document.getElementById('montoPago');
+            const metodoEl = document.getElementById('metodoPago');
+            
+            if (!ordenEl || !montoEl || !metodoEl) {
+                showAlert('Error: elementos del formulario no encontrados');
+                return;
+            }
+            
+            const numeroOrden = ordenEl.value;
+            const monto = parseFloat(montoEl.value) || 0;
+            const metodo = metodoEl.value;
+            
+            if (!numeroOrden || monto <= 0 || !metodo) {
+                showAlert('Complete todos los campos');
+                return;
+            }
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numeroOrden);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            try {
+                // Marcar como entregado
+                orden.estado = 'entregado';
+                orden.fechaEntrega = new Date().toISOString();
+                orden.metodoPago = metodo;
+                orden.montoPagado = monto;
+                
+                // Registrar venta
+                const venta = {
+                    id: Date.now(),
+                    clienteId: null,
+                    productoId: null,
+                    cantidad: 1,
+                    total: monto,
+                    fecha: new Date().toISOString(),
+                    descripcion: `Pago orden laboratorio ${numeroOrden} (${metodo})`,
+                    numeroOrden: numeroOrden
+                };
+                ventas.push(venta);
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                guardarDatos();
+                
+                // Limpiar formulario
+                ordenEl.value = '';
+                montoEl.value = '';
+                metodoEl.value = '';
+                
+                // Recargar datos
+                cargarOrdenesParaPago();
+                cargarResumenCuentas();
+                cargarListaCuentasPorCobrar();
+                
+                showAlert(`✅ Pago de RD$ ${monto} registrado para orden ${numeroOrden}`);
+                
+            } catch (error) {
+                console.error('Error al registrar pago:', error);
+                showAlert('Error al registrar pago');
+            }
         }
 
         // FUNCIONES DE NAVEGACIÓN
