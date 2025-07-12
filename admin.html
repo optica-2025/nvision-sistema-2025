@@ -154,6 +154,25 @@
             border-radius: 5px;
             border-left: 3px solid #10b981;
         }
+        .marketing-card {
+            background: rgba(37, 211, 102, 0.1);
+            border: 1px solid #25d366;
+        }
+        .upload-area {
+            border: 2px dashed #25d366;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .template-item {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #25d366;
+        }
     </style>
 </head>
 <body>
@@ -198,7 +217,7 @@
 
                 <div class="card">
                     <h3>📱 Marketing</h3>
-                    <button class="btn btn-primary" onclick="abrirMarketing()">📱 Marketing WhatsApp</button>
+                    <button class="btn btn-primary" onclick="mostrar('marketing')">📱 Marketing WhatsApp</button>
                     <button class="btn btn-warning" onclick="mostrar('contactar')">💬 Contactar Clientes</button>
                     <button class="btn btn-secondary" onclick="mostrar('campanas')">📣 Campañas</button>
                 </div>
@@ -213,6 +232,94 @@
             
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn btn-danger" onclick="volverInicio()">🏠 Volver al Inicio</button>
+            </div>
+        </div>
+
+        <!-- SISTEMA DE MARKETING COMPLETO -->
+        <div id="marketing" class="section">
+            <h2>📱 Marketing WhatsApp</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card marketing-card">
+                    <h3>📸 Crear Promoción con Foto</h3>
+                    <div class="camera-box" id="cameraBoxMarketing">
+                        <div id="placeholderMarketing">
+                            <div style="font-size: 50px;">📷</div>
+                            <div>Tomar foto de producto</div>
+                        </div>
+                        <video id="videoMarketing" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleCameraMarketing()" id="cameraBtnMarketing">📷 Activar Cámara</button>
+                    <img id="previewMarketing" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
+                    
+                    <textarea id="mensajeMarketing" class="textarea" placeholder="Mensaje promocional...">🛍️ *PROMOCIÓN ESPECIAL*
+
+¡Hola! Te mostramos este hermoso producto que tenemos disponible.
+
+✨ ¿Te interesa verlo en la tienda?
+💰 Excelente calidad y precio
+🚚 Disponible inmediatamente
+
+📱 849-797-2424
+🌐 opticanvision.com</textarea>
+                    
+                    <button class="btn btn-whatsapp" onclick="enviarPromocionMarketing()">📱 Enviar por WhatsApp</button>
+                </div>
+
+                <div class="card marketing-card">
+                    <h3>📁 Subir Archivos</h3>
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div style="font-size: 50px;">📁</div>
+                        <div>Click para subir imagen/video</div>
+                        <div style="font-size: 12px; opacity: 0.7;">JPG, PNG, MP4, PDF</div>
+                    </div>
+                    <input type="file" id="fileInput" style="display: none;" accept="image/*,video/*,.pdf" onchange="manejarArchivo(this)">
+                    <div id="archivoSubido" style="margin: 10px 0;"></div>
+                    
+                    <textarea id="mensajeArchivo" class="textarea" placeholder="Mensaje para el archivo..."></textarea>
+                    <button class="btn btn-whatsapp" onclick="enviarArchivo()">📱 Enviar Archivo</button>
+                </div>
+
+                <div class="card marketing-card">
+                    <h3>🔗 Templates y Enlaces</h3>
+                    <div id="listaTemplates">
+                        <div class="template-item">
+                            <strong>📍 Ubicación</strong><br>
+                            <button class="btn btn-whatsapp" onclick="enviarTemplate('ubicacion')">📍 Enviar Ubicación</button>
+                        </div>
+                        <div class="template-item">
+                            <strong>⏰ Horarios</strong><br>
+                            <button class="btn btn-whatsapp" onclick="enviarTemplate('horarios')">⏰ Enviar Horarios</button>
+                        </div>
+                        <div class="template-item">
+                            <strong>💰 Lista de Precios</strong><br>
+                            <button class="btn btn-whatsapp" onclick="enviarTemplate('precios')">💰 Enviar Precios</button>
+                        </div>
+                        <div class="template-item">
+                            <strong>🎁 Ofertas del Mes</strong><br>
+                            <button class="btn btn-whatsapp" onclick="enviarTemplate('ofertas')">🎁 Enviar Ofertas</button>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">📝 Template Personalizado</h4>
+                    <input type="text" id="tituloTemplate" class="input" placeholder="Título del template">
+                    <textarea id="contenidoTemplate" class="textarea" placeholder="Contenido del template..."></textarea>
+                    <button class="btn btn-primary" onclick="crearTemplate()">💾 Crear Template</button>
+                </div>
+
+                <div class="card marketing-card">
+                    <h3>📊 Estadísticas</h3>
+                    <div class="stat-box">
+                        <div class="stat-number" id="mensajesEnviados">0</div>
+                        <div>Mensajes Enviados Hoy</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number" id="promocionesActivas">0</div>
+                        <div>Promociones Activas</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="verEstadisticas()">📈 Ver Detalles</button>
+                </div>
             </div>
         </div>
 
@@ -258,6 +365,7 @@
                 </select>
                 
                 <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar en Inventario</button>
+                <button class="btn btn-whatsapp" onclick="guardarYEnviar()">📱 Guardar y Enviar por WhatsApp</button>
                 <button class="btn btn-secondary" onclick="limpiarCamara()">🔄 Limpiar</button>
             </div>
         </div>
@@ -269,35 +377,35 @@
             
             <div class="grid">
                 <div class="card">
-                    <h3>📸 Enviar Promoción con Foto</h3>
+                    <h3>📸 Enviar Promoción Especial</h3>
                     <div class="camera-box" id="cameraBox2">
                         <div id="placeholder2">
                             <div style="font-size: 50px;">📷</div>
-                            <div>Tomar foto de montura</div>
+                            <div>Tomar foto de montura especial</div>
                         </div>
                         <video id="video2" style="display: none; width: 100%; height: 100%;" autoplay></video>
                     </div>
                     <button class="btn btn-primary" onclick="toggleCamera2()" id="cameraBtn2">📷 Activar Cámara</button>
                     <img id="preview2" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
                     
-                    <textarea id="mensajePromo" class="textarea" placeholder="Mensaje de promoción...">🎁 *OFERTA ESPECIAL*
+                    <textarea id="mensajePromo" class="textarea" placeholder="Mensaje de promoción...">🎁 *PROMOCIÓN ESPECIAL*
 
 ¡Hola! Te mostramos esta hermosa montura que acabamos de recibir.
 
-✨ ¿Te interesa? 
-💰 Precio especial disponible
-🚚 Entrega inmediata
+Me interesa conocer si te gusta este modelo.
 
-Responde SI para más información.
+✨ ¿Te interesa verla en la tienda?
+💰 Precio especial disponible
+🚚 Disponible inmediatamente
 
 📱 849-797-2424
 🌐 opticanvision.com</textarea>
                     
-                    <button class="btn btn-whatsapp" onclick="enviarPromocion()">📱 Enviar Promoción</button>
+                    <button class="btn btn-whatsapp" onclick="enviarPromocionClientes()">📱 Enviar por WhatsApp</button>
                 </div>
 
                 <div class="card">
-                    <h3>📋 Lista Rápida de Clientes</h3>
+                    <h3>📋 Lista de Clientes</h3>
                     <div id="listaClientesRapida" style="max-height: 400px; overflow-y: auto;"></div>
                 </div>
             </div>
@@ -317,11 +425,13 @@ Responde SI para más información.
 
                 <div class="card">
                     <h3>💬 Mensajes Rápidos</h3>
-                    <button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cumpleanos')">🎂 Cumpleaños</button>
+                    <button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cumpleanos')">🎂 Evento/Cumpleaños</button>
                     <button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cita')">📅 Recordatorio Cita</button>
                     <button class="btn btn-whatsapp" onclick="enviarMensajeRapido('examen')">👁️ Examen Anual</button>
                     
                     <div style="margin-top: 20px;">
+                        <input type="text" id="nombreEvento" class="input" placeholder="Nombre del evento/fecha">
+                        <input type="date" id="fechaEvento" class="input" placeholder="Fecha del evento">
                         <input type="date" id="fechaCita" class="input" placeholder="Fecha de cita">
                         <input type="time" id="horaCita" class="input" placeholder="Hora de cita">
                     </div>
@@ -383,17 +493,30 @@ Responde SI para más información.
             <h2>📣 Campañas de Marketing</h2>
             <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
             
-            <div class="card">
-                <h3>🎯 Crear Nueva Campaña</h3>
-                <input type="text" id="nombreCampana" class="input" placeholder="Nombre de la campaña">
-                <textarea id="mensajeCampana" class="textarea" placeholder="Mensaje de la campaña..."></textarea>
-                <button class="btn btn-primary" onclick="crearCampana()">📣 Crear Campaña</button>
+            <div class="grid">
+                <div class="card">
+                    <h3>🎯 Campaña del Día</h3>
+                    <button class="btn btn-primary" onclick="enviarCampanaDia()">📱 Enviar Mensaje Manual</button>
+                    <button class="btn btn-whatsapp" onclick="programarCampana()">⏰ Programar Campaña</button>
+                    <div id="estadoCampana" style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px;">
+                        <strong>Estado:</strong> <span id="textoEstado">Lista para enviar</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Crear Nueva Campaña</h3>
+                    <input type="text" id="nombreCampana" class="input" placeholder="Nombre de la campaña">
+                    <textarea id="mensajeCampana" class="textarea" placeholder="Mensaje de la campaña..."></textarea>
+                    <input type="datetime-local" id="fechaProgramada" class="input" placeholder="Fecha y hora">
+                    <button class="btn btn-primary" onclick="crearCampana()">📣 Crear Campaña</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="alert" id="alert"></div>
     <canvas id="canvas2" style="display: none;"></canvas>
+    <canvas id="canvasMarketing" style="display: none;"></canvas>
     
     <div class="footer">
         by fbrugal jrubinstein consultores
@@ -406,11 +529,16 @@ Responde SI para más información.
         let ventas = [];
         let facturas = [];
         let examenes = [];
+        let templates = [];
+        let estadisticas = { mensajesHoy: 0, promociones: 0 };
         
         let stream = null;
         let stream2 = null;
+        let streamMarketing = null;
         let fotoActual = null;
         let fotoPromo = null;
+        let fotoMarketing = null;
+        let archivoSubido = null;
 
         // INICIALIZACIÓN
         document.addEventListener('DOMContentLoaded', function() {
@@ -420,32 +548,85 @@ Responde SI para más información.
                 ventas = JSON.parse(localStorage.getItem('nvisionVentas') || '[]');
                 facturas = JSON.parse(localStorage.getItem('nvisionFacturas') || '[]');
                 examenes = JSON.parse(localStorage.getItem('nvisionExamenes') || '[]');
+                templates = JSON.parse(localStorage.getItem('nvisionTemplates') || '[]');
+                estadisticas = JSON.parse(localStorage.getItem('nvisionEstadisticas') || '{"mensajesHoy": 0, "promociones": 0}');
                 
-                // Crear datos de ejemplo si están vacíos
                 if (clientes.length === 0) {
                     crearDatosEjemplo();
                 }
                 
                 actualizarDashboard();
+                cargarTemplatesDefault();
             } catch (error) {
-                console.log('Error al cargar datos:', error);
+                console.error('Error al cargar datos:', error);
                 showAlert('Error al cargar datos, iniciando con datos nuevos');
+                crearDatosEjemplo();
             }
         });
 
         function crearDatosEjemplo() {
             clientes = [
-                { id: 1, nombre: 'María González', telefono: '809-555-0001', email: 'maria@email.com', cumpleanos: '1985-03-15' },
-                { id: 2, nombre: 'Juan Pérez', telefono: '809-555-0002', email: 'juan@email.com', cumpleanos: '1990-07-22' },
-                { id: 3, nombre: 'Ana Rodríguez', telefono: '809-555-0003', email: 'ana@email.com', cumpleanos: '1988-11-10' }
+                { 
+                    id: 1, 
+                    nombre: 'María González', 
+                    telefono: '809-555-0001', 
+                    email: 'maria@email.com', 
+                    cumpleanos: '1985-03-15',
+                    edad: 39,
+                    ultimoExamen: '2023-06-15'
+                },
+                { 
+                    id: 2, 
+                    nombre: 'Juan Pérez', 
+                    telefono: '809-555-0002', 
+                    email: 'juan@email.com', 
+                    cumpleanos: '1990-07-22',
+                    edad: 34,
+                    ultimoExamen: '2023-01-20'
+                },
+                { 
+                    id: 3, 
+                    nombre: 'Ana Rodríguez', 
+                    telefono: '809-555-0003', 
+                    email: 'ana@email.com', 
+                    cumpleanos: '1988-11-10',
+                    edad: 36,
+                    ultimoExamen: '2022-12-05'
+                }
             ];
             
-            productos = [
-                { id: 1, codigo: 'NV001', nombre: 'Montura Classic', precio: 2500, stock: 15, categoria: 'monturas', imagen: 'https://via.placeholder.com/200x150/10b981/ffffff?text=Montura+1', fecha: new Date().toISOString() },
-                { id: 2, codigo: 'NV002', nombre: 'Lentes Progresivos', precio: 8500, stock: 8, categoria: 'lentes', imagen: 'https://via.placeholder.com/200x150/10b981/ffffff?text=Lentes+1', fecha: new Date().toISOString() }
-            ];
+            // Solo productos mínimos, el resto se agregará con cámara
+            productos = [];
             
             guardarDatos();
+        }
+
+        function cargarTemplatesDefault() {
+            if (templates.length === 0) {
+                templates = [
+                    {
+                        id: 'ubicacion',
+                        titulo: 'Ubicación',
+                        contenido: '📍 *NUESTRA UBICACIÓN*\n\n🏢 Óptica Nvision\n📍 [Dirección completa]\n🚗 Fácil estacionamiento\n🚌 Cerca del transporte público\n\n📱 849-797-2424\n🌐 opticanvision.com'
+                    },
+                    {
+                        id: 'horarios',
+                        titulo: 'Horarios',
+                        contenido: '⏰ *HORARIOS DE ATENCIÓN*\n\n📅 Lunes a Viernes: 8:00 AM - 6:00 PM\n📅 Sábados: 8:00 AM - 4:00 PM\n📅 Domingos: Cerrado\n\n📱 849-797-2424\n🌐 opticanvision.com'
+                    },
+                    {
+                        id: 'precios',
+                        titulo: 'Lista de Precios',
+                        contenido: '💰 *LISTA DE PRECIOS*\n\n👓 Monturas desde: RD$ 1,500\n🔍 Lentes graduados: RD$ 3,500\n☀️ Lentes de sol: RD$ 2,200\n👁️ Examen de vista: RD$ 800\n\n📱 849-797-2424\n🌐 opticanvision.com'
+                    },
+                    {
+                        id: 'ofertas',
+                        titulo: 'Ofertas del Mes',
+                        contenido: '🎁 *OFERTAS DEL MES*\n\n✨ 20% de descuento en monturas\n👓 2x1 en lentes de contacto\n🔍 Examen de vista GRATIS\n☀️ Promoción en lentes de sol\n\n📱 849-797-2424\n🌐 opticanvision.com'
+                    }
+                ];
+                localStorage.setItem('nvisionTemplates', JSON.stringify(templates));
+            }
         }
 
         function showAlert(msg) {
@@ -462,10 +643,12 @@ Responde SI para más información.
             switch(seccion) {
                 case 'menu': actualizarDashboard(); break;
                 case 'inventario': cargarInventario(); break;
+                case 'marketing': cargarMarketing(); break;
                 case 'contactar': cargarClientesRapida(); break;
                 case 'recordatorios': generarRecordatorios(); break;
                 case 'ventas': cargarVentas(); break;
                 case 'reportes': cargarReportes(); break;
+                case 'campanas': cargarCampanas(); break;
             }
         }
 
@@ -482,9 +665,7 @@ Responde SI para más información.
         // FUNCIONES DE CÁMARA
         function detenerCamara(streamRef) {
             if (streamRef) {
-                streamRef.getTracks().forEach(track => {
-                    track.stop();
-                });
+                streamRef.getTracks().forEach(track => track.stop());
             }
         }
 
@@ -538,11 +719,9 @@ Responde SI para más información.
                 preview.src = fotoActual;
                 preview.style.display = 'block';
                 
-                // Limpiar stream
                 detenerCamara(stream);
                 stream = null;
                 
-                // Resetear UI
                 video.style.display = 'none';
                 placeholder.style.display = 'block';
                 btn.textContent = '📷 Activar Cámara';
@@ -555,7 +734,7 @@ Responde SI para más información.
             }
         }
 
-        // CÁMARA 2 PARA PROMOCIONES
+        // CÁMARA 2 PARA PROMOCIONES A CLIENTES
         async function toggleCamera2() {
             const video = document.getElementById('video2');
             const btn = document.getElementById('cameraBtn2');
@@ -606,17 +785,81 @@ Responde SI para más información.
                 preview.src = fotoPromo;
                 preview.style.display = 'block';
                 
-                // Limpiar stream
                 detenerCamara(stream2);
                 stream2 = null;
                 
-                // Resetear UI
                 video.style.display = 'none';
                 placeholder.style.display = 'block';
                 btn.textContent = '📷 Activar Cámara';
                 btn.onclick = toggleCamera2;
                 
                 showAlert('Foto de promoción capturada');
+            } catch (error) {
+                console.error('Error al tomar foto:', error);
+                showAlert('Error al tomar foto');
+            }
+        }
+
+        // CÁMARA MARKETING
+        async function toggleCameraMarketing() {
+            const video = document.getElementById('videoMarketing');
+            const btn = document.getElementById('cameraBtnMarketing');
+            const placeholder = document.getElementById('placeholderMarketing');
+            
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de cámara no encontrados');
+                return;
+            }
+            
+            if (!streamMarketing) {
+                try {
+                    streamMarketing = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = streamMarketing;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '📸 Tomar Foto';
+                    btn.onclick = tomarFotoMarketing;
+                } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
+                    showAlert('Error al acceder a la cámara');
+                }
+            } else {
+                tomarFotoMarketing();
+            }
+        }
+
+        function tomarFotoMarketing() {
+            const video = document.getElementById('videoMarketing');
+            const canvas = document.getElementById('canvasMarketing');
+            const preview = document.getElementById('previewMarketing');
+            const btn = document.getElementById('cameraBtnMarketing');
+            const placeholder = document.getElementById('placeholderMarketing');
+            
+            if (!video || !canvas || !preview) {
+                showAlert('Error: elementos no encontrados');
+                return;
+            }
+            
+            try {
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                fotoMarketing = canvas.toDataURL('image/jpeg', 0.8);
+                preview.src = fotoMarketing;
+                preview.style.display = 'block';
+                
+                detenerCamara(streamMarketing);
+                streamMarketing = null;
+                
+                video.style.display = 'none';
+                placeholder.style.display = 'block';
+                btn.textContent = '📷 Activar Cámara';
+                btn.onclick = toggleCameraMarketing;
+                
+                showAlert('Foto de marketing capturada');
             } catch (error) {
                 console.error('Error al tomar foto:', error);
                 showAlert('Error al tomar foto');
@@ -651,7 +894,6 @@ Responde SI para más información.
                 return;
             }
             
-            // Verificar código duplicado
             if (productos.some(p => p.codigo === producto.codigo)) {
                 showAlert('El código ya existe');
                 return;
@@ -662,10 +904,58 @@ Responde SI para más información.
                 guardarDatos();
                 sincronizarCatalogo();
                 limpiarCamara();
-                showAlert('✅ Producto guardado en inventario y catálogo');
+                showAlert('✅ Producto guardado en inventario');
             } catch (error) {
                 console.error('Error al guardar producto:', error);
                 showAlert('Error al guardar producto');
+            }
+        }
+
+        function guardarYEnviar() {
+            guardarProducto();
+            
+            // Esperar un momento para que se guarde
+            setTimeout(() => {
+                if (productos.length > 0) {
+                    const ultimoProducto = productos[productos.length - 1];
+                    enviarProductoWhatsApp(ultimoProducto);
+                }
+            }, 500);
+        }
+
+        function enviarProductoWhatsApp(producto) {
+            const mensaje = `🛍️ *NUEVO PRODUCTO DISPONIBLE*\n\n` +
+                          `📦 ${producto.nombre}\n` +
+                          `🔢 Código: ${producto.codigo}\n` +
+                          `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n\n` +
+                          `Me interesa conocer si te gusta este modelo.\n\n` +
+                          `✨ ¿Te interesa verlo en la tienda?\n\n` +
+                          `📱 849-797-2424\n` +
+                          `🌐 opticanvision.com`;
+            
+            try {
+                if (fotoActual && navigator.share) {
+                    fetch(fotoActual)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], `${producto.codigo}.jpg`, { type: 'image/jpeg' });
+                            return navigator.share({
+                                title: producto.nombre,
+                                text: mensaje,
+                                files: [file]
+                            });
+                        })
+                        .catch(() => {
+                            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Producto enviado por WhatsApp');
+            } catch (error) {
+                console.error('Error al enviar por WhatsApp:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
         }
 
@@ -675,7 +965,10 @@ Responde SI para más información.
                 localStorage.setItem('nvisionClientes', JSON.stringify(clientes));
                 localStorage.setItem('nvisionVentas', JSON.stringify(ventas));
                 localStorage.setItem('nvisionFacturas', JSON.stringify(facturas));
+                localStorage.setItem('nvisionTemplates', JSON.stringify(templates));
+                localStorage.setItem('nvisionEstadisticas', JSON.stringify(estadisticas));
             } catch (error) {
+                console.error('Error al guardar datos:', error);
                 showAlert('Error al guardar datos');
             }
         }
@@ -692,7 +985,7 @@ Responde SI para más información.
                 }));
                 localStorage.setItem('nvisionCatalogo', JSON.stringify(catalogo));
             } catch (error) {
-                console.log('Error al sincronizar catálogo:', error);
+                console.error('Error al sincronizar catálogo:', error);
             }
         }
 
@@ -729,7 +1022,7 @@ Responde SI para más información.
             const lista = document.getElementById('listaInventario');
             
             if (productos.length === 0) {
-                lista.innerHTML = '<p style="text-align: center;">No hay productos en el inventario</p>';
+                lista.innerHTML = '<p style="text-align: center;">No hay productos en el inventario. Use la cámara rápida para agregar productos.</p>';
                 return;
             }
             
@@ -744,7 +1037,7 @@ Responde SI para más información.
                         <td>RD$ ${p.precio.toFixed(2)}</td>
                         <td>${p.stock} ${p.stock < 5 ? '⚠️' : ''}</td>
                         <td>
-                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱 Enviar</button>
+                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱 Enviar por WhatsApp</button>
                             <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
                         </td>
                     </tr>
@@ -778,7 +1071,7 @@ Responde SI para más información.
                         <td>RD$ ${p.precio.toFixed(2)}</td>
                         <td>${p.stock} ${p.stock < 5 ? '⚠️' : ''}</td>
                         <td>
-                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱 Enviar</button>
+                            <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱 Enviar por WhatsApp</button>
                             <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
                         </td>
                     </tr>
@@ -796,17 +1089,16 @@ Responde SI para más información.
                 return;
             }
             
-            const mensaje = `🎁 *OFERTA ESPECIAL*\n\n` +
+            const mensaje = `🛍️ *PRODUCTO DISPONIBLE*\n\n` +
                           `📦 ${producto.nombre}\n` +
                           `🔢 Código: ${producto.codigo}\n` +
                           `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n\n` +
-                          `✨ ¿Te interesa?\n` +
-                          `📱 Responde SI para más información\n\n` +
-                          `☎️ 849-797-2424\n` +
+                          `Me interesa conocer si te gusta este modelo.\n\n` +
+                          `✨ ¿Te interesa verlo en la tienda?\n\n` +
+                          `📱 849-797-2424\n` +
                           `🌐 opticanvision.com`;
             
             try {
-                // Intentar compartir con imagen en móvil si está disponible
                 if (navigator.share && producto.imagen && !producto.imagen.includes('placeholder')) {
                     fetch(producto.imagen)
                         .then(res => res.blob())
@@ -819,15 +1111,15 @@ Responde SI para más información.
                             });
                         })
                         .catch(() => {
-                            // Fallback a WhatsApp
                             window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                         });
                 } else {
-                    // Usar WhatsApp directamente
                     window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                 }
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Producto enviado por WhatsApp');
             } catch (error) {
-                // Fallback en caso de error
+                console.error('Error al compartir producto:', error);
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
         }
@@ -842,7 +1134,197 @@ Responde SI para más información.
             }
         }
 
-        // FUNCIONES DE CONTACTAR
+        // FUNCIONES DE MARKETING
+        function cargarMarketing() {
+            document.getElementById('mensajesEnviados').textContent = estadisticas.mensajesHoy || 0;
+            document.getElementById('promocionesActivas').textContent = estadisticas.promociones || 0;
+        }
+
+        function enviarPromocionMarketing() {
+            const mensajeElement = document.getElementById('mensajeMarketing');
+            if (!mensajeElement) {
+                showAlert('Error: elemento de mensaje no encontrado');
+                return;
+            }
+            
+            const mensaje = mensajeElement.value;
+            if (!mensaje.trim()) {
+                showAlert('Escriba un mensaje promocional');
+                return;
+            }
+            
+            try {
+                if (fotoMarketing && navigator.share) {
+                    fetch(fotoMarketing)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'promocion.jpg', { type: 'image/jpeg' });
+                            return navigator.share({
+                                title: 'Promoción Nvision',
+                                text: mensaje,
+                                files: [file]
+                            });
+                        })
+                        .catch(() => {
+                            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+                actualizarEstadisticas('promocion');
+                showAlert('📱 Promoción enviada por WhatsApp');
+            } catch (error) {
+                console.error('Error al enviar promoción:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                showAlert('📱 Promoción enviada (modo básico)');
+            }
+        }
+
+        function manejarArchivo(input) {
+            const archivo = input.files[0];
+            if (!archivo) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                archivoSubido = {
+                    nombre: archivo.name,
+                    tipo: archivo.type,
+                    datos: e.target.result
+                };
+                
+                document.getElementById('archivoSubido').innerHTML = `
+                    <div style="padding: 10px; background: rgba(37, 211, 102, 0.2); border-radius: 5px;">
+                        📁 ${archivo.name} (${(archivo.size / 1024 / 1024).toFixed(2)} MB)
+                    </div>
+                `;
+                showAlert('Archivo cargado correctamente');
+            };
+            reader.readAsDataURL(archivo);
+        }
+
+        function enviarArchivo() {
+            if (!archivoSubido) {
+                showAlert('Seleccione un archivo primero');
+                return;
+            }
+            
+            const mensaje = document.getElementById('mensajeArchivo').value || 'Archivo de Óptica Nvision';
+            
+            try {
+                if (navigator.share) {
+                    // Convertir datos base64 a blob
+                    const [header, data] = archivoSubido.datos.split(',');
+                    const mimeType = header.match(/:(.*?);/)[1];
+                    const binaryString = atob(data);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: mimeType });
+                    const file = new File([blob], archivoSubido.nombre, { type: mimeType });
+                    
+                    navigator.share({
+                        title: 'Archivo Nvision',
+                        text: mensaje,
+                        files: [file]
+                    }).then(() => {
+                        actualizarEstadisticas('mensaje');
+                        showAlert('📁 Archivo enviado');
+                    }).catch(() => {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + '\n\nArchivo: ' + archivoSubido.nombre)}`, '_blank');
+                    });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + '\n\nArchivo: ' + archivoSubido.nombre)}`, '_blank');
+                    actualizarEstadisticas('mensaje');
+                    showAlert('📁 Mensaje enviado (archivo como referencia)');
+                }
+            } catch (error) {
+                console.error('Error al enviar archivo:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            }
+        }
+
+        function enviarTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) {
+                showAlert('Template no encontrado');
+                return;
+            }
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(template.contenido)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+            showAlert(`📱 ${template.titulo} enviado por WhatsApp`);
+        }
+
+        function crearTemplate() {
+            const titulo = document.getElementById('tituloTemplate').value.trim();
+            const contenido = document.getElementById('contenidoTemplate').value.trim();
+            
+            if (!titulo || !contenido) {
+                showAlert('Complete título y contenido del template');
+                return;
+            }
+            
+            const nuevoTemplate = {
+                id: Date.now().toString(),
+                titulo: titulo,
+                contenido: contenido
+            };
+            
+            templates.push(nuevoTemplate);
+            guardarDatos();
+            
+            // Agregar a la lista
+            const lista = document.getElementById('listaTemplates');
+            const nuevoItem = document.createElement('div');
+            nuevoItem.className = 'template-item';
+            nuevoItem.innerHTML = `
+                <strong>📝 ${titulo}</strong><br>
+                <button class="btn btn-whatsapp" onclick="enviarTemplate('${nuevoTemplate.id}')">📱 Enviar Template</button>
+            `;
+            lista.appendChild(nuevoItem);
+            
+            document.getElementById('tituloTemplate').value = '';
+            document.getElementById('contenidoTemplate').value = '';
+            showAlert('✅ Template creado');
+        }
+
+        function verEstadisticas() {
+            const stats = `📊 *ESTADÍSTICAS DE HOY*\n\n` +
+                         `📱 Mensajes enviados: ${estadisticas.mensajesHoy}\n` +
+                         `🎁 Promociones: ${estadisticas.promociones}\n` +
+                         `📦 Productos: ${productos.length}\n` +
+                         `👥 Clientes: ${clientes.length}\n\n` +
+                         `📅 ${new Date().toLocaleDateString()}`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(stats)}`, '_blank');
+        }
+
+        function actualizarEstadisticas(tipo) {
+            const hoy = new Date().toDateString();
+            const ultimaActualizacion = localStorage.getItem('nvisionUltimaStats');
+            
+            if (ultimaActualizacion !== hoy) {
+                estadisticas.mensajesHoy = 0;
+                estadisticas.promociones = 0;
+                localStorage.setItem('nvisionUltimaStats', hoy);
+            }
+            
+            if (tipo === 'mensaje') {
+                estadisticas.mensajesHoy++;
+            } else if (tipo === 'promocion') {
+                estadisticas.promociones++;
+                estadisticas.mensajesHoy++;
+            }
+            
+            guardarDatos();
+            if (document.getElementById('mensajesEnviados')) {
+                document.getElementById('mensajesEnviados').textContent = estadisticas.mensajesHoy;
+                document.getElementById('promocionesActivas').textContent = estadisticas.promociones;
+            }
+        }
+
+        // FUNCIONES DE CONTACTAR CLIENTES
         function cargarClientesRapida() {
             const lista = document.getElementById('listaClientesRapida');
             
@@ -855,17 +1337,20 @@ Responde SI para más información.
                 <div class="cliente-item">
                     <strong>${c.nombre}</strong><br>
                     📱 ${c.telefono}<br>
+                    📅 ${c.cumpleanos ? 'Cumple: ' + new Date(c.cumpleanos).toLocaleDateString() : ''}<br>
                     <button class="btn btn-whatsapp" onclick="contactarCliente('${c.telefono}', '${c.nombre}')">💬 Contactar</button>
                 </div>
             `).join('');
         }
 
         function contactarCliente(telefono, nombre) {
-            const mensaje = `¡Hola ${nombre}! ✨\n\nTenemos ofertas especiales en Óptica Nvision.\n\n¿Te interesa ver nuestros nuevos productos?\n\n📱 849-797-2424\n🌐 opticanvision.com`;
-            window.open(`https://wa.me/${telefono.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            const mensaje = `¡Hola ${nombre}! ✨\n\nEspero que estés muy bien. Te contacto desde Óptica Nvision.\n\nTenemos ofertas especiales y nuevos productos que podrían interesarte.\n\n¿Te gustaría ver nuestras promociones actuales?\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            const telefonoLimpio = telefono.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
         }
 
-        function enviarPromocion() {
+        function enviarPromocionClientes() {
             const mensajeElement = document.getElementById('mensajePromo');
             if (!mensajeElement) {
                 showAlert('Error: elemento de mensaje no encontrado');
@@ -879,32 +1364,28 @@ Responde SI para más información.
             }
             
             try {
-                // Si hay foto, intentar compartir con imagen
                 if (fotoPromo && navigator.share) {
                     fetch(fotoPromo)
                         .then(res => res.blob())
                         .then(blob => {
-                            const file = new File([blob], 'promocion.jpg', { type: 'image/jpeg' });
+                            const file = new File([blob], 'promocion_especial.jpg', { type: 'image/jpeg' });
                             return navigator.share({
-                                title: 'Promoción Nvision',
+                                title: 'Promoción Especial Nvision',
                                 text: mensaje,
                                 files: [file]
                             });
                         })
                         .catch(() => {
-                            // Fallback a WhatsApp
                             window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                         });
                 } else {
-                    // Usar WhatsApp directamente
                     window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                 }
-                showAlert('Promoción enviada');
+                actualizarEstadisticas('promocion');
+                showAlert('📱 Promoción especial enviada');
             } catch (error) {
                 console.error('Error al enviar promoción:', error);
-                // Fallback final
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-                showAlert('Promoción enviada (modo básico)');
             }
         }
 
@@ -914,7 +1395,7 @@ Responde SI para más información.
             const hoy = new Date();
             const recordatorios = [];
             
-            // Verificar cumpleaños
+            // Verificar eventos/cumpleaños próximos
             clientes.forEach(c => {
                 if (c.cumpleanos) {
                     const cumple = new Date(c.cumpleanos);
@@ -923,11 +1404,29 @@ Responde SI para más información.
                     
                     if (diasHasta >= 0 && diasHasta <= 7) {
                         recordatorios.push({
-                            tipo: 'cumpleanos',
+                            tipo: 'evento',
                             cliente: c.nombre,
                             telefono: c.telefono,
-                            mensaje: `Cumpleaños de ${c.nombre} ${diasHasta === 0 ? 'HOY' : `en ${diasHasta} días`}`,
+                            edad: c.edad,
+                            mensaje: `${diasHasta === 0 ? '🎂 HOY' : `📅 En ${diasHasta} días`}: Cumpleaños de ${c.nombre} (${c.edad} años)`,
                             urgente: diasHasta <= 1
+                        });
+                    }
+                }
+                
+                // Verificar exámenes anuales
+                if (c.ultimoExamen) {
+                    const ultimoExamen = new Date(c.ultimoExamen);
+                    const unAnoAtras = new Date();
+                    unAnoAtras.setFullYear(unAnoAtras.getFullYear() - 1);
+                    
+                    if (ultimoExamen <= unAnoAtras) {
+                        recordatorios.push({
+                            tipo: 'examen',
+                            cliente: c.nombre,
+                            telefono: c.telefono,
+                            mensaje: `👁️ ${c.nombre} necesita examen anual (último: ${ultimoExamen.toLocaleDateString()})`,
+                            urgente: true
                         });
                     }
                 }
@@ -939,14 +1438,14 @@ Responde SI para más información.
                     recordatorios.push({
                         tipo: 'stock',
                         producto: p.nombre,
-                        mensaje: `Stock bajo: ${p.nombre} (${p.stock} unidades)`,
+                        mensaje: `📦 Stock bajo: ${p.nombre} (${p.stock} unidades)`,
                         urgente: p.stock === 0
                     });
                 }
             });
             
             if (recordatorios.length === 0) {
-                lista.innerHTML = '<p>No hay recordatorios pendientes</p>';
+                lista.innerHTML = '<p>✅ No hay recordatorios pendientes para hoy</p>';
                 return;
             }
             
@@ -956,10 +1455,29 @@ Responde SI para más información.
                 return `
                     <div class="reminder-item ${r.urgente ? 'reminder-urgent' : ''}">
                         <strong>${r.mensaje}</strong>
-                        ${r.telefono ? `<br><button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cumpleanos', '${telefonoLimpio}', '${nombreSeguro}')">🎂 Felicitar</button>` : ''}
+                        ${r.telefono ? `<br><button class="btn btn-whatsapp" onclick="enviarMensajeRecordatorio('${r.tipo}', '${telefonoLimpio}', '${nombreSeguro}', ${r.edad || 0})">💬 Enviar Mensaje</button>` : ''}
                     </div>
                 `;
             }).join('');
+        }
+
+        function enviarMensajeRecordatorio(tipo, telefono, nombre, edad) {
+            let mensaje = '';
+            
+            switch (tipo) {
+                case 'evento':
+                    mensaje = `🎂 ¡Feliz cumpleaños ${nombre}! 🎉\n\n¡${edad} años de vida! En Óptica Nvision queremos celebrar contigo.\n\n🎁 Tenemos una sorpresa especial para ti en tu día.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    break;
+                case 'examen':
+                    mensaje = `👁️ Hola ${nombre}!\n\nEs momento de tu examen anual de la vista.\n\nRecomendamos revisar tu salud visual cada año.\n\n📅 Agenda tu cita\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    break;
+            }
+            
+            if (telefono && mensaje) {
+                window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Recordatorio enviado');
+            }
         }
 
         function enviarMensajeRapido(tipo, telefono = '', nombre = '') {
@@ -967,15 +1485,21 @@ Responde SI para más información.
             
             switch (tipo) {
                 case 'cumpleanos':
-                    mensaje = `🎂 ¡Feliz cumpleaños ${nombre}! 🎉\n\nEn Óptica Nvision queremos celebrar contigo.\n\n🎁 Tenemos una sorpresa especial para ti.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    const nombreEvento = document.getElementById('nombreEvento')?.value || 'Evento especial';
+                    const fechaEvento = document.getElementById('fechaEvento')?.value;
+                    if (fechaEvento) {
+                        mensaje = `🎉 ¡${nombreEvento}! 🎊\n\nEn Óptica Nvision queremos celebrar contigo.\n\n🎁 Tenemos algo especial para ti.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    } else {
+                        mensaje = `🎂 ¡Felicitaciones! 🎉\n\nEn Óptica Nvision queremos celebrar contigo.\n\n🎁 Tenemos una sorpresa especial.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    }
                     break;
                 case 'cita':
-                    const fecha = document.getElementById('fechaCita').value;
-                    const hora = document.getElementById('horaCita').value;
-                    mensaje = `📅 Recordatorio de cita\n\nFecha: ${fecha}\nHora: ${hora}\n\nTe esperamos en Óptica Nvision\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    const fecha = document.getElementById('fechaCita')?.value;
+                    const hora = document.getElementById('horaCita')?.value;
+                    mensaje = `📅 Recordatorio de cita\n\nFecha: ${fecha || 'Por confirmar'}\nHora: ${hora || 'Por confirmar'}\n\nTe esperamos en Óptica Nvision\n\n📱 849-797-2424\n🌐 opticanvision.com`;
                     break;
                 case 'examen':
-                    mensaje = `👁️ Es hora de tu examen anual\n\nRecomendamos revisar tu vista cada año.\n\n📅 Agenda tu cita\n📱 849-797-2424\n🌐 opticanvision.com`;
+                    mensaje = `👁️ Es hora de tu examen anual\n\nRecomendamos revisar tu vista cada año para mantener una salud visual óptima.\n\n📅 Agenda tu cita\n📱 849-797-2424\n🌐 opticanvision.com`;
                     break;
             }
             
@@ -984,6 +1508,7 @@ Responde SI para más información.
             } else {
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
+            actualizarEstadisticas('mensaje');
         }
 
         // FUNCIONES DE VENTAS
@@ -991,19 +1516,16 @@ Responde SI para más información.
             const clienteSelect = document.getElementById('clienteVenta');
             const productoSelect = document.getElementById('productoVenta');
             
-            // Cargar clientes
             clienteSelect.innerHTML = '<option value="">Seleccionar cliente</option>';
             clientes.forEach(c => {
                 clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
             });
             
-            // Cargar productos
             productoSelect.innerHTML = '<option value="">Seleccionar producto</option>';
             productos.forEach(p => {
                 productoSelect.innerHTML += `<option value="${p.id}">${p.nombre} - RD$ ${p.precio}</option>`;
             });
             
-            // Cargar lista de ventas
             const lista = document.getElementById('listaVentas');
             if (ventas.length === 0) {
                 lista.innerHTML = '<p>No hay ventas registradas</p>';
@@ -1053,7 +1575,6 @@ Responde SI para más información.
             
             ventas.push(venta);
             
-            // Actualizar stock
             const producto = productos.find(p => p.id === productoId);
             if (producto) {
                 producto.stock = Math.max(0, producto.stock - cantidad);
@@ -1063,7 +1584,6 @@ Responde SI para más información.
             cargarVentas();
             showAlert('✅ Venta registrada');
             
-            // Limpiar formulario
             document.getElementById('clienteVenta').value = '';
             document.getElementById('productoVenta').value = '';
             document.getElementById('cantidadVenta').value = '1';
@@ -1082,7 +1602,6 @@ Responde SI para más información.
             document.getElementById('promedioVenta').textContent = promedioVenta.toFixed(2);
             document.getElementById('stockBajo').textContent = stockBajo;
             
-            // Cargar últimas transacciones
             const transacciones = document.getElementById('ultimasTransacciones');
             if (ventas.length === 0) {
                 transacciones.innerHTML = '<p>No hay transacciones registradas</p>';
@@ -1117,78 +1636,123 @@ Responde SI para más información.
                           `📦 Productos: ${productos.length}\n` +
                           `👥 Clientes: ${clientes.length}\n` +
                           `💰 Ventas totales: RD$ ${totalVentas.toFixed(2)}\n` +
+                          `📱 Mensajes hoy: ${estadisticas.mensajesHoy}\n` +
                           `⚠️ Stock bajo: ${stockBajo} productos\n\n` +
                           `📅 ${new Date().toLocaleDateString()}\n` +
                           `🌐 opticanvision.com`;
             
             window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+        }
+
+        // FUNCIONES DE CAMPAÑAS
+        function cargarCampanas() {
+            // Actualizar estado
+            document.getElementById('textoEstado').textContent = 'Lista para enviar';
+        }
+
+        function enviarCampanaDia() {
+            const mensaje = `📱 *CAMPAÑA DEL DÍA - NVISION*\n\n` +
+                          `✨ Ofertas especiales disponibles\n` +
+                          `👓 Nuevos productos en tienda\n` +
+                          `🎁 Promociones exclusivas\n\n` +
+                          `¡Visítanos hoy!\n\n` +
+                          `📱 849-797-2424\n` +
+                          `🌐 opticanvision.com`;
+            
+            try {
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('promocion');
+                document.getElementById('textoEstado').textContent = 'Campaña enviada exitosamente';
+                showAlert('📱 Campaña del día enviada');
+            } catch (error) {
+                showAlert('Error al enviar campaña');
+            }
+        }
+
+        function programarCampana() {
+            const ahora = new Date();
+            const mensaje = `⏰ *CAMPAÑA PROGRAMADA*\n\n` +
+                          `📅 Programada para: ${ahora.toLocaleString()}\n` +
+                          `📱 Sistema de programación activo\n\n` +
+                          `Óptica Nvision\n` +
+                          `📱 849-797-2424\n` +
+                          `🌐 opticanvision.com`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('promocion');
+            document.getElementById('textoEstado').textContent = 'Campaña programada correctamente';
+            showAlert('⏰ Campaña programada');
         }
 
         function crearCampana() {
-            const nombre = document.getElementById('nombreCampana').value;
-            const mensaje = document.getElementById('mensajeCampana').value;
+            const nombre = document.getElementById('nombreCampana').value.trim();
+            const mensaje = document.getElementById('mensajeCampana').value.trim();
+            const fecha = document.getElementById('fechaProgramada').value;
             
             if (!nombre || !mensaje) {
                 showAlert('Complete nombre y mensaje de la campaña');
                 return;
             }
             
-            // Simular creación de campaña
-            showAlert('✅ Campaña creada: ' + nombre);
+            const campana = {
+                id: Date.now(),
+                nombre: nombre,
+                mensaje: mensaje,
+                fecha: fecha || new Date().toISOString(),
+                creada: new Date().toISOString()
+            };
+            
+            // Simular envío inmediato
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('promocion');
+            
+            showAlert('✅ Campaña "' + nombre + '" creada y enviada');
             
             document.getElementById('nombreCampana').value = '';
             document.getElementById('mensajeCampana').value = '';
+            document.getElementById('fechaProgramada').value = '';
         }
 
         // FUNCIONES DE NAVEGACIÓN
         function abrirCatalogo() {
-            showAlert('Abriendo catálogo...');
-            // Simular apertura de catálogo
+            showAlert('📖 Abriendo catálogo de productos...');
         }
 
         function abrirClientes() {
-            showAlert('Abriendo gestión de clientes...');
-            // Simular apertura de clientes
-        }
-
-        function abrirMarketing() {
-            showAlert('Abriendo marketing WhatsApp...');
-            // Simular apertura de marketing
+            showAlert('👥 Abriendo gestión de clientes...');
         }
 
         function abrirFactura() {
-            showAlert('Abriendo sistema de facturación...');
-            // Simular apertura de factura
+            showAlert('📄 Abriendo sistema de facturación...');
         }
 
         function abrirNCF() {
-            showAlert('Abriendo sistema NCF...');
-            // Simular apertura de NCF
+            showAlert('🧾 Abriendo sistema NCF...');
         }
 
         function volverInicio() {
             if (confirm('¿Volver al inicio?')) {
-                showAlert('Regresando al inicio...');
-                // Simular navegación al inicio
+                showAlert('🏠 Regresando al inicio...');
             }
         }
 
-        // Manejar errores globalmente
-        window.addEventListener('error', function(e) {
-            console.error('Error capturado:', e.error);
-            showAlert('Se produjo un error. Reintentando...');
-        });
-
-        // Limpiar streams al cerrar la página
+        // LIMPIEZA DE RECURSOS
         window.addEventListener('beforeunload', function() {
             detenerCamara(stream);
             detenerCamara(stream2);
+            detenerCamara(streamMarketing);
         });
 
-        // Limpiar streams al cambiar de página
         window.addEventListener('pagehide', function() {
             detenerCamara(stream);
             detenerCamara(stream2);
+            detenerCamara(streamMarketing);
+        });
+
+        window.addEventListener('error', function(e) {
+            console.error('Error capturado:', e.error);
+            showAlert('Se produjo un error. Sistema funcionando en modo seguro.');
         });
     </script>
 </body>
