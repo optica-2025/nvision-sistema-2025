@@ -12,6 +12,189 @@
             color: white; 
             padding: 20px;
         }
+
+        // ========================================
+        // 👥 FUNCIONES DE GESTIÓN DE CLIENTES REAL
+        // ========================================
+
+        function cargarGestionClientes() {
+            cargarListaCompletaClientes();
+            console.log('👥 Gestión de clientes cargada');
+        }
+
+        function agregarCliente() {
+            const nombreEl = document.getElementById('nombreCliente');
+            const telefonoEl = document.getElementById('telefonoCliente');
+            const emailEl = document.getElementById('emailCliente');
+            const cumpleanosEl = document.getElementById('cumpleanosCliente');
+            const edadEl = document.getElementById('edadCliente');
+            const ultimoExamenEl = document.getElementById('ultimoExamenCliente');
+            const notasEl = document.getElementById('notasCliente');
+            
+            if (!nombreEl || !telefonoEl) {
+                showAlert('Error: elementos del formulario no encontrados');
+                return;
+            }
+            
+            const nombre = nombreEl.value.trim();
+            const telefono = telefonoEl.value.trim();
+            
+            if (!nombre || !telefono) {
+                showAlert('Complete nombre y teléfono');
+                return;
+            }
+            
+            // Verificar si ya existe
+            if (clientes.some(c => c.telefono === telefono)) {
+                showAlert('Ya existe un cliente con ese teléfono');
+                return;
+            }
+            
+            const nuevoCliente = {
+                id: Date.now(),
+                nombre: nombre,
+                telefono: telefono,
+                email: emailEl ? emailEl.value.trim() : '',
+                cumpleanos: cumpleanosEl ? cumpleanosEl.value : '',
+                edad: edadEl ? parseInt(edadEl.value) || null : null,
+                ultimoExamen: ultimoExamenEl ? ultimoExamenEl.value : '',
+                notas: notasEl ? notasEl.value.trim() : '',
+                fechaRegistro: new Date().toISOString()
+            };
+            
+            try {
+                clientes.push(nuevoCliente);
+                guardarDatos();
+                
+                // Limpiar formulario
+                [nombreEl, telefonoEl, emailEl, cumpleanosEl, edadEl, ultimoExamenEl, notasEl].forEach(el => {
+                    if (el) el.value = '';
+                });
+                
+                cargarListaCompletaClientes();
+                showAlert(`✅ Cliente ${nombre} agregado correctamente`);
+            } catch (error) {
+                console.error('Error al agregar cliente:', error);
+                showAlert('Error al agregar cliente');
+            }
+        }
+
+        function buscarClienteReal(termino) {
+            const resultados = document.getElementById('resultadosBusqueda');
+            if (!resultados) return;
+            
+            if (!termino.trim()) {
+                resultados.innerHTML = '';
+                return;
+            }
+            
+            const clientesEncontrados = clientes.filter(c => 
+                c.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                c.telefono.includes(termino)
+            );
+            
+            if (clientesEncontrados.length === 0) {
+                resultados.innerHTML = '<p style="text-align: center; opacity: 0.7;">No se encontraron clientes</p>';
+                return;
+            }
+            
+            resultados.innerHTML = clientesEncontrados.map(c => `
+                <div class="cliente-item" style="margin: 5px 0;">
+                    <strong>${c.nombre}</strong><br>
+                    📱 ${c.telefono}<br>
+                    ${c.cumpleanos ? `🎂 ${new Date(c.cumpleanos).toLocaleDateString()}` : ''}<br>
+                    <button class="btn btn-whatsapp" onclick="contactarClienteDirecto('${c.telefono}', '${c.nombre}')">💬 Contactar</button>
+                    <button class="btn btn-warning" onclick="editarCliente(${c.id})">✏️ Editar</button>
+                </div>
+            `).join('');
+        }
+
+        function cargarListaCompletaClientes() {
+            const lista = document.getElementById('listaCompletaClientes');
+            if (!lista) return;
+            
+            if (clientes.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay clientes registrados. Agregue el primer cliente arriba.</p>';
+                return;
+            }
+            
+            let html = '<table class="table"><thead><tr><th>Nombre</th><th>Teléfono</th><th>Cumpleaños</th><th>Último Examen</th><th>Acciones</th></tr></thead><tbody>';
+            
+            clientes.forEach(c => {
+                const diasHastaCumple = c.cumpleanos ? Math.ceil((new Date(c.cumpleanos) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                const cumpleProximo = diasHastaCumple !== null && diasHastaCumple >= 0 && diasHastaCumple <= 30;
+                
+                html += `
+                    <tr ${cumpleProximo ? 'style="background: rgba(16, 185, 129, 0.1);"' : ''}>
+                        <td><strong>${c.nombre}</strong>${c.notas ? '<br><small style="opacity: 0.7;">' + c.notas.substring(0, 50) + (c.notas.length > 50 ? '...' : '') + '</small>' : ''}</td>
+                        <td>${c.telefono}</td>
+                        <td>${c.cumpleanos ? new Date(c.cumpleanos).toLocaleDateString() + (cumpleProximo ? ' 🎂' : '') : 'No registrado'}</td>
+                        <td>${c.ultimoExamen ? new Date(c.ultimoExamen).toLocaleDateString() : 'No registrado'}</td>
+                        <td>
+                            <button class="btn btn-whatsapp" onclick="contactarClienteDirecto('${c.telefono}', '${c.nombre}')">💬</button>
+                            <button class="btn btn-warning" onclick="editarCliente(${c.id})">✏️</button>
+                            <button class="btn btn-danger" onclick="eliminarCliente(${c.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+
+        function contactarClienteDirecto(telefono, nombre) {
+            const mensaje = `¡Hola ${nombre}! ✨\n\nEspero que estés muy bien. Te contacto desde Óptica Nvision.\n\n¿Cómo has estado? ¿Todo bien con tus lentes?\n\nTenemos nuevas ofertas que podrían interesarte.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            const telefonoLimpio = telefono.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+        }
+
+        function editarCliente(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (!cliente) {
+                showAlert('Cliente no encontrado');
+                return;
+            }
+            
+            // Rellenar formulario con datos del cliente
+            const elementos = [
+                { id: 'nombreCliente', valor: cliente.nombre },
+                { id: 'telefonoCliente', valor: cliente.telefono },
+                { id: 'emailCliente', valor: cliente.email || '' },
+                { id: 'cumpleanosCliente', valor: cliente.cumpleanos || '' },
+                { id: 'edadCliente', valor: cliente.edad || '' },
+                { id: 'ultimoExamenCliente', valor: cliente.ultimoExamen || '' },
+                { id: 'notasCliente', valor: cliente.notas || '' }
+            ];
+            
+            elementos.forEach(el => {
+                const elemento = document.getElementById(el.id);
+                if (elemento) {
+                    elemento.value = el.valor;
+                }
+            });
+            
+            // Eliminar cliente actual para permitir actualización
+            clientes = clientes.filter(c => c.id !== id);
+            
+            showAlert(`Cliente ${cliente.nombre} cargado para edición. Modifique los datos y presione "Agregar Cliente" para guardar.`);
+        }
+
+        function eliminarCliente(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (!cliente) {
+                showAlert('Cliente no encontrado');
+                return;
+            }
+            
+            if (confirm(`¿Eliminar cliente ${cliente.nombre}?\n\nEsta acción no se puede deshacer.`)) {
+                clientes = clientes.filter(c => c.id !== id);
+                guardarDatos();
+                cargarListaCompletaClientes();
+                showAlert(`Cliente ${cliente.nombre} eliminado`);
+            }
+        }
         .container { max-width: 1200px; margin: 0 auto; }
         .header { 
             background: rgba(255, 255, 255, 0.1); 
@@ -313,7 +496,7 @@
 
                 <div class="card">
                     <h3>👥 Gestión</h3>
-                    <button class="btn btn-primary" onclick="abrirClientes()">👥 Clientes</button>
+                    <button class="btn btn-primary" onclick="mostrar('gestionClientes')">👥 Clientes</button>
                     <button class="btn btn-primary" onclick="mostrar('recordatorios')">🔔 Recordatorios</button>
                     <button class="btn btn-secondary" onclick="mostrar('ventas')">💰 Ventas</button>
                 </div>
@@ -676,15 +859,104 @@ Me interesa conocer si te gusta este modelo.
                 </div>
                 
                 <div class="card-rd">
+                    <h4>📁 Subir Nota de Voz Personalizada</h4>
+                    <div class="upload-area" onclick="document.getElementById('audioFileInput').click()">
+                        <div style="font-size: 50px;">🎤</div>
+                        <div>Click para subir audio</div>
+                        <div style="font-size: 12px; opacity: 0.7;">MP3, WAV, M4A</div>
+                    </div>
+                    <input type="file" id="audioFileInput" style="display: none;" accept="audio/*" onchange="subirAudioPersonalizado(this)">
+                    <div id="audioSubido" style="margin: 10px 0;"></div>
+                    
+                    <input type="text" id="tituloAudioSubido" class="input" placeholder="Título para este audio..." style="margin: 10px 0;">
+                    <button class="mega-btn-rd btn-audio-rd" onclick="enviarAudioSubido()">
+                        📱 ENVIAR AUDIO PERSONALIZADO
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-rd">
+                <h4>🔗 Enlaces Multimedia para Analfabetos</h4>
+                <p><strong>💡 GENIAL:</strong> Envía videos de YouTube, reels, TikToks que expliquen tus productos</p>
+                
+                <input type="url" id="enlaceYoutube" class="input" placeholder="Enlace de YouTube, Instagram, TikTok..." style="margin: 10px 0;">
+                <textarea id="mensajeEnlace" class="textarea" placeholder="Mensaje que acompañará el enlace...">🎥 ¡Mira este video!
+
+Te explica perfectamente lo que tenemos disponible.
+
+Es muy fácil de entender.
+
+📱 849-797-2424
+🌐 opticanvision.com</textarea>
+                
+                <div class="grid" style="margin: 15px 0;">
+                    <button class="mega-btn-rd" style="background: linear-gradient(45deg, #ff0000, #ff4444);" onclick="enviarEnlaceMultimedia('youtube')">
+                        📺 ENVIAR COMO YOUTUBE
+                    </button>
+                    <button class="mega-btn-rd" style="background: linear-gradient(45deg, #e1306c, #f56040);" onclick="enviarEnlaceMultimedia('instagram')">
+                        📸 ENVIAR COMO INSTAGRAM
+                    </button>
+                    <button class="mega-btn-rd" style="background: linear-gradient(45deg, #000000, #333333);" onclick="enviarEnlaceMultimedia('tiktok')">
+                        🎵 ENVIAR COMO TIKTOK
+                    </button>
+                    <button class="mega-btn-rd" style="background: linear-gradient(45deg, #1877f2, #42a5f5);" onclick="enviarEnlaceMultimedia('facebook')">
+                        👥 ENVIAR COMO FACEBOOK
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card-rd">
                     <h4>🤖 Text-to-Speech Dominicano</h4>
                     <textarea id="textoAudioRD" class="textarea" placeholder="Escribe el mensaje que quieres convertir a audio..."></textarea>
                     <button class="mega-btn-rd btn-audio-rd" onclick="convertirTextoAudioRD()">
                         🔊 CONVERTIR A AUDIO
                     </button>
                 </div>
+                
+                <div class="card-rd">
+                    <h4>📊 Estadísticas de Audio</h4>
+                    <div style="background: #333; padding: 15px; border-radius: 10px;">
+                        <p><strong>🎵 Audios enviados hoy:</strong> <span id="audiosEnviados">0</span></p>
+                        <p><strong>🔗 Enlaces multimedia:</strong> <span id="enlacesEnviados">0</span></p>
+                        <p><strong>🎤 Audios personalizados:</strong> <span id="audiosPersonalizados">0</span></p>
+                    </div>
+                </div>
             </div>
             
             <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- GESTIÓN DE CLIENTES REAL -->
+        <div id="gestionClientes" class="section">
+            <h2>👥 Gestión Completa de Clientes</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>➕ Agregar Cliente Nuevo</h3>
+                    <input type="text" id="nombreCliente" class="input" placeholder="Nombre completo">
+                    <input type="tel" id="telefonoCliente" class="input" placeholder="Teléfono (809-555-0000)">
+                    <input type="email" id="emailCliente" class="input" placeholder="Email (opcional)">
+                    <input type="date" id="cumpleanosCliente" class="input" placeholder="Fecha de nacimiento">
+                    <input type="number" id="edadCliente" class="input" placeholder="Edad">
+                    <input type="date" id="ultimoExamenCliente" class="input" placeholder="Último examen">
+                    <textarea id="notasCliente" class="textarea" placeholder="Notas especiales del cliente..."></textarea>
+                    
+                    <button class="btn btn-primary" onclick="agregarCliente()">👥 Agregar Cliente</button>
+                </div>
+                
+                <div class="card">
+                    <h3>🔍 Buscar Cliente</h3>
+                    <input type="text" id="buscarCliente" class="input" placeholder="Buscar por nombre o teléfono..." onkeyup="buscarClienteReal(this.value)">
+                    <div id="resultadosBusqueda" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista Completa de Clientes</h3>
+                <div id="listaCompletaClientes"></div>
+            </div>
         </div>
 
         <!-- QR MÁGICOS RD -->
@@ -779,6 +1051,43 @@ Me interesa conocer si te gusta este modelo.
                 </button>
             </div>
             
+            <div class="card-rd">
+                <h3>📁 Subir Plantilla Personalizada</h3>
+                <div class="upload-area" onclick="document.getElementById('plantillaFileInput').click()">
+                    <div style="font-size: 50px;">🖼️</div>
+                    <div>Click para subir imagen</div>
+                    <div style="font-size: 12px; opacity: 0.7;">JPG, PNG, GIF</div>
+                </div>
+                <input type="file" id="plantillaFileInput" style="display: none;" accept="image/*" onchange="subirPlantillaPersonalizada(this)">
+                
+                <input type="text" id="tituloPlantillaPersonalizada" class="input" placeholder="Título para la plantilla..." style="margin: 10px 0;">
+                <textarea id="mensajePlantillaPersonalizada" class="textarea" placeholder="Mensaje que acompañará la imagen..."></textarea>
+                
+                <div id="vistaPrevia" style="margin: 15px 0; display: none;">
+                    <img id="imagenPrevia" style="max-width: 100%; border-radius: 10px;">
+                </div>
+                
+                <button class="mega-btn-rd btn-visual-rd" onclick="enviarPlantillaPersonalizada()">
+                    📱 ENVIAR PLANTILLA PERSONALIZADA
+                </button>
+            </div>
+            
+            <div class="card-rd">
+                <h3>🎯 Plantillas Inteligentes para Analfabetos</h3>
+                <p><strong>💡 TIPS:</strong></p>
+                <ul style="text-align: left; padding-left: 20px;">
+                    <li>🔤 <strong>Texto grande y simple</strong></li>
+                    <li>🎨 <strong>Colores contrastantes</strong></li>
+                    <li>📱 <strong>Iconos universales</strong></li>
+                    <li>🔢 <strong>Números grandes para precios</strong></li>
+                    <li>📞 <strong>Teléfono siempre visible</strong></li>
+                </ul>
+                
+                <button class="mega-btn-rd" style="background: linear-gradient(45deg, #7c3aed, #a855f7);" onclick="crearPlantillaAutomatica()">
+                    🤖 CREAR PLANTILLA AUTOMÁTICA
+                </button>
+            </div>
+            
             <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
         </div>
 
@@ -869,6 +1178,13 @@ Me interesa conocer si te gusta este modelo.
         let audioChunksRD = [];
         let isRecordingRD = false;
         let plantillaSeleccionadaRD = null;
+        let audioPersonalizadoSubido = null;
+        let plantillaPersonalizadaSubida = null;
+        let estadisticasRD = {
+            audiosEnviados: 0,
+            enlacesEnviados: 0,
+            audiosPersonalizados: 0
+        };
         
         // Mensajes para clipboard RD
         const mensajesClipboardRD = {
@@ -958,6 +1274,7 @@ Tenemos disponibilidad:
                 examenes = JSON.parse(localStorage.getItem('nvisionExamenes') || '[]');
                 templates = JSON.parse(localStorage.getItem('nvisionTemplates') || '[]');
                 estadisticas = JSON.parse(localStorage.getItem('nvisionEstadisticas') || '{"mensajesHoy": 0, "promociones": 0}');
+                estadisticasRD = JSON.parse(localStorage.getItem('nvisionEstadisticasRD') || '{"audiosEnviados": 0, "enlacesEnviados": 0, "audiosPersonalizados": 0}');
                 
                 if (clientes.length === 0) {
                     crearDatosEjemplo();
@@ -1057,6 +1374,7 @@ Tenemos disponibilidad:
                 case 'ventas': cargarVentas(); break;
                 case 'reportes': cargarReportes(); break;
                 case 'campanas': cargarCampanas(); break;
+                case 'gestionClientes': cargarGestionClientes(); break;
                 case 'audioRD': cargarAudioRD(); break;
                 case 'qrRD': cargarQRRD(); break;
                 case 'visualRD': cargarVisualRD(); break;
@@ -2130,9 +2448,154 @@ Tenemos disponibilidad:
         // 🚀 FUNCIONES DISRUPTIVAS PARA RD
         // ========================================
 
-        // FUNCIONES DE AUDIO RD
+        // FUNCIONES DE AUDIO RD MEJORADAS
         function cargarAudioRD() {
+            // Cargar estadísticas
+            const elementos = ['audiosEnviados', 'enlacesEnviados', 'audiosPersonalizados'];
+            elementos.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = estadisticasRD[id] || 0;
+                }
+            });
             console.log('🎵 Sección Audio RD cargada');
+        }
+
+        function subirAudioPersonalizado(input) {
+            const archivo = input.files[0];
+            if (!archivo) return;
+            
+            if (!archivo.type.startsWith('audio/')) {
+                showAlert('Solo se permiten archivos de audio');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                audioPersonalizadoSubido = {
+                    nombre: archivo.name,
+                    tipo: archivo.type,
+                    datos: e.target.result
+                };
+                
+                const display = document.getElementById('audioSubido');
+                if (display) {
+                    display.innerHTML = `
+                        <div style="padding: 10px; background: rgba(16, 185, 129, 0.2); border-radius: 5px; margin: 10px 0;">
+                            🎵 ${archivo.name} 
+                            <div style="font-size: 12px; opacity: 0.7;">${(archivo.size / 1024 / 1024).toFixed(2)} MB</div>
+                            <audio controls style="width: 100%; margin-top: 10px;">
+                                <source src="${e.target.result}" type="${archivo.type}">
+                            </audio>
+                        </div>
+                    `;
+                }
+                showAlert('✅ Audio cargado correctamente');
+            };
+            reader.readAsDataURL(archivo);
+        }
+
+        function enviarAudioSubido() {
+            if (!audioPersonalizadoSubido) {
+                showAlert('Sube un audio primero');
+                return;
+            }
+            
+            const tituloEl = document.getElementById('tituloAudioSubido');
+            const titulo = tituloEl ? tituloEl.value || audioPersonalizadoSubido.nombre : audioPersonalizadoSubido.nombre;
+            
+            const mensaje = `🎵 *${titulo}*\n\nTe envío este audio especial.\n\nEscúchalo cuando puedas.\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            
+            try {
+                if (navigator.share) {
+                    // Convertir datos base64 a blob
+                    const [header, data] = audioPersonalizadoSubido.datos.split(',');
+                    const binaryString = atob(data);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: audioPersonalizadoSubido.tipo });
+                    const file = new File([blob], audioPersonalizadoSubido.nombre, { type: audioPersonalizadoSubido.tipo });
+                    
+                    navigator.share({
+                        title: titulo,
+                        text: mensaje,
+                        files: [file]
+                    }).then(() => {
+                        actualizarEstadisticasRD('audiosPersonalizados');
+                        showAlert('🎵 Audio personalizado enviado');
+                    }).catch(() => {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        actualizarEstadisticasRD('audiosPersonalizados');
+                    });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    actualizarEstadisticasRD('audiosPersonalizados');
+                    showAlert('🎵 Audio preparado para WhatsApp (referencia)');
+                }
+            } catch (error) {
+                console.error('Error al enviar audio:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticasRD('audiosPersonalizados');
+            }
+        }
+
+        function enviarEnlaceMultimedia(plataforma) {
+            const enlaceEl = document.getElementById('enlaceYoutube');
+            const mensajeEl = document.getElementById('mensajeEnlace');
+            
+            if (!enlaceEl || !mensajeEl) {
+                showAlert('Error: elementos no encontrados');
+                return;
+            }
+            
+            const enlace = enlaceEl.value.trim();
+            const mensaje = mensajeEl.value.trim();
+            
+            if (!enlace) {
+                showAlert('Ingresa un enlace primero');
+                return;
+            }
+            
+            const emojis = {
+                youtube: '📺',
+                instagram: '📸', 
+                tiktok: '🎵',
+                facebook: '👥'
+            };
+            
+            const plataformas = {
+                youtube: 'YouTube',
+                instagram: 'Instagram',
+                tiktok: 'TikTok', 
+                facebook: 'Facebook'
+            };
+            
+            const mensajeCompleto = `${emojis[plataforma]} *${plataformas[plataforma].toUpperCase()}*\n\n${mensaje}\n\n🔗 ${enlace}\n\n📱 849-797-2424`;
+            
+            try {
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
+                actualizarEstadisticasRD('enlacesEnviados');
+                showAlert(`${emojis[plataforma]} Enlace de ${plataformas[plataforma]} enviado por WhatsApp`);
+            } catch (error) {
+                console.error('Error al enviar enlace:', error);
+                showAlert('Error al enviar enlace');
+            }
+        }
+
+        function actualizarEstadisticasRD(tipo) {
+            if (estadisticasRD[tipo] !== undefined) {
+                estadisticasRD[tipo]++;
+                
+                const el = document.getElementById(tipo);
+                if (el) {
+                    el.textContent = estadisticasRD[tipo];
+                }
+                
+                // Guardar estadísticas
+                localStorage.setItem('nvisionEstadisticasRD', JSON.stringify(estadisticasRD));
+            }
         }
 
         function toggleRecordingRD() {
@@ -2326,9 +2789,121 @@ Tenemos disponibilidad:
             }
         }
 
-        // FUNCIONES VISUALES RD
         function cargarVisualRD() {
             console.log('🖼️ Sección Visual RD cargada');
+        }
+
+        function subirPlantillaPersonalizada(input) {
+            const archivo = input.files[0];
+            if (!archivo) return;
+            
+            if (!archivo.type.startsWith('image/')) {
+                showAlert('Solo se permiten imágenes');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                plantillaPersonalizadaSubida = {
+                    nombre: archivo.name,
+                    tipo: archivo.type,
+                    datos: e.target.result
+                };
+                
+                const imagenPrevia = document.getElementById('imagenPrevia');
+                const vistaPrevia = document.getElementById('vistaPrevia');
+                
+                if (imagenPrevia && vistaPrevia) {
+                    imagenPrevia.src = e.target.result;
+                    vistaPrevia.style.display = 'block';
+                }
+                
+                showAlert('✅ Plantilla cargada correctamente');
+            };
+            reader.readAsDataURL(archivo);
+        }
+
+        function enviarPlantillaPersonalizada() {
+            if (!plantillaPersonalizadaSubida) {
+                showAlert('Sube una imagen primero');
+                return;
+            }
+            
+            const tituloEl = document.getElementById('tituloPlantillaPersonalizada');
+            const mensajeEl = document.getElementById('mensajePlantillaPersonalizada');
+            
+            const titulo = tituloEl ? tituloEl.value.trim() || 'Imagen de Nvision' : 'Imagen de Nvision';
+            const mensaje = mensajeEl ? mensajeEl.value.trim() || '¡Mira esta imagen!' : '¡Mira esta imagen!';
+            
+            const mensajeCompleto = `🖼️ *${titulo}*\n\n${mensaje}\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            
+            try {
+                if (navigator.share) {
+                    // Convertir datos base64 a blob
+                    const [header, data] = plantillaPersonalizadaSubida.datos.split(',');
+                    const binaryString = atob(data);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: plantillaPersonalizadaSubida.tipo });
+                    const file = new File([blob], plantillaPersonalizadaSubida.nombre, { type: plantillaPersonalizadaSubida.tipo });
+                    
+                    navigator.share({
+                        title: titulo,
+                        text: mensajeCompleto,
+                        files: [file]
+                    }).then(() => {
+                        actualizarEstadisticas('promocion');
+                        showAlert('🖼️ Plantilla personalizada enviada');
+                    }).catch(() => {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
+                        actualizarEstadisticas('promocion');
+                    });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
+                    actualizarEstadisticas('promocion');
+                    showAlert('🖼️ Plantilla preparada para WhatsApp');
+                }
+            } catch (error) {
+                console.error('Error al enviar plantilla:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
+                actualizarEstadisticas('promocion');
+            }
+        }
+
+        function crearPlantillaAutomatica() {
+            const productos = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
+            
+            if (productos.length === 0) {
+                showAlert('Agregue productos primero para crear plantillas automáticas');
+                return;
+            }
+            
+            // Seleccionar producto aleatorio
+            const producto = productos[Math.floor(Math.random() * productos.length)];
+            
+            // Crear plantilla automática para analfabetos
+            const plantillaHTML = `
+                <div style="background: linear-gradient(45deg, #10b981, #059669); color: white; padding: 30px; text-align: center; border-radius: 20px; font-family: Arial, sans-serif;">
+                    <div style="font-size: 80px; margin: 20px 0;">👓</div>
+                    <h1 style="font-size: 48px; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">${producto.nombre}</h1>
+                    <div style="font-size: 64px; font-weight: bold; background: white; color: #059669; padding: 20px; border-radius: 15px; margin: 20px 0;">RD$ ${producto.precio}</div>
+                    <div style="font-size: 32px; margin: 20px 0;">📱 849-797-2424</div>
+                    <div style="font-size: 24px; opacity: 0.9;">Óptica Nvision</div>
+                </div>
+            `;
+            
+            // Mostrar en vista previa
+            const display = document.getElementById('plantillaActivaRD');
+            if (display) {
+                display.innerHTML = plantillaHTML;
+                display.style.background = 'transparent';
+            }
+            
+            plantillaSeleccionadaRD = 'automatica';
+            
+            showAlert(`✅ Plantilla automática creada para: ${producto.nombre}\n\nDiseñada especialmente para analfabetos con:\n• Texto grande\n• Colores contrastantes\n• Información clara`);
         }
 
         function usarPlantillaRD(tipo) {
