@@ -459,6 +459,85 @@
             margin: 15px 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        
+        /* ESTILOS LABORATORIO */
+        .orden-item {
+            background: rgba(15, 118, 110, 0.1);
+            border: 2px solid #0f766e;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .orden-item:hover {
+            background: rgba(15, 118, 110, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .numero-orden {
+            background: linear-gradient(45deg, #0f766e, #10b981);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .estado-orden {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .estado-enviado { background: #fbbf24; color: #92400e; }
+        .estado-proceso { background: #60a5fa; color: #1e40af; }
+        .estado-listo { background: #34d399; color: #065f46; }
+        .estado-entregado { background: #6b7280; color: white; }
+        
+        .receta-preview {
+            border: 3px solid #10b981;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .receta-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        
+        .qr-orden {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px solid #0f766e;
+        }
+        
+        .medidas-vision {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .ojo-medida {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px;
+            min-width: 120px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -522,6 +601,13 @@
                     <button class="btn btn-primary" onclick="abrirFactura()">📄 Factura Proforma</button>
                     <button class="btn btn-primary" onclick="abrirNCF()">🧾 Sistema NCF</button>
                     <button class="btn btn-secondary" onclick="mostrar('reportes')">📊 Reportes</button>
+                </div>
+
+                <div class="card" style="background: linear-gradient(45deg, #0f766e, #059669); border: 2px solid #10b981;">
+                    <h3>🔬 Laboratorio</h3>
+                    <button class="btn btn-primary" onclick="mostrar('laboratorio')" style="background: linear-gradient(45deg, #0f766e, #10b981);">🔬 Enviar a Confección</button>
+                    <button class="btn btn-primary" onclick="mostrar('recibidos')" style="background: linear-gradient(45deg, #7c3aed, #a855f7);">📦 Trabajos Recibidos</button>
+                    <button class="btn btn-secondary" onclick="mostrar('porCobrar')" style="background: linear-gradient(45deg, #dc2626, #ef4444);">💰 Por Cobrar</button>
                 </div>
             </div>
             
@@ -927,6 +1013,185 @@ Es muy fácil de entender.
             <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
         </div>
 
+        <!-- 🔬 MÓDULO DE LABORATORIO -->
+        <div id="laboratorio" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #0f766e, #10b981, #0f766e); color: white;">
+                <h2>🔬 Enviar Orden a Laboratorio</h2>
+                <p><strong>🇩🇴 PARA LABORATORIOS INFORMALES:</strong> Control total por WhatsApp</p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>👤 Datos del Cliente</h3>
+                    <select id="clienteLaboratorio" class="input">
+                        <option value="">Seleccionar cliente existente</option>
+                    </select>
+                    <input type="text" id="nombreClienteLab" class="input" placeholder="O escribir nombre">
+                    <input type="tel" id="telefonoClienteLab" class="input" placeholder="Teléfono del cliente">
+                    
+                    <h4 style="margin-top: 20px;">👓 Montura Seleccionada</h4>
+                    <select id="monturaLaboratorio" class="input">
+                        <option value="">Seleccionar montura</option>
+                    </select>
+                    <input type="text" id="monturaPersonalizada" class="input" placeholder="O describir montura">
+                </div>
+                
+                <div class="card">
+                    <h3>📏 Medidas de Visión</h3>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                        <div>
+                            <h4>👁️ Ojo Derecho</h4>
+                            <input type="text" id="esferaDerecho" class="input" placeholder="Esfera (ej: -2.25)">
+                            <input type="text" id="cilindroDerecho" class="input" placeholder="Cilindro (ej: -0.75)">
+                            <input type="text" id="ejeDerecho" class="input" placeholder="Eje (ej: 180°)">
+                            <input type="text" id="adicionDerecho" class="input" placeholder="Adición (ej: +1.50)">
+                        </div>
+                        <div>
+                            <h4>👁️ Ojo Izquierdo</h4>
+                            <input type="text" id="esferaIzquierdo" class="input" placeholder="Esfera (ej: -1.75)">
+                            <input type="text" id="cilindroIzquierdo" class="input" placeholder="Cilindro (ej: -0.50)">
+                            <input type="text" id="ejeIzquierdo" class="input" placeholder="Eje (ej: 90°)">
+                            <input type="text" id="adicionIzquierdo" class="input" placeholder="Adición (ej: +1.50)">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <input type="text" id="distanciaPupilar" class="input" placeholder="Distancia pupilar (ej: 64mm)">
+                        <input type="text" id="alturaSegmento" class="input" placeholder="Altura del segmento (ej: 18mm)">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📷 Foto de la Prescripción</h3>
+                <div class="camera-box" id="cameraBoxLab">
+                    <div id="placeholderLab">
+                        <div style="font-size: 50px;">📷</div>
+                        <div>Tomar foto de la receta con medidas</div>
+                    </div>
+                    <video id="videoLab" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                </div>
+                
+                <button class="btn btn-primary" onclick="toggleCameraLab()" id="cameraBtnLab">📷 Activar Cámara</button>
+                <canvas id="canvasLab" style="display: none;"></canvas>
+                <img id="previewLab" style="display: none; width: 100%; margin: 10px 0; border-radius: 5px;">
+                
+                <div style="margin-top: 15px;">
+                    <select id="tipoLente" class="input">
+                        <option value="">Tipo de lente</option>
+                        <option value="monofocal">Monofocal</option>
+                        <option value="bifocal">Bifocal</option>
+                        <option value="progresivo">Progresivo</option>
+                        <option value="transicion">Transición</option>
+                        <option value="antireflejo">Antireflejo</option>
+                    </select>
+                    
+                    <textarea id="observacionesLab" class="textarea" placeholder="Observaciones especiales para el laboratorio..."></textarea>
+                </div>
+            </div>
+            
+            <div class="card" style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981;">
+                <h3>🎯 Generar Orden</h3>
+                <div id="vistaOrden" style="display: none;">
+                    <div class="numero-orden" id="numeroOrdenDisplay">NV-000</div>
+                    <div class="qr-orden" id="qrOrdenDisplay">
+                        <div style="font-size: 100px;">📱</div>
+                        <p>QR de la orden</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generarOrdenLaboratorio()" style="font-size: 18px; padding: 15px 30px;">
+                    🔬 GENERAR ORDEN Y ENVIAR POR WHATSAPP
+                </button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- 📦 TRABAJOS RECIBIDOS -->
+        <div id="recibidos" class="section">
+            <h2>📦 Trabajos Recibidos del Laboratorio</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="card">
+                <h3>📱 Escanear QR de Trabajo Terminado</h3>
+                <div class="camera-box" id="cameraBoxScan">
+                    <div id="placeholderScan">
+                        <div style="font-size: 50px;">📱</div>
+                        <div>Escanear QR de la orden terminada</div>
+                    </div>
+                    <video id="videoScan" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                </div>
+                
+                <button class="btn btn-primary" onclick="toggleCameraScan()" id="cameraBtnScan">📱 Activar Escáner</button>
+                <canvas id="canvasScan" style="display: none;"></canvas>
+                
+                <div style="margin-top: 15px;">
+                    <input type="text" id="numeroOrdenManual" class="input" placeholder="O escribir número de orden (ej: NV-456)">
+                    <button class="btn btn-whatsapp" onclick="marcarComoRecibido()">✅ Marcar como Recibido</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Órdenes en Proceso</h3>
+                <div id="listaOrdenesEnProceso"></div>
+            </div>
+            
+            <div class="card">
+                <h3>✅ Trabajos Listos para Entregar</h3>
+                <div id="listaTrabajosList"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- 💰 POR COBRAR -->
+        <div id="porCobrar" class="section">
+            <h2>💰 Cuentas por Cobrar</h2>
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>💵 Registrar Pago</h3>
+                    <select id="ordenPago" class="input">
+                        <option value="">Seleccionar orden lista</option>
+                    </select>
+                    <input type="number" id="montoPago" class="input" placeholder="Monto a cobrar (RD$)">
+                    <select id="metodoPago" class="input">
+                        <option value="">Método de pago</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="transferencia">Transferencia</option>
+                        <option value="tarjeta">Tarjeta</option>
+                    </select>
+                    
+                    <button class="btn btn-primary" onclick="registrarPago()">💰 Registrar Pago</button>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Resumen de Cuentas</h3>
+                    <div class="stat-box">
+                        <div class="stat-number" id="ordenesEnLab">0</div>
+                        <div>En Laboratorio</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number" id="ordenesListas">0</div>
+                        <div>Listas para Entregar</div>
+                    </div>
+                    <div class="stat-box" style="margin-top: 10px;">
+                        <div class="stat-number">RD$ <span id="totalPorCobrar">0</span></div>
+                        <div>Total por Cobrar</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Lista de Cuentas por Cobrar</h3>
+                <div id="listaCuentasPorCobrar"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
         <!-- GESTIÓN DE CLIENTES REAL -->
         <div id="gestionClientes" class="section">
             <h2>👥 Gestión Completa de Clientes</h2>
@@ -1185,6 +1450,13 @@ Es muy fácil de entender.
             enlacesEnviados: 0,
             audiosPersonalizados: 0
         };
+
+        // VARIABLES MÓDULO LABORATORIO
+        let ordenesLaboratorio = [];
+        let streamLab = null;
+        let streamScan = null;
+        let fotoReceta = null;
+        let numeroOrdenActual = null;
         
         // Mensajes para clipboard RD
         const mensajesClipboardRD = {
@@ -1275,6 +1547,7 @@ Tenemos disponibilidad:
                 templates = JSON.parse(localStorage.getItem('nvisionTemplates') || '[]');
                 estadisticas = JSON.parse(localStorage.getItem('nvisionEstadisticas') || '{"mensajesHoy": 0, "promociones": 0}');
                 estadisticasRD = JSON.parse(localStorage.getItem('nvisionEstadisticasRD') || '{"audiosEnviados": 0, "enlacesEnviados": 0, "audiosPersonalizados": 0}');
+                ordenesLaboratorio = JSON.parse(localStorage.getItem('nvisionOrdenesLab') || '[]');
                 
                 if (clientes.length === 0) {
                     crearDatosEjemplo();
@@ -1366,20 +1639,146 @@ Tenemos disponibilidad:
             document.getElementById(seccion).classList.add('active');
             
             switch(seccion) {
-                case 'menu': actualizarDashboard(); break;
-                case 'inventario': cargarInventario(); break;
-                case 'camara': console.log('📷 Sección cámara cargada'); break;
-                case 'marketing': cargarMarketing(); break;
-                case 'contactar': cargarClientesRapida(); break;
-                case 'recordatorios': generarRecordatorios(); break;
-                case 'ventas': cargarVentas(); break;
-                case 'reportes': cargarReportes(); break;
-                case 'campanas': cargarCampanas(); break;
-                case 'gestionClientes': cargarGestionClientes(); break;
-                case 'audioRD': cargarAudioRD(); break;
-                case 'qrRD': cargarQRRD(); break;
-                case 'visualRD': cargarVisualRD(); break;
-                case 'clipboardRD': cargarClipboardRD(); break;
+                case 'menu': 
+                    try {
+                        actualizarDashboard();
+                    } catch (error) {
+                        console.error('Error al cargar menu:', error);
+                    }
+                    break;
+                case 'inventario': 
+                    try {
+                        cargarInventario();
+                    } catch (error) {
+                        console.error('Error al cargar inventario:', error);
+                        showAlert('Error al cargar inventario');
+                    }
+                    break;
+                case 'camara': 
+                    console.log('📷 Sección cámara cargada'); 
+                    break;
+                case 'marketing': 
+                    try {
+                        cargarMarketing();
+                    } catch (error) {
+                        console.error('Error al cargar marketing:', error);
+                        showAlert('Error al cargar marketing');
+                    }
+                    break;
+                case 'contactar': 
+                    try {
+                        cargarClientesRapida();
+                    } catch (error) {
+                        console.error('Error al cargar contactar:', error);
+                        showAlert('Error al cargar contactos');
+                    }
+                    break;
+                case 'recordatorios': 
+                    try {
+                        generarRecordatorios();
+                    } catch (error) {
+                        console.error('Error al cargar recordatorios:', error);
+                        showAlert('Error al cargar recordatorios');
+                    }
+                    break;
+                case 'ventas': 
+                    try {
+                        cargarVentas();
+                    } catch (error) {
+                        console.error('Error al cargar ventas:', error);
+                        showAlert('Error al cargar ventas');
+                    }
+                    break;
+                case 'reportes': 
+                    try {
+                        cargarReportes();
+                    } catch (error) {
+                        console.error('Error al cargar reportes:', error);
+                        showAlert('Error al cargar reportes');
+                    }
+                    break;
+                case 'campanas': 
+                    try {
+                        cargarCampanas();
+                    } catch (error) {
+                        console.error('Error al cargar campañas:', error);
+                        showAlert('Error al cargar campañas');
+                    }
+                    break;
+                case 'gestionClientes': 
+                    try {
+                        cargarGestionClientes();
+                    } catch (error) {
+                        console.error('Error al cargar gestión clientes:', error);
+                        showAlert('Error al cargar gestión de clientes');
+                    }
+                    break;
+                case 'audioRD': 
+                    try {
+                        cargarAudioRD();
+                    } catch (error) {
+                        console.error('Error al cargar audio RD:', error);
+                        showAlert('Error al cargar audio RD');
+                    }
+                    break;
+                case 'qrRD': 
+                    try {
+                        cargarQRRD();
+                    } catch (error) {
+                        console.error('Error al cargar QR RD:', error);
+                        showAlert('Error al cargar QR RD');
+                    }
+                    break;
+                case 'visualRD': 
+                    try {
+                        cargarVisualRD();
+                    } catch (error) {
+                        console.error('Error al cargar visual RD:', error);
+                        showAlert('Error al cargar visual RD');
+                    }
+                    break;
+                case 'clipboardRD': 
+                    try {
+                        cargarClipboardRD();
+                    } catch (error) {
+                        console.error('Error al cargar clipboard RD:', error);
+                        showAlert('Error al cargar clipboard RD');
+                    }
+                    break;
+                case 'laboratorio': 
+                    try {
+                        cargarLaboratorio();
+                    } catch (error) {
+                        console.error('Error al cargar laboratorio:', error);
+                        showAlert('Error al cargar módulo de laboratorio');
+                    }
+                    break;
+                case 'recibidos': 
+                    try {
+                        cargarRecibidos();
+                    } catch (error) {
+                        console.error('Error al cargar recibidos:', error);
+                        showAlert('Error al cargar trabajos recibidos');
+                    }
+                    break;
+                case 'porCobrar': 
+                    try {
+                        cargarPorCobrar();
+                    } catch (error) {
+                        console.error('Error al cargar por cobrar:', error);
+                        showAlert('Error al cargar cuentas por cobrar');
+                    }
+                    break;
+                default:
+                    console.warn(`Sección desconocida: ${seccion}`);
+                    showAlert(`Sección "${seccion}" no encontrada`);
+                    // Redirigir al menú como fallback
+                    try {
+                        mostrarSeccion('menu');
+                    } catch (fallbackError) {
+                        console.error('Error en fallback a menú:', fallbackError);
+                    }
+                    break;
             }
         }
 
@@ -1698,6 +2097,7 @@ Tenemos disponibilidad:
                 localStorage.setItem('nvisionFacturas', JSON.stringify(facturas));
                 localStorage.setItem('nvisionTemplates', JSON.stringify(templates));
                 localStorage.setItem('nvisionEstadisticas', JSON.stringify(estadisticas));
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
             } catch (error) {
                 console.error('Error al guardar datos:', error);
                 showAlert('Error al guardar datos');
@@ -3028,6 +3428,779 @@ Tenemos disponibilidad:
             }
         }
 
+        // ========================================
+        // 🔬 FUNCIONES MÓDULO LABORATORIO
+        // ========================================
+
+        function cargarLaboratorio() {
+            // Cargar clientes en select
+            const clienteSelect = document.getElementById('clienteLaboratorio');
+            if (clienteSelect) {
+                clienteSelect.innerHTML = '<option value="">Seleccionar cliente existente</option>';
+                clientes.forEach(c => {
+                    clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre} - ${c.telefono}</option>`;
+                });
+            }
+            
+            // Cargar productos/monturas
+            const monturaSelect = document.getElementById('monturaLaboratorio');
+            if (monturaSelect) {
+                monturaSelect.innerHTML = '<option value="">Seleccionar montura</option>';
+                productos.forEach(p => {
+                    if (p.categoria === 'monturas') {
+                        monturaSelect.innerHTML += `<option value="${p.id}">${p.nombre} - ${p.codigo}</option>`;
+                    }
+                });
+            }
+            
+            console.log('🔬 Módulo laboratorio cargado');
+        }
+
+        function cargarRecibidos() {
+            cargarOrdenesEnProceso();
+            cargarTrabajosListos();
+            console.log('📦 Módulo recibidos cargado');
+        }
+
+        function cargarPorCobrar() {
+            cargarResumenCuentas();
+            cargarListaCuentasPorCobrar();
+            cargarOrdenesParaPago();
+            console.log('💰 Módulo por cobrar cargado');
+        }
+
+        // FUNCIONES DE CÁMARA LABORATORIO - CORREGIDAS
+        async function toggleCameraLab() {
+            const video = document.getElementById('videoLab');
+            const btn = document.getElementById('cameraBtnLab');
+            const placeholder = document.getElementById('placeholderLab');
+            
+            // VALIDACIÓN CRÍTICA: Verificar elementos existen
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de cámara no encontrados');
+                console.error('Elementos faltantes:', { video: !!video, btn: !!btn, placeholder: !!placeholder });
+                return;
+            }
+            
+            // VALIDACIÓN CRÍTICA: Verificar API disponible
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showAlert('Error: Su navegador no soporta acceso a cámara');
+                console.error('getUserMedia no disponible');
+                return;
+            }
+            
+            if (!streamLab) {
+                try {
+                    streamLab = await navigator.mediaDevices.getUserMedia({ 
+                        video: { 
+                            facingMode: 'environment',
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        } 
+                    });
+                    
+                    // VALIDACIÓN CRÍTICA: Verificar stream válido
+                    if (!streamLab || streamLab.getTracks().length === 0) {
+                        throw new Error('Stream inválido obtenido');
+                    }
+                    
+                    video.srcObject = streamLab;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '📸 Tomar Foto de Receta';
+                    btn.onclick = tomarFotoReceta;
+                    
+                    console.log('✅ Cámara laboratorio activada correctamente');
+                    
+                } catch (err) {
+                    console.error('Error crítico al acceder a la cámara:', err);
+                    
+                    // CLEANUP CRÍTICO: Limpiar stream si hay error
+                    if (streamLab) {
+                        try {
+                            streamLab.getTracks().forEach(track => {
+                                try {
+                                    track.stop();
+                                } catch (trackError) {
+                                    console.error('Error al detener track:', trackError);
+                                }
+                            });
+                        } catch (cleanupError) {
+                            console.error('Error en cleanup:', cleanupError);
+                        }
+                        streamLab = null;
+                    }
+                    
+                    showAlert(`Error al acceder a la cámara: ${err.message}`);
+                }
+            } else {
+                tomarFotoReceta();
+            }
+        }
+
+        function tomarFotoReceta() {
+            const video = document.getElementById('videoLab');
+            const canvas = document.getElementById('canvasLab');
+            const preview = document.getElementById('previewLab');
+            const btn = document.getElementById('cameraBtnLab');
+            const placeholder = document.getElementById('placeholderLab');
+            
+            // VALIDACIÓN CRÍTICA: Verificar todos los elementos
+            if (!video || !canvas || !preview || !btn || !placeholder) {
+                const elementos = { video: !!video, canvas: !!canvas, preview: !!preview, btn: !!btn, placeholder: !!placeholder };
+                console.error('Elementos faltantes para foto:', elementos);
+                showAlert('Error: elementos de foto no encontrados');
+                return;
+            }
+            
+            // VALIDACIÓN CRÍTICA: Verificar stream activo
+            if (!streamLab) {
+                showAlert('Error: cámara no está activa');
+                console.error('streamLab is null');
+                return;
+            }
+            
+            try {
+                // VALIDACIÓN CRÍTICA: Verificar dimensiones de video
+                const videoWidth = video.videoWidth || 640;
+                const videoHeight = video.videoHeight || 480;
+                
+                if (videoWidth === 0 || videoHeight === 0) {
+                    throw new Error('Video no tiene dimensiones válidas');
+                }
+                
+                console.log(`Video dimensions: ${videoWidth}x${videoHeight}`);
+                
+                // VALIDACIÓN CRÍTICA: Verificar canvas context
+                const context = canvas.getContext('2d');
+                if (!context) {
+                    throw new Error('No se pudo obtener contexto 2D del canvas');
+                }
+                
+                canvas.width = videoWidth;
+                canvas.height = videoHeight;
+                
+                // OPERACIÓN CRÍTICA: Dibujar en canvas con validación
+                try {
+                    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+                } catch (drawError) {
+                    throw new Error(`Error al dibujar en canvas: ${drawError.message}`);
+                }
+                
+                // OPERACIÓN CRÍTICA: Convertir a base64 con validación
+                let dataURL;
+                try {
+                    dataURL = canvas.toDataURL('image/jpeg', 0.8);
+                } catch (toDataURLError) {
+                    throw new Error(`Error al convertir a base64: ${toDataURLError.message}`);
+                }
+                
+                // VALIDACIÓN CRÍTICA: Verificar base64 válido
+                if (!dataURL || !dataURL.startsWith('data:image/')) {
+                    throw new Error('Base64 generado es inválido');
+                }
+                
+                // VALIDACIÓN CRÍTICA: Verificar tamaño razonable (no más de 5MB)
+                const sizeInMB = (dataURL.length * 0.75) / (1024 * 1024);
+                if (sizeInMB > 5) {
+                    console.warn(`Imagen grande: ${sizeInMB.toFixed(2)}MB`);
+                }
+                
+                fotoReceta = dataURL;
+                preview.src = fotoReceta;
+                preview.style.display = 'block';
+                
+                // CLEANUP CRÍTICO: Detener stream correctamente
+                try {
+                    if (streamLab) {
+                        streamLab.getTracks().forEach(track => {
+                            try {
+                                track.stop();
+                            } catch (trackError) {
+                                console.error('Error al detener track:', trackError);
+                            }
+                        });
+                    }
+                } catch (cleanupError) {
+                    console.error('Error en cleanup de stream:', cleanupError);
+                }
+                streamLab = null;
+                
+                // Resetear UI
+                video.style.display = 'none';
+                placeholder.style.display = 'block';
+                btn.textContent = '📷 Activar Cámara';
+                btn.onclick = toggleCameraLab;
+                
+                console.log('✅ Foto de receta capturada correctamente');
+                showAlert('✅ Foto de receta capturada');
+                
+            } catch (error) {
+                console.error('Error crítico al tomar foto:', error);
+                showAlert(`Error al tomar foto: ${error.message}`);
+                
+                // CLEANUP EN CASO DE ERROR
+                try {
+                    if (streamLab) {
+                        streamLab.getTracks().forEach(track => track.stop());
+                        streamLab = null;
+                    }
+                } catch (cleanupError) {
+                    console.error('Error en cleanup después de error:', cleanupError);
+                }
+            }
+        }
+
+        // GENERACIÓN DE NÚMERO DE ORDEN ÚNICO
+        function generarNumeroOrden() {
+            let numero;
+            do {
+                // Generar número aleatorio de 3 dígitos (100-999)
+                const aleatorio = Math.floor(Math.random() * 900) + 100;
+                numero = `NV-${aleatorio}`;
+            } while (ordenesLaboratorio.some(o => o.numero === numero));
+            
+            return numero;
+        }
+
+        // GENERAR ORDEN COMPLETA
+        function generarOrdenLaboratorio() {
+            // Validar campos requeridos
+            const nombreEl = document.getElementById('nombreClienteLab');
+            const telefonoEl = document.getElementById('telefonoClienteLab');
+            
+            if (!nombreEl || !telefonoEl) {
+                showAlert('Error: elementos del formulario no encontrados');
+                return;
+            }
+            
+            const nombre = nombreEl.value.trim();
+            const telefono = telefonoEl.value.trim();
+            
+            if (!nombre || !telefono) {
+                showAlert('Complete nombre y teléfono del cliente');
+                return;
+            }
+            
+            if (!fotoReceta) {
+                showAlert('Tome una foto de la receta primero');
+                return;
+            }
+            
+            // Generar número único
+            numeroOrdenActual = generarNumeroOrden();
+            
+            // Recopilar todos los datos
+            const orden = {
+                numero: numeroOrdenActual,
+                cliente: {
+                    nombre: nombre,
+                    telefono: telefono
+                },
+                montura: obtenerDatosMontura(),
+                medidas: obtenerMedidasVision(),
+                tipoLente: document.getElementById('tipoLente')?.value || '',
+                observaciones: document.getElementById('observacionesLab')?.value || '',
+                fotoReceta: fotoReceta,
+                fechaEnvio: new Date().toISOString(),
+                estado: 'enviado', // enviado, proceso, listo, entregado
+                monto: 0 // Se establecerá al recibir
+            };
+            
+            try {
+                // Guardar orden
+                ordenesLaboratorio.push(orden);
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                
+                // Mostrar vista previa
+                mostrarVistaOrden(orden);
+                
+                // Preparar mensaje para WhatsApp
+                enviarOrdenWhatsApp(orden);
+                
+                showAlert(`✅ Orden ${numeroOrdenActual} generada y enviada por WhatsApp`);
+                
+            } catch (error) {
+                console.error('Error al generar orden:', error);
+                showAlert('Error al generar orden');
+            }
+        }
+
+        function obtenerDatosMontura() {
+            const monturaSelect = document.getElementById('monturaLaboratorio');
+            const monturaPersonalizada = document.getElementById('monturaPersonalizada');
+            
+            if (monturaSelect && monturaSelect.value) {
+                const producto = productos.find(p => p.id == monturaSelect.value);
+                return producto ? `${producto.nombre} (${producto.codigo})` : 'Montura no encontrada';
+            } else if (monturaPersonalizada && monturaPersonalizada.value.trim()) {
+                return monturaPersonalizada.value.trim();
+            }
+            
+            return 'No especificada';
+        }
+
+        function obtenerMedidasVision() {
+            const elementos = [
+                'esferaDerecho', 'cilindroDerecho', 'ejeDerecho', 'adicionDerecho',
+                'esferaIzquierdo', 'cilindroIzquierdo', 'ejeIzquierdo', 'adicionIzquierdo',
+                'distanciaPupilar', 'alturaSegmento'
+            ];
+            
+            const medidas = {};
+            elementos.forEach(id => {
+                const el = document.getElementById(id);
+                medidas[id] = el ? el.value.trim() : '';
+            });
+            
+            return medidas;
+        }
+
+        function mostrarVistaOrden(orden) {
+            const vistaOrden = document.getElementById('vistaOrden');
+            const numeroDisplay = document.getElementById('numeroOrdenDisplay');
+            const qrDisplay = document.getElementById('qrOrdenDisplay');
+            
+            if (vistaOrden && numeroDisplay && qrDisplay) {
+                numeroDisplay.textContent = orden.numero;
+                
+                // Generar QR code
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(orden.numero)}`;
+                qrDisplay.innerHTML = `
+                    <img src="${qrUrl}" style="max-width: 200px;">
+                    <p><strong>${orden.numero}</strong></p>
+                    <p style="font-size: 12px;">Escanear para identificar</p>
+                `;
+                
+                vistaOrden.style.display = 'block';
+            }
+        }
+
+        function enviarOrdenWhatsApp(orden) {
+            const medidas = orden.medidas;
+            
+            const mensaje = `🔬 *ORDEN DE LABORATORIO*\n\n` +
+                          `📋 Número: *${orden.numero}*\n` +
+                          `👤 Cliente: ${orden.cliente.nombre}\n` +
+                          `📱 Teléfono: ${orden.cliente.telefono}\n\n` +
+                          `👓 Montura: ${orden.montura}\n` +
+                          `🔍 Tipo: ${orden.tipoLente || 'No especificado'}\n\n` +
+                          `👁️ *OJO DERECHO*\n` +
+                          `   Esfera: ${medidas.esferaDerecho || 'N/A'}\n` +
+                          `   Cilindro: ${medidas.cilindroDerecho || 'N/A'}\n` +
+                          `   Eje: ${medidas.ejeDerecho || 'N/A'}\n` +
+                          `   Adición: ${medidas.adicionDerecho || 'N/A'}\n\n` +
+                          `👁️ *OJO IZQUIERDO*\n` +
+                          `   Esfera: ${medidas.esferaIzquierdo || 'N/A'}\n` +
+                          `   Cilindro: ${medidas.cilindroIzquierdo || 'N/A'}\n` +
+                          `   Eje: ${medidas.ejeIzquierdo || 'N/A'}\n` +
+                          `   Adición: ${medidas.adicionIzquierdo || 'N/A'}\n\n` +
+                          `📏 Distancia pupilar: ${medidas.distanciaPupilar || 'N/A'}\n` +
+                          `📐 Altura segmento: ${medidas.alturaSegmento || 'N/A'}\n\n` +
+                          `${orden.observaciones ? `📝 Observaciones: ${orden.observaciones}\n\n` : ''}` +
+                          `📅 Fecha: ${new Date(orden.fechaEnvio).toLocaleDateString()}\n\n` +
+                          `📱 Confirma recepción y tiempo estimado\n` +
+                          `🏭 Óptica Nvision - 849-797-2424`;
+            
+            try {
+                if (navigator.share && orden.fotoReceta) {
+                    // Intentar compartir con foto
+                    fetch(orden.fotoReceta)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], `${orden.numero}-receta.jpg`, { type: 'image/jpeg' });
+                            return navigator.share({
+                                title: `Orden ${orden.numero}`,
+                                text: mensaje,
+                                files: [file]
+                            });
+                        })
+                        .catch(() => {
+                            // Fallback a WhatsApp sin imagen
+                            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        });
+                } else {
+                    // WhatsApp sin imagen
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+                
+                actualizarEstadisticas('mensaje');
+                
+            } catch (error) {
+                console.error('Error al enviar orden:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            }
+        }
+
+        // FUNCIONES DE ESCANEO Y RECEPCIÓN
+        async function toggleCameraScan() {
+            const video = document.getElementById('videoScan');
+            const btn = document.getElementById('cameraBtnScan');
+            const placeholder = document.getElementById('placeholderScan');
+            
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de escáner no encontrados');
+                return;
+            }
+            
+            if (!streamScan) {
+                try {
+                    streamScan = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    video.srcObject = streamScan;
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    btn.textContent = '🔍 Escaneando...';
+                    
+                    // Simular escaneo automático después de 3 segundos
+                    setTimeout(() => {
+                        simularEscaneoQR();
+                    }, 3000);
+                    
+                } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
+                    showAlert('Error al acceder a la cámara');
+                }
+            }
+        }
+
+        function simularEscaneoQR() {
+            // Buscar una orden en proceso para simular
+            const ordenEnProceso = ordenesLaboratorio.find(o => o.estado === 'enviado' || o.estado === 'proceso');
+            
+            if (ordenEnProceso) {
+                document.getElementById('numeroOrdenManual').value = ordenEnProceso.numero;
+                showAlert(`📱 QR escaneado: ${ordenEnProceso.numero}`);
+            } else {
+                showAlert('No hay órdenes pendientes para escanear');
+            }
+            
+            // Detener cámara
+            detenerCamara(streamScan);
+            streamScan = null;
+            document.getElementById('videoScan').style.display = 'none';
+            document.getElementById('placeholderScan').style.display = 'block';
+            document.getElementById('cameraBtnScan').textContent = '📱 Activar Escáner';
+            document.getElementById('cameraBtnScan').onclick = toggleCameraScan;
+        }
+
+        function marcarComoRecibido() {
+            const numeroEl = document.getElementById('numeroOrdenManual');
+            if (!numeroEl) {
+                showAlert('Error: elemento no encontrado');
+                return;
+            }
+            
+            const numero = numeroEl.value.trim();
+            if (!numero) {
+                showAlert('Escriba o escanee el número de orden');
+                return;
+            }
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            if (orden.estado === 'entregado') {
+                showAlert('Esta orden ya fue entregada');
+                return;
+            }
+            
+            try {
+                // Cambiar estado a listo
+                orden.estado = 'listo';
+                orden.fechaRecibido = new Date().toISOString();
+                
+                // Solicitar monto si no está establecido
+                if (!orden.monto || orden.monto <= 0) {
+                    const monto = prompt(`Monto a cobrar por la orden ${numero}:`, '3500');
+                    if (monto && !isNaN(monto)) {
+                        orden.monto = parseFloat(monto);
+                    }
+                }
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                
+                // Limpiar campo
+                numeroEl.value = '';
+                
+                // Recargar listas
+                cargarOrdenesEnProceso();
+                cargarTrabajosListos();
+                cargarResumenCuentas();
+                
+                showAlert(`✅ Orden ${numero} marcada como lista para entregar`);
+                
+            } catch (error) {
+                console.error('Error al marcar como recibido:', error);
+                showAlert('Error al procesar orden');
+            }
+        }
+
+        function cargarOrdenesEnProceso() {
+            const lista = document.getElementById('listaOrdenesEnProceso');
+            if (!lista) return;
+            
+            const ordenesEnProceso = ordenesLaboratorio.filter(o => 
+                o.estado === 'enviado' || o.estado === 'proceso'
+            );
+            
+            if (ordenesEnProceso.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay órdenes en proceso</p>';
+                return;
+            }
+            
+            lista.innerHTML = ordenesEnProceso.map(orden => `
+                <div class="orden-item">
+                    <div class="numero-orden">${orden.numero}</div>
+                    <div class="estado-orden ${orden.estado === 'enviado' ? 'estado-enviado' : 'estado-proceso'}">${orden.estado.toUpperCase()}</div>
+                    <p><strong>Cliente:</strong> ${orden.cliente.nombre}</p>
+                    <p><strong>Enviado:</strong> ${new Date(orden.fechaEnvio).toLocaleDateString()}</p>
+                    <p><strong>Montura:</strong> ${orden.montura}</p>
+                    <button class="btn btn-warning" onclick="cambiarEstadoOrden('${orden.numero}', 'proceso')">⏳ Marcar en Proceso</button>
+                </div>
+            `).join('');
+        }
+
+        function cargarTrabajosListos() {
+            const lista = document.getElementById('listaTrabajosList');
+            if (!lista) return;
+            
+            const trabajosListos = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            if (trabajosListos.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay trabajos listos</p>';
+                return;
+            }
+            
+            lista.innerHTML = trabajosListos.map(orden => `
+                <div class="orden-item">
+                    <div class="numero-orden">${orden.numero}</div>
+                    <div class="estado-orden estado-listo">LISTO</div>
+                    <p><strong>Cliente:</strong> ${orden.cliente.nombre}</p>
+                    <p><strong>Teléfono:</strong> ${orden.cliente.telefono}</p>
+                    <p><strong>Montura:</strong> ${orden.montura}</p>
+                    <p><strong>Monto:</strong> RD$ ${orden.monto || 0}</p>
+                    <button class="btn btn-whatsapp" onclick="contactarClienteEntrega('${orden.numero}')">📱 Avisar Cliente</button>
+                    <button class="btn btn-primary" onclick="entregarOrden('${orden.numero}')">✅ Entregar</button>
+                </div>
+            `).join('');
+        }
+
+        function cambiarEstadoOrden(numero, nuevoEstado) {
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (orden) {
+                orden.estado = nuevoEstado;
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                cargarOrdenesEnProceso();
+                showAlert(`Estado de ${numero} actualizado a ${nuevoEstado}`);
+            }
+        }
+
+        function contactarClienteEntrega(numero) {
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            const mensaje = `✅ ¡Buenas noticias! ${orden.cliente.nombre}\n\n` +
+                          `Su orden ${numero} está lista para recoger.\n\n` +
+                          `👓 ${orden.montura}\n` +
+                          `💰 Monto: RD$ ${orden.monto || 0}\n\n` +
+                          `📍 Puede pasar cuando guste\n` +
+                          `📱 849-797-2424\n` +
+                          `🏭 Óptica Nvision`;
+            
+            const telefono = orden.cliente.telefono.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+        }
+
+        function entregarOrden(numero) {
+            if (!confirm(`¿Confirmar entrega de la orden ${numero}?`)) return;
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numero);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            try {
+                orden.estado = 'entregado';
+                orden.fechaEntrega = new Date().toISOString();
+                
+                // Registrar venta si hay monto
+                if (orden.monto > 0) {
+                    const venta = {
+                        id: Date.now(),
+                        clienteId: null, // Cliente de laboratorio
+                        productoId: null, // Servicio de laboratorio
+                        cantidad: 1,
+                        total: orden.monto,
+                        fecha: new Date().toISOString(),
+                        descripcion: `Entrega orden laboratorio ${numero}`,
+                        numeroOrden: numero
+                    };
+                    ventas.push(venta);
+                }
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                guardarDatos();
+                
+                cargarTrabajosListos();
+                cargarResumenCuentas();
+                cargarListaCuentasPorCobrar();
+                
+                showAlert(`✅ Orden ${numero} entregada correctamente`);
+                
+            } catch (error) {
+                console.error('Error al entregar orden:', error);
+                showAlert('Error al procesar entrega');
+            }
+        }
+
+        // FUNCIONES DE CUENTAS POR COBRAR
+        function cargarResumenCuentas() {
+            const ordenesEnLab = ordenesLaboratorio.filter(o => 
+                o.estado === 'enviado' || o.estado === 'proceso'
+            ).length;
+            
+            const ordenesListas = ordenesLaboratorio.filter(o => o.estado === 'listo').length;
+            
+            const totalPorCobrar = ordenesLaboratorio
+                .filter(o => o.estado === 'listo')
+                .reduce((sum, o) => sum + (o.monto || 0), 0);
+            
+            const elementos = [
+                { id: 'ordenesEnLab', valor: ordenesEnLab },
+                { id: 'ordenesListas', valor: ordenesListas },
+                { id: 'totalPorCobrar', valor: totalPorCobrar.toFixed(2) }
+            ];
+            
+            elementos.forEach(({ id, valor }) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = valor;
+            });
+        }
+
+        function cargarOrdenesParaPago() {
+            const select = document.getElementById('ordenPago');
+            if (!select) return;
+            
+            const ordenesListas = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            select.innerHTML = '<option value="">Seleccionar orden lista</option>';
+            ordenesListas.forEach(orden => {
+                select.innerHTML += `<option value="${orden.numero}">${orden.numero} - ${orden.cliente.nombre} - RD$ ${orden.monto || 0}</option>`;
+            });
+        }
+
+        function cargarListaCuentasPorCobrar() {
+            const lista = document.getElementById('listaCuentasPorCobrar');
+            if (!lista) return;
+            
+            const cuentasPorCobrar = ordenesLaboratorio.filter(o => o.estado === 'listo');
+            
+            if (cuentasPorCobrar.length === 0) {
+                lista.innerHTML = '<p style="text-align: center;">No hay cuentas pendientes por cobrar</p>';
+                return;
+            }
+            
+            let html = '<table class="table"><thead><tr><th>Orden</th><th>Cliente</th><th>Fecha Lista</th><th>Monto</th><th>Días Pendiente</th><th>Acciones</th></tr></thead><tbody>';
+            
+            cuentasPorCobrar.forEach(orden => {
+                const diasPendientes = Math.floor((new Date() - new Date(orden.fechaRecibido || orden.fechaEnvio)) / (1000 * 60 * 60 * 24));
+                const urgente = diasPendientes > 7;
+                
+                html += `
+                    <tr ${urgente ? 'style="background: rgba(239, 68, 68, 0.1);"' : ''}>
+                        <td><strong>${orden.numero}</strong></td>
+                        <td>${orden.cliente.nombre}<br><small>${orden.cliente.telefono}</small></td>
+                        <td>${new Date(orden.fechaRecibido || orden.fechaEnvio).toLocaleDateString()}</td>
+                        <td><strong>RD$ ${orden.monto || 0}</strong></td>
+                        <td>${diasPendientes} días ${urgente ? '⚠️' : ''}</td>
+                        <td>
+                            <button class="btn btn-whatsapp" onclick="contactarClienteEntrega('${orden.numero}')">📱</button>
+                            <button class="btn btn-primary" onclick="entregarOrden('${orden.numero}')">✅</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            lista.innerHTML = html;
+        }
+
+        function registrarPago() {
+            const ordenEl = document.getElementById('ordenPago');
+            const montoEl = document.getElementById('montoPago');
+            const metodoEl = document.getElementById('metodoPago');
+            
+            if (!ordenEl || !montoEl || !metodoEl) {
+                showAlert('Error: elementos del formulario no encontrados');
+                return;
+            }
+            
+            const numeroOrden = ordenEl.value;
+            const monto = parseFloat(montoEl.value) || 0;
+            const metodo = metodoEl.value;
+            
+            if (!numeroOrden || monto <= 0 || !metodo) {
+                showAlert('Complete todos los campos');
+                return;
+            }
+            
+            const orden = ordenesLaboratorio.find(o => o.numero === numeroOrden);
+            if (!orden) {
+                showAlert('Orden no encontrada');
+                return;
+            }
+            
+            try {
+                // Marcar como entregado
+                orden.estado = 'entregado';
+                orden.fechaEntrega = new Date().toISOString();
+                orden.metodoPago = metodo;
+                orden.montoPagado = monto;
+                
+                // Registrar venta
+                const venta = {
+                    id: Date.now(),
+                    clienteId: null,
+                    productoId: null,
+                    cantidad: 1,
+                    total: monto,
+                    fecha: new Date().toISOString(),
+                    descripcion: `Pago orden laboratorio ${numeroOrden} (${metodo})`,
+                    numeroOrden: numeroOrden
+                };
+                ventas.push(venta);
+                
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
+                guardarDatos();
+                
+                // Limpiar formulario
+                ordenEl.value = '';
+                montoEl.value = '';
+                metodoEl.value = '';
+                
+                // Recargar datos
+                cargarOrdenesParaPago();
+                cargarResumenCuentas();
+                cargarListaCuentasPorCobrar();
+                
+                showAlert(`✅ Pago de RD$ ${monto} registrado para orden ${numeroOrden}`);
+                
+            } catch (error) {
+                console.error('Error al registrar pago:', error);
+                showAlert('Error al registrar pago');
+            }
+        }
+
         // FUNCIONES DE NAVEGACIÓN
         function abrirCatalogo() {
             showAlert('📖 Abriendo catálogo de productos...');
@@ -3056,6 +4229,8 @@ Tenemos disponibilidad:
             detenerCamara(stream);
             detenerCamara(stream2);
             detenerCamara(streamMarketing);
+            detenerCamara(streamLab);
+            detenerCamara(streamScan);
             
             // Limpiar grabación de audio RD
             if (mediaRecorderRD && mediaRecorderRD.state === 'recording') {
@@ -3067,6 +4242,8 @@ Tenemos disponibilidad:
             detenerCamara(stream);
             detenerCamara(stream2);
             detenerCamara(streamMarketing);
+            detenerCamara(streamLab);
+            detenerCamara(streamScan);
             
             // Limpiar grabación de audio RD
             if (mediaRecorderRD && mediaRecorderRD.state === 'recording') {
