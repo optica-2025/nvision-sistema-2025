@@ -173,6 +173,109 @@
             border-radius: 10px;
             border-left: 4px solid #25d366;
         }
+        /* ESTILOS DISRUPTIVOS RD */
+        .mega-btn-rd {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .mega-btn-rd:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4); 
+        }
+        .btn-audio-rd { background: linear-gradient(45deg, #059669, #10b981); }
+        .btn-qr-rd { background: linear-gradient(45deg, #7c3aed, #a855f7); }
+        .btn-visual-rd { background: linear-gradient(45deg, #dc2626, #ef4444); }
+        .btn-smart-rd { background: linear-gradient(45deg, #ea580c, #f97316); }
+        
+        .card-rd {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .card-rd:hover {
+            border-color: #10b981;
+            transform: translateY(-5px);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .visual-template-rd {
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .visual-template-rd:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #2563eb, #60a5fa);
+        }
+        
+        .smart-clipboard-rd {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #10b981;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .smart-clipboard-rd:hover {
+            background: rgba(16, 185, 129, 0.2);
+            transform: translateX(10px);
+        }
+        
+        .record-btn-rd {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            color: white;
+            font-size: 30px;
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .record-btn-rd:hover { transform: scale(1.1); }
+        .record-btn-rd.recording { 
+            background: linear-gradient(45deg, #059669, #10b981);
+            animation: pulse 1s infinite;
+        }
+        
+        .qr-display-rd {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: #333;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -220,6 +323,15 @@
                     <button class="btn btn-primary" onclick="mostrar('marketing')">📱 Marketing WhatsApp</button>
                     <button class="btn btn-warning" onclick="mostrar('contactar')">💬 Contactar Clientes</button>
                     <button class="btn btn-secondary" onclick="mostrar('campanas')">📣 Campañas</button>
+                </div>
+
+                <div class="card" style="background: linear-gradient(45deg, #1e3a8a, #7c2d12); border: 2px solid #f59e0b;">
+                    <div style="position: absolute; top: 10px; right: 10px; background: linear-gradient(45deg, #dc2626, #f59e0b); padding: 5px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; animation: pulse 2s infinite;">🚀 DISRUPTIVO</div>
+                    <h3>🇩🇴 Sistema RD</h3>
+                    <button class="btn btn-primary" onclick="mostrar('audioRD')" style="background: linear-gradient(45deg, #059669, #10b981);">🎵 Audio Inteligente</button>
+                    <button class="btn btn-primary" onclick="mostrar('qrRD')" style="background: linear-gradient(45deg, #7c3aed, #a855f7);">📱 QR Mágicos</button>
+                    <button class="btn btn-primary" onclick="mostrar('visualRD')" style="background: linear-gradient(45deg, #dc2626, #ef4444);">🖼️ Visual Analfabetos</button>
+                    <button class="btn btn-primary" onclick="mostrar('clipboardRD')" style="background: linear-gradient(45deg, #ea580c, #f97316);">🧠 Clipboard Smart</button>
                 </div>
 
                 <div class="card">
@@ -512,6 +624,218 @@ Me interesa conocer si te gusta este modelo.
                 </div>
             </div>
         </div>
+
+        <!-- 🚀 SECCIONES DISRUPTIVAS PARA REPÚBLICA DOMINICANA -->
+        
+        <!-- AUDIO INTELIGENTE RD -->
+        <div id="audioRD" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #059669, #10b981, #059669); color: white;">
+                <h2>🎵 Audio Inteligente para RD</h2>
+                <p><strong>🇩🇴 SOLUCIÓN PARA ANALFABETISMO:</strong></p>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>🔊 Text-to-speech dominicano</li>
+                    <li>🎤 Graba tu voz personalizada</li>
+                    <li>📱 Envía audios por WhatsApp</li>
+                    <li>🌍 Funciona sin internet después</li>
+                </ul>
+            </div>
+            
+            <div class="card-rd">
+                <h3>🎤 Grabar Mensaje Personalizado</h3>
+                <button class="record-btn-rd" id="recordBtnRD" onclick="toggleRecordingRD()">🎤</button>
+                <div id="recordStatusRD" style="text-align: center; margin: 10px 0;">Presiona para grabar</div>
+                
+                <audio id="audioPlayerRD" controls style="width: 100%; margin: 15px 0; display: none;"></audio>
+                
+                <input type="text" id="audioTitleRD" class="input" placeholder="Título del audio (ej: Oferta del día)" style="margin: 10px 0;">
+                
+                <button class="mega-btn-rd btn-audio-rd" onclick="enviarAudioRD()">
+                    📱 ENVIAR AUDIO POR WHATSAPP
+                </button>
+            </div>
+            
+            <div class="grid">
+                <div class="card-rd">
+                    <h4>🔊 Audios Pregrabados</h4>
+                    <div class="smart-clipboard-rd" onclick="reproducirAudioRD('saludo')">
+                        🎵 Saludo de Bienvenida
+                        <div style="font-size: 12px; opacity: 0.7;">¡Bienvenido a Óptica Nvision!</div>
+                    </div>
+                    <div class="smart-clipboard-rd" onclick="reproducirAudioRD('oferta')">
+                        🎁 Oferta Especial
+                        <div style="font-size: 12px; opacity: 0.7;">Ofertas del día disponibles</div>
+                    </div>
+                    <div class="smart-clipboard-rd" onclick="reproducirAudioRD('ubicacion')">
+                        📍 Ubicación de la Tienda
+                        <div style="font-size: 12px; opacity: 0.7;">Cómo llegar a nosotros</div>
+                    </div>
+                    <div class="smart-clipboard-rd" onclick="reproducirAudioRD('horarios')">
+                        ⏰ Horarios de Atención
+                        <div style="font-size: 12px; opacity: 0.7;">Cuándo estamos abiertos</div>
+                    </div>
+                </div>
+                
+                <div class="card-rd">
+                    <h4>🤖 Text-to-Speech Dominicano</h4>
+                    <textarea id="textoAudioRD" class="textarea" placeholder="Escribe el mensaje que quieres convertir a audio..."></textarea>
+                    <button class="mega-btn-rd btn-audio-rd" onclick="convertirTextoAudioRD()">
+                        🔊 CONVERTIR A AUDIO
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- QR MÁGICOS RD -->
+        <div id="qrRD" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #7c3aed, #a855f7, #7c3aed); color: white;">
+                <h2>📱 Códigos QR Mágicos</h2>
+                <p><strong>🇩🇴 SOLUCIÓN GENIAL:</strong> El cliente escanea = WhatsApp directo a 849-797-2424</p>
+            </div>
+            
+            <div class="grid">
+                <div class="qr-display-rd">
+                    <h3>📱 QR: Contactar Tienda</h3>
+                    <div style="font-size: 120px;">📱</div>
+                    <p><strong>Escanea y te lleva directo a WhatsApp</strong></p>
+                    <button class="mega-btn-rd btn-qr-rd" onclick="generarQRRD('contacto')">
+                        🔄 GENERAR QR CONTACTO
+                    </button>
+                </div>
+                
+                <div class="qr-display-rd">
+                    <h3>🛍️ QR: Ver Catálogo</h3>
+                    <div style="font-size: 120px;">🛍️</div>
+                    <p><strong>Escanea y ve todos los productos</strong></p>
+                    <button class="mega-btn-rd btn-qr-rd" onclick="generarQRRD('catalogo')">
+                        🔄 GENERAR QR CATÁLOGO
+                    </button>
+                </div>
+                
+                <div class="qr-display-rd">
+                    <h3>📍 QR: Ubicación</h3>
+                    <div style="font-size: 120px;">📍</div>
+                    <p><strong>Escanea y abre Google Maps</strong></p>
+                    <button class="mega-btn-rd btn-qr-rd" onclick="generarQRRD('ubicacion')">
+                        🔄 GENERAR QR UBICACIÓN
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-rd">
+                <h3>🖨️ QR Personalizado</h3>
+                <input type="text" id="qrTextoRD" class="input" placeholder="Mensaje personalizado para QR...">
+                <button class="mega-btn-rd btn-qr-rd" onclick="generarQRPersonalizadoRD()">
+                    ⭐ CREAR QR PERSONALIZADO
+                </button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- PLANTILLAS VISUALES RD -->
+        <div id="visualRD" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #dc2626, #ef4444, #dc2626); color: white;">
+                <h2>🖼️ Plantillas Visuales para Analfabetos</h2>
+                <p><strong>🇩🇴 PARA ANALFABETOS:</strong> Iconos grandes + colores + mínimo texto</p>
+            </div>
+            
+            <div class="grid">
+                <div class="visual-template-rd" onclick="usarPlantillaRD('oferta')">
+                    <div style="font-size: 80px;">🎁</div>
+                    <h3>OFERTA ESPECIAL</h3>
+                    <p>Click para usar esta plantilla</p>
+                </div>
+                
+                <div class="visual-template-rd" onclick="usarPlantillaRD('nuevo')">
+                    <div style="font-size: 80px;">✨</div>
+                    <h3>PRODUCTO NUEVO</h3>
+                    <p>Click para usar esta plantilla</p>
+                </div>
+                
+                <div class="visual-template-rd" onclick="usarPlantillaRD('ubicacion')">
+                    <div style="font-size: 80px;">📍</div>
+                    <h3>VISÍTANOS</h3>
+                    <p>Click para usar esta plantilla</p>
+                </div>
+                
+                <div class="visual-template-rd" onclick="usarPlantillaRD('contacto')">
+                    <div style="font-size: 80px;">📱</div>
+                    <h3>CONTÁCTANOS</h3>
+                    <p>Click para usar esta plantilla</p>
+                </div>
+            </div>
+            
+            <div class="card-rd">
+                <h3>🎨 Plantilla Activa</h3>
+                <div id="plantillaActivaRD" style="background: white; color: #333; padding: 20px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 60px;">📱</div>
+                    <h3>Selecciona una plantilla arriba</h3>
+                </div>
+                
+                <button class="mega-btn-rd btn-visual-rd" onclick="enviarPlantillaVisualRD()">
+                    📱 ENVIAR PLANTILLA POR WHATSAPP
+                </button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
+
+        <!-- CLIPBOARD INTELIGENTE RD -->
+        <div id="clipboardRD" class="section">
+            <div class="card-rd" style="background: linear-gradient(45deg, #ea580c, #f97316, #ea580c); color: white;">
+                <h2>🧠 Clipboard Inteligente</h2>
+                <p><strong>🇩🇴 GENIAL:</strong> Un click = mensaje copiado para pegar en WhatsApp</p>
+            </div>
+            
+            <div class="grid">
+                <div class="card-rd">
+                    <h3>💬 Mensajes Inteligentes</h3>
+                    <div class="smart-clipboard-rd" onclick="copiarMensajeRD('saludo')">
+                        👋 Saludo Profesional
+                        <div style="font-size: 12px; opacity: 0.7;">¡Hola! Soy de Óptica Nvision...</div>
+                    </div>
+                    
+                    <div class="smart-clipboard-rd" onclick="copiarMensajeRD('oferta')">
+                        🎁 Oferta del Día
+                        <div style="font-size: 12px; opacity: 0.7;">Tenemos una oferta especial...</div>
+                    </div>
+                    
+                    <div class="smart-clipboard-rd" onclick="copiarMensajeRD('seguimiento')">
+                        📞 Seguimiento de Cliente
+                        <div style="font-size: 12px; opacity: 0.7;">¿Cómo te fue con los lentes?...</div>
+                    </div>
+                    
+                    <div class="smart-clipboard-rd" onclick="copiarMensajeRD('cita')">
+                        📅 Agendar Cita
+                        <div style="font-size: 12px; opacity: 0.7;">¿Cuándo te conviene venir?...</div>
+                    </div>
+                </div>
+                
+                <div class="card-rd">
+                    <h3>📱 Estado del Clipboard</h3>
+                    <div id="clipboardStatusRD" style="background: #333; padding: 15px; border-radius: 10px; margin: 10px 0;">
+                        <strong>💾 Último copiado:</strong>
+                        <div id="ultimoCopiadoRD">Ningún mensaje copiado aún</div>
+                    </div>
+                    
+                    <button class="mega-btn-rd btn-smart-rd" onclick="abrirWhatsAppRD()">
+                        📱 ABRIR WHATSAPP PARA PEGAR
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-rd">
+                <h3>✏️ Mensaje Personalizado</h3>
+                <textarea id="mensajePersonalizadoRD" class="textarea" placeholder="Escribe tu mensaje personalizado..."></textarea>
+                <button class="mega-btn-rd btn-smart-rd" onclick="copiarPersonalizadoRD()">
+                    📋 COPIAR MENSAJE PERSONALIZADO
+                </button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver al Menú</button>
+        </div>
     </div>
 
     <div class="alert" id="alert"></div>
@@ -539,6 +863,90 @@ Me interesa conocer si te gusta este modelo.
         let fotoPromo = null;
         let fotoMarketing = null;
         let archivoSubido = null;
+
+        // VARIABLES DISRUPTIVAS RD
+        let mediaRecorderRD = null;
+        let audioChunksRD = [];
+        let isRecordingRD = false;
+        let plantillaSeleccionadaRD = null;
+        
+        // Mensajes para clipboard RD
+        const mensajesClipboardRD = {
+            saludo: `👋 ¡Hola! Soy de Óptica Nvision 👓
+
+¿Cómo estás? Espero que muy bien.
+
+Tenemos nuevos productos y ofertas especiales que te pueden interesar.
+
+¿Te gustaría ver nuestro catálogo actualizado?
+
+📱 849-797-2424
+📍 [Tu dirección]
+🌐 opticanvision.com`,
+
+            oferta: `🎁 *OFERTA ESPECIAL DE HOY* 🎁
+
+✨ 30% de descuento en monturas selectas
+👓 2x1 en lentes de contacto
+🔍 Examen de vista GRATIS con compra
+
+¡Solo por tiempo limitado!
+
+¿Te interesa? Responde SI para más información.
+
+📱 849-797-2424
+📍 [Tu dirección]`,
+
+            seguimiento: `😊 ¡Hola! ¿Cómo estás?
+
+¿Cómo te han ido los lentes? ¿Todo bien con la graduación?
+
+Queremos asegurarnos de que estés 100% satisfecho.
+
+Si necesitas cualquier ajuste, ven cuando quieras.
+
+📱 849-797-2424
+👥 Estamos para ayudarte`,
+
+            cita: `📅 ¿Cuándo te conviene venir?
+
+Tenemos disponibilidad:
+🗓️ Lunes a Viernes: 8:00 AM - 6:00 PM  
+🗓️ Sábados: 8:00 AM - 4:00 PM
+
+¿Prefieres mañana o tarde?
+
+📱 849-797-2424
+📍 [Tu dirección]`
+        };
+
+        // Plantillas visuales RD
+        const plantillasVisualesRD = {
+            oferta: {
+                icono: '🎁',
+                titulo: 'OFERTA ESPECIAL',
+                color: '#dc2626',
+                mensaje: '¡Aprovecha nuestras ofertas del día!'
+            },
+            nuevo: {
+                icono: '✨',
+                titulo: 'PRODUCTO NUEVO',
+                color: '#7c3aed',
+                mensaje: '¡Nuevos productos disponibles!'
+            },
+            ubicacion: {
+                icono: '📍',
+                titulo: 'VISÍTANOS',
+                color: '#059669',
+                mensaje: '¡Te esperamos en nuestra tienda!'
+            },
+            contacto: {
+                icono: '📱',
+                titulo: 'CONTÁCTANOS',
+                color: '#ea580c',
+                mensaje: '¡Estamos aquí para ayudarte!'
+            }
+        };
 
         // INICIALIZACIÓN
         document.addEventListener('DOMContentLoaded', function() {
@@ -649,6 +1057,10 @@ Me interesa conocer si te gusta este modelo.
                 case 'ventas': cargarVentas(); break;
                 case 'reportes': cargarReportes(); break;
                 case 'campanas': cargarCampanas(); break;
+                case 'audioRD': cargarAudioRD(); break;
+                case 'qrRD': cargarQRRD(); break;
+                case 'visualRD': cargarVisualRD(); break;
+                case 'clipboardRD': cargarClipboardRD(); break;
             }
         }
 
@@ -1714,6 +2126,332 @@ Me interesa conocer si te gusta este modelo.
             document.getElementById('fechaProgramada').value = '';
         }
 
+        // ========================================
+        // 🚀 FUNCIONES DISRUPTIVAS PARA RD
+        // ========================================
+
+        // FUNCIONES DE AUDIO RD
+        function cargarAudioRD() {
+            console.log('🎵 Sección Audio RD cargada');
+        }
+
+        function toggleRecordingRD() {
+            const recordBtn = document.getElementById('recordBtnRD');
+            const recordStatus = document.getElementById('recordStatusRD');
+            
+            if (!recordBtn || !recordStatus) {
+                showAlert('Error: elementos de grabación no encontrados');
+                return;
+            }
+            
+            if (!isRecordingRD) {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showAlert('Tu navegador no soporta grabación de audio');
+                    return;
+                }
+                
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        try {
+                            mediaRecorderRD = new MediaRecorder(stream);
+                            audioChunksRD = [];
+                            
+                            mediaRecorderRD.ondataavailable = event => {
+                                audioChunksRD.push(event.data);
+                            };
+                            
+                            mediaRecorderRD.onstop = () => {
+                                const audioBlob = new Blob(audioChunksRD, { type: 'audio/wav' });
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                const audioPlayer = document.getElementById('audioPlayerRD');
+                                if (audioPlayer) {
+                                    audioPlayer.src = audioUrl;
+                                    audioPlayer.style.display = 'block';
+                                }
+                                
+                                // Limpiar stream
+                                stream.getTracks().forEach(track => track.stop());
+                            };
+                            
+                            mediaRecorderRD.start();
+                            isRecordingRD = true;
+                            recordBtn.classList.add('recording');
+                            recordBtn.textContent = '⏹️';
+                            recordStatus.textContent = '🔴 Grabando... (click para parar)';
+                        } catch (error) {
+                            console.error('Error al iniciar grabación:', error);
+                            showAlert('Error al iniciar grabación');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al acceder al micrófono:', error);
+                        showAlert('Error al acceder al micrófono');
+                    });
+            } else {
+                try {
+                    if (mediaRecorderRD && mediaRecorderRD.state === 'recording') {
+                        mediaRecorderRD.stop();
+                    }
+                    isRecordingRD = false;
+                    recordBtn.classList.remove('recording');
+                    recordBtn.textContent = '🎤';
+                    recordStatus.textContent = '✅ Grabación completada';
+                } catch (error) {
+                    console.error('Error al detener grabación:', error);
+                    showAlert('Error al detener grabación');
+                }
+            }
+        }
+
+        function reproducirAudioRD(tipo) {
+            const mensajes = {
+                saludo: '🎵 Reproduciendo: Bienvenido a Óptica Nvision, tu vista es nuestra prioridad...',
+                oferta: '🎁 Reproduciendo: Ofertas especiales del día, descuentos increíbles...',
+                ubicacion: '📍 Reproduciendo: Nuestra ubicación es fácil de encontrar...',
+                horarios: '⏰ Reproduciendo: Estamos abiertos de lunes a sábado...'
+            };
+            
+            const mensaje = mensajes[tipo] || 'Reproduciendo audio...';
+            showAlert(mensaje);
+            
+            // Simular reproducción con texto a voz si está disponible
+            if ('speechSynthesis' in window) {
+                const textos = {
+                    saludo: 'Bienvenido a Óptica Nvision. Tu vista es nuestra prioridad.',
+                    oferta: 'Tenemos ofertas especiales del día con descuentos increíbles.',
+                    ubicacion: 'Nuestra ubicación es fácil de encontrar. Te esperamos.',
+                    horarios: 'Estamos abiertos de lunes a sábado para atenderte.'
+                };
+                
+                const utterance = new SpeechSynthesisUtterance(textos[tipo]);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function convertirTextoAudioRD() {
+            const textoElement = document.getElementById('textoAudioRD');
+            if (!textoElement) {
+                showAlert('Error: elemento de texto no encontrado');
+                return;
+            }
+            
+            const texto = textoElement.value.trim();
+            if (!texto) {
+                showAlert('Escribe un mensaje primero');
+                return;
+            }
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+                showAlert('🔊 Convirtiendo texto a audio...');
+            } else {
+                showAlert('Tu navegador no soporta text-to-speech. El texto se copiará al clipboard.');
+                navigator.clipboard.writeText(texto).catch(() => {
+                    console.log('Error al copiar al clipboard');
+                });
+            }
+        }
+
+        function enviarAudioRD() {
+            const tituloElement = document.getElementById('audioTitleRD');
+            const titulo = tituloElement ? tituloElement.value || 'Audio de Nvision' : 'Audio de Nvision';
+            const mensaje = `🎵 ${titulo}\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+            showAlert('📱 Audio preparado para WhatsApp');
+        }
+
+        // FUNCIONES DE QR RD
+        function cargarQRRD() {
+            console.log('📱 Sección QR RD cargada');
+        }
+
+        function generarQRRD(tipo) {
+            const urls = {
+                contacto: 'https://wa.me/18497972424?text=Hola,%20vengo%20del%20QR%20de%20Óptica%20Nvision',
+                catalogo: 'https://wa.me/18497972424?text=Hola,%20quiero%20ver%20el%20catálogo%20de%20productos',
+                ubicacion: 'https://maps.google.com/?q=Optica+Nvision+República+Dominicana'
+            };
+            
+            const url = urls[tipo];
+            if (!url) {
+                showAlert('Tipo de QR no válido');
+                return;
+            }
+            
+            try {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+                
+                showAlert(`✅ QR generado para ${tipo}.\n\nEste QR llevará directamente a: ${url}`);
+                
+                // Abrir la URL del QR en nueva ventana
+                window.open(qrUrl, '_blank');
+                actualizarEstadisticas('promocion');
+            } catch (error) {
+                console.error('Error al generar QR:', error);
+                showAlert('Error al generar QR');
+            }
+        }
+
+        function generarQRPersonalizadoRD() {
+            const textoElement = document.getElementById('qrTextoRD');
+            if (!textoElement) {
+                showAlert('Error: elemento de texto no encontrado');
+                return;
+            }
+            
+            const texto = textoElement.value.trim();
+            if (!texto) {
+                showAlert('Escribe un mensaje para el QR');
+                return;
+            }
+            
+            try {
+                const whatsappUrl = `https://wa.me/18497972424?text=${encodeURIComponent(texto)}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(whatsappUrl)}`;
+                
+                showAlert(`✅ QR personalizado generado!\n\nCuando escaneen este QR, se abrirá WhatsApp con tu mensaje: "${texto}"`);
+                
+                window.open(qrUrl, '_blank');
+                actualizarEstadisticas('promocion');
+            } catch (error) {
+                console.error('Error al generar QR personalizado:', error);
+                showAlert('Error al generar QR personalizado');
+            }
+        }
+
+        // FUNCIONES VISUALES RD
+        function cargarVisualRD() {
+            console.log('🖼️ Sección Visual RD cargada');
+        }
+
+        function usarPlantillaRD(tipo) {
+            const plantilla = plantillasVisualesRD[tipo];
+            if (!plantilla) {
+                showAlert('Plantilla no encontrada');
+                return;
+            }
+            
+            plantillaSeleccionadaRD = tipo;
+            
+            const display = document.getElementById('plantillaActivaRD');
+            if (display) {
+                display.innerHTML = `
+                    <div style="font-size: 80px;">${plantilla.icono}</div>
+                    <h2 style="color: ${plantilla.color};">${plantilla.titulo}</h2>
+                    <p>${plantilla.mensaje}</p>
+                    <div style="margin-top: 15px; font-size: 14px; color: #666;">
+                        📱 849-797-2424 | 🌐 opticanvision.com
+                    </div>
+                `;
+            }
+            
+            showAlert(`✅ Plantilla "${plantilla.titulo}" seleccionada`);
+        }
+
+        function enviarPlantillaVisualRD() {
+            if (!plantillaSeleccionadaRD) {
+                showAlert('Selecciona una plantilla primero');
+                return;
+            }
+            
+            const plantilla = plantillasVisualesRD[plantillaSeleccionadaRD];
+            if (!plantilla) {
+                showAlert('Error: plantilla no válida');
+                return;
+            }
+            
+            const mensaje = `${plantilla.icono} *${plantilla.titulo}*\n\n${plantilla.mensaje}\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            
+            try {
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('promocion');
+                showAlert(`📱 Plantilla "${plantilla.titulo}" enviada por WhatsApp`);
+            } catch (error) {
+                console.error('Error al enviar plantilla:', error);
+                showAlert('Error al enviar plantilla');
+            }
+        }
+
+        // FUNCIONES DE CLIPBOARD RD
+        function cargarClipboardRD() {
+            console.log('🧠 Sección Clipboard RD cargada');
+        }
+
+        function copiarMensajeRD(tipo) {
+            const mensaje = mensajesClipboardRD[tipo];
+            if (!mensaje) {
+                showAlert('Mensaje no encontrado');
+                return;
+            }
+            
+            if (!navigator.clipboard) {
+                showAlert('Tu navegador no soporta clipboard. Copia manualmente:\n\n' + mensaje);
+                return;
+            }
+            
+            navigator.clipboard.writeText(mensaje).then(() => {
+                const ultimoElement = document.getElementById('ultimoCopiadoRD');
+                if (ultimoElement) {
+                    ultimoElement.textContent = mensaje.substring(0, 100) + '...';
+                }
+                actualizarEstadisticas('mensaje');
+                showAlert(`✅ Mensaje "${tipo}" copiado al clipboard.\n\nAhora puedes pegarlo en WhatsApp.`);
+            }).catch(error => {
+                console.error('Error al copiar:', error);
+                showAlert('Error al copiar. Copia manualmente:\n\n' + mensaje);
+            });
+        }
+
+        function copiarPersonalizadoRD() {
+            const mensajeElement = document.getElementById('mensajePersonalizadoRD');
+            if (!mensajeElement) {
+                showAlert('Error: elemento de mensaje no encontrado');
+                return;
+            }
+            
+            const mensaje = mensajeElement.value.trim();
+            if (!mensaje) {
+                showAlert('Escribe un mensaje primero');
+                return;
+            }
+            
+            const mensajeCompleto = `${mensaje}\n\n📱 849-797-2424\n🌐 opticanvision.com`;
+            
+            if (!navigator.clipboard) {
+                showAlert('Tu navegador no soporta clipboard. Copia manualmente:\n\n' + mensajeCompleto);
+                return;
+            }
+            
+            navigator.clipboard.writeText(mensajeCompleto).then(() => {
+                const ultimoElement = document.getElementById('ultimoCopiadoRD');
+                if (ultimoElement) {
+                    ultimoElement.textContent = mensajeCompleto.substring(0, 100) + '...';
+                }
+                actualizarEstadisticas('mensaje');
+                showAlert('✅ Mensaje personalizado copiado al clipboard');
+            }).catch(error => {
+                console.error('Error al copiar personalizado:', error);
+                showAlert('Error al copiar. Copia manualmente:\n\n' + mensajeCompleto);
+            });
+        }
+
+        function abrirWhatsAppRD() {
+            try {
+                window.open('https://web.whatsapp.com/', '_blank');
+                showAlert('📱 WhatsApp Web abierto.\n\nAhora puedes pegar el mensaje copiado en cualquier chat.');
+            } catch (error) {
+                console.error('Error al abrir WhatsApp:', error);
+                showAlert('Error al abrir WhatsApp Web');
+            }
+        }
+
         // FUNCIONES DE NAVEGACIÓN
         function abrirCatalogo() {
             showAlert('📖 Abriendo catálogo de productos...');
@@ -1742,12 +2480,22 @@ Me interesa conocer si te gusta este modelo.
             detenerCamara(stream);
             detenerCamara(stream2);
             detenerCamara(streamMarketing);
+            
+            // Limpiar grabación de audio RD
+            if (mediaRecorderRD && mediaRecorderRD.state === 'recording') {
+                mediaRecorderRD.stop();
+            }
         });
 
         window.addEventListener('pagehide', function() {
             detenerCamara(stream);
             detenerCamara(stream2);
             detenerCamara(streamMarketing);
+            
+            // Limpiar grabación de audio RD
+            if (mediaRecorderRD && mediaRecorderRD.state === 'recording') {
+                mediaRecorderRD.stop();
+            }
         });
 
         window.addEventListener('error', function(e) {
