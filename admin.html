@@ -480,10 +480,23 @@ Responde SI para más información.
         }
 
         // FUNCIONES DE CÁMARA
+        function detenerCamara(streamRef) {
+            if (streamRef) {
+                streamRef.getTracks().forEach(track => {
+                    track.stop();
+                });
+            }
+        }
+
         async function toggleCamera() {
             const video = document.getElementById('video');
             const btn = document.getElementById('cameraBtn');
             const placeholder = document.getElementById('placeholder');
+            
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de cámara no encontrados');
+                return;
+            }
             
             if (!stream) {
                 try {
@@ -496,6 +509,7 @@ Responde SI para más información.
                     btn.textContent = '📸 Tomar Foto';
                     btn.onclick = tomarFoto;
                 } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
                     showAlert('Error al acceder a la cámara');
                 }
             } else {
@@ -507,25 +521,38 @@ Responde SI para más información.
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const preview = document.getElementById('preview');
+            const btn = document.getElementById('cameraBtn');
+            const placeholder = document.getElementById('placeholder');
             
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            fotoActual = canvas.toDataURL('image/jpeg', 0.8);
-            preview.src = fotoActual;
-            preview.style.display = 'block';
-            
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+            if (!video || !canvas || !preview) {
+                showAlert('Error: elementos no encontrados');
+                return;
             }
-            video.style.display = 'none';
-            document.getElementById('placeholder').style.display = 'block';
-            document.getElementById('cameraBtn').textContent = '📷 Activar Cámara';
-            document.getElementById('cameraBtn').onclick = toggleCamera;
             
-            showAlert('Foto capturada');
+            try {
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                fotoActual = canvas.toDataURL('image/jpeg', 0.8);
+                preview.src = fotoActual;
+                preview.style.display = 'block';
+                
+                // Limpiar stream
+                detenerCamara(stream);
+                stream = null;
+                
+                // Resetear UI
+                video.style.display = 'none';
+                placeholder.style.display = 'block';
+                btn.textContent = '📷 Activar Cámara';
+                btn.onclick = toggleCamera;
+                
+                showAlert('Foto capturada');
+            } catch (error) {
+                console.error('Error al tomar foto:', error);
+                showAlert('Error al tomar foto');
+            }
         }
 
         // CÁMARA 2 PARA PROMOCIONES
@@ -533,6 +560,11 @@ Responde SI para más información.
             const video = document.getElementById('video2');
             const btn = document.getElementById('cameraBtn2');
             const placeholder = document.getElementById('placeholder2');
+            
+            if (!video || !btn || !placeholder) {
+                showAlert('Error: elementos de cámara no encontrados');
+                return;
+            }
             
             if (!stream2) {
                 try {
@@ -545,6 +577,7 @@ Responde SI para más información.
                     btn.textContent = '📸 Tomar Foto';
                     btn.onclick = tomarFoto2;
                 } catch (err) {
+                    console.error('Error al acceder a la cámara:', err);
                     showAlert('Error al acceder a la cámara');
                 }
             } else {
@@ -556,35 +589,59 @@ Responde SI para más información.
             const video = document.getElementById('video2');
             const canvas = document.getElementById('canvas2');
             const preview = document.getElementById('preview2');
+            const btn = document.getElementById('cameraBtn2');
+            const placeholder = document.getElementById('placeholder2');
             
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            fotoPromo = canvas.toDataURL('image/jpeg', 0.8);
-            preview.src = fotoPromo;
-            preview.style.display = 'block';
-            
-            if (stream2) {
-                stream2.getTracks().forEach(track => track.stop());
-                stream2 = null;
+            if (!video || !canvas || !preview) {
+                showAlert('Error: elementos no encontrados');
+                return;
             }
-            video.style.display = 'none';
-            document.getElementById('placeholder2').style.display = 'block';
-            document.getElementById('cameraBtn2').textContent = '📷 Activar Cámara';
-            document.getElementById('cameraBtn2').onclick = toggleCamera2;
             
-            showAlert('Foto de promoción capturada');
+            try {
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                fotoPromo = canvas.toDataURL('image/jpeg', 0.8);
+                preview.src = fotoPromo;
+                preview.style.display = 'block';
+                
+                // Limpiar stream
+                detenerCamara(stream2);
+                stream2 = null;
+                
+                // Resetear UI
+                video.style.display = 'none';
+                placeholder.style.display = 'block';
+                btn.textContent = '📷 Activar Cámara';
+                btn.onclick = toggleCamera2;
+                
+                showAlert('Foto de promoción capturada');
+            } catch (error) {
+                console.error('Error al tomar foto:', error);
+                showAlert('Error al tomar foto');
+            }
         }
 
         function guardarProducto() {
+            const codigoEl = document.getElementById('codigo');
+            const nombreEl = document.getElementById('nombre');
+            const precioEl = document.getElementById('precio');
+            const stockEl = document.getElementById('stock');
+            const categoriaEl = document.getElementById('categoria');
+            
+            if (!codigoEl || !nombreEl || !precioEl || !stockEl || !categoriaEl) {
+                showAlert('Error: elementos del formulario no encontrados');
+                return;
+            }
+            
             const producto = {
                 id: Date.now(),
-                codigo: document.getElementById('codigo').value,
-                nombre: document.getElementById('nombre').value,
-                precio: parseFloat(document.getElementById('precio').value) || 0,
-                stock: parseInt(document.getElementById('stock').value) || 0,
-                categoria: document.getElementById('categoria').value,
+                codigo: codigoEl.value.trim(),
+                nombre: nombreEl.value.trim(),
+                precio: parseFloat(precioEl.value) || 0,
+                stock: parseInt(stockEl.value) || 0,
+                categoria: categoriaEl.value,
                 imagen: fotoActual || 'https://via.placeholder.com/200x150/10b981/ffffff?text=Sin+Foto',
                 fecha: new Date().toISOString()
             };
@@ -594,11 +651,22 @@ Responde SI para más información.
                 return;
             }
             
-            productos.push(producto);
-            guardarDatos();
-            sincronizarCatalogo();
-            limpiarCamara();
-            showAlert('✅ Producto guardado en inventario y catálogo');
+            // Verificar código duplicado
+            if (productos.some(p => p.codigo === producto.codigo)) {
+                showAlert('El código ya existe');
+                return;
+            }
+            
+            try {
+                productos.push(producto);
+                guardarDatos();
+                sincronizarCatalogo();
+                limpiarCamara();
+                showAlert('✅ Producto guardado en inventario y catálogo');
+            } catch (error) {
+                console.error('Error al guardar producto:', error);
+                showAlert('Error al guardar producto');
+            }
         }
 
         function guardarDatos() {
@@ -629,13 +697,31 @@ Responde SI para más información.
         }
 
         function limpiarCamara() {
-            document.getElementById('codigo').value = '';
-            document.getElementById('nombre').value = '';
-            document.getElementById('precio').value = '';
-            document.getElementById('stock').value = '';
-            document.getElementById('categoria').value = '';
-            document.getElementById('preview').style.display = 'none';
-            fotoActual = null;
+            try {
+                const elementos = [
+                    { id: 'codigo', value: '' },
+                    { id: 'nombre', value: '' },
+                    { id: 'precio', value: '' },
+                    { id: 'stock', value: '' },
+                    { id: 'categoria', value: '' }
+                ];
+                
+                elementos.forEach(el => {
+                    const element = document.getElementById(el.id);
+                    if (element) {
+                        element.value = el.value;
+                    }
+                });
+                
+                const preview = document.getElementById('preview');
+                if (preview) {
+                    preview.style.display = 'none';
+                }
+                
+                fotoActual = null;
+            } catch (error) {
+                console.error('Error al limpiar formulario:', error);
+            }
         }
 
         // FUNCIONES DE INVENTARIO
@@ -705,16 +791,43 @@ Responde SI para más información.
 
         function compartirProducto(id) {
             const producto = productos.find(p => p.id === id);
-            if (producto) {
-                const mensaje = `🎁 *OFERTA ESPECIAL*\n\n` +
-                              `📦 ${producto.nombre}\n` +
-                              `🔢 Código: ${producto.codigo}\n` +
-                              `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n\n` +
-                              `✨ ¿Te interesa?\n` +
-                              `📱 Responde SI para más información\n\n` +
-                              `☎️ 849-797-2424\n` +
-                              `🌐 opticanvision.com`;
-                
+            if (!producto) {
+                showAlert('Producto no encontrado');
+                return;
+            }
+            
+            const mensaje = `🎁 *OFERTA ESPECIAL*\n\n` +
+                          `📦 ${producto.nombre}\n` +
+                          `🔢 Código: ${producto.codigo}\n` +
+                          `💰 Precio: RD$ ${producto.precio.toFixed(2)}\n\n` +
+                          `✨ ¿Te interesa?\n` +
+                          `📱 Responde SI para más información\n\n` +
+                          `☎️ 849-797-2424\n` +
+                          `🌐 opticanvision.com`;
+            
+            try {
+                // Intentar compartir con imagen en móvil si está disponible
+                if (navigator.share && producto.imagen && !producto.imagen.includes('placeholder')) {
+                    fetch(producto.imagen)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], `${producto.codigo}.jpg`, { type: 'image/jpeg' });
+                            return navigator.share({
+                                title: producto.nombre,
+                                text: mensaje,
+                                files: [file]
+                            });
+                        })
+                        .catch(() => {
+                            // Fallback a WhatsApp
+                            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        });
+                } else {
+                    // Usar WhatsApp directamente
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+            } catch (error) {
+                // Fallback en caso de error
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
             }
         }
@@ -753,29 +866,45 @@ Responde SI para más información.
         }
 
         function enviarPromocion() {
-            const mensaje = document.getElementById('mensajePromo').value;
+            const mensajeElement = document.getElementById('mensajePromo');
+            if (!mensajeElement) {
+                showAlert('Error: elemento de mensaje no encontrado');
+                return;
+            }
+            
+            const mensaje = mensajeElement.value;
             if (!mensaje.trim()) {
                 showAlert('Escriba un mensaje de promoción');
                 return;
             }
             
-            // Si hay foto, intentar compartir con imagen
-            if (fotoPromo && navigator.share) {
-                fetch(fotoPromo)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const file = new File([blob], 'promocion.jpg', { type: 'image/jpeg' });
-                        return navigator.share({
-                            title: 'Promoción Nvision',
-                            text: mensaje,
-                            files: [file]
+            try {
+                // Si hay foto, intentar compartir con imagen
+                if (fotoPromo && navigator.share) {
+                    fetch(fotoPromo)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'promocion.jpg', { type: 'image/jpeg' });
+                            return navigator.share({
+                                title: 'Promoción Nvision',
+                                text: mensaje,
+                                files: [file]
+                            });
+                        })
+                        .catch(() => {
+                            // Fallback a WhatsApp
+                            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                         });
-                    })
-                    .catch(() => {
-                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-                    });
-            } else {
+                } else {
+                    // Usar WhatsApp directamente
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                }
+                showAlert('Promoción enviada');
+            } catch (error) {
+                console.error('Error al enviar promoción:', error);
+                // Fallback final
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                showAlert('Promoción enviada (modo básico)');
             }
         }
 
@@ -821,12 +950,16 @@ Responde SI para más información.
                 return;
             }
             
-            lista.innerHTML = recordatorios.map(r => `
-                <div class="reminder-item ${r.urgente ? 'reminder-urgent' : ''}">
-                    <strong>${r.mensaje}</strong>
-                    ${r.telefono ? `<br><button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cumpleanos', '${r.telefono}', '${r.cliente}')">🎂 Felicitar</button>` : ''}
-                </div>
-            `).join('');
+            lista.innerHTML = recordatorios.map(r => {
+                const telefonoLimpio = r.telefono ? r.telefono.replace(/[^0-9]/g, '') : '';
+                const nombreSeguro = r.cliente ? r.cliente.replace(/'/g, "&apos;") : '';
+                return `
+                    <div class="reminder-item ${r.urgente ? 'reminder-urgent' : ''}">
+                        <strong>${r.mensaje}</strong>
+                        ${r.telefono ? `<br><button class="btn btn-whatsapp" onclick="enviarMensajeRapido('cumpleanos', '${telefonoLimpio}', '${nombreSeguro}')">🎂 Felicitar</button>` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         function enviarMensajeRapido(tipo, telefono = '', nombre = '') {
@@ -1042,12 +1175,21 @@ Responde SI para más información.
 
         // Manejar errores globalmente
         window.addEventListener('error', function(e) {
-            console.log('Error capturado:', e.error);
+            console.error('Error capturado:', e.error);
             showAlert('Se produjo un error. Reintentando...');
         });
 
-        // Inicializar al cargar la página
-        actualizarDashboard();
+        // Limpiar streams al cerrar la página
+        window.addEventListener('beforeunload', function() {
+            detenerCamara(stream);
+            detenerCamara(stream2);
+        });
+
+        // Limpiar streams al cambiar de página
+        window.addEventListener('pagehide', function() {
+            detenerCamara(stream);
+            detenerCamara(stream2);
+        });
     </script>
 </body>
 </html>
