@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo NCF - Comprobantes Fiscales</title>
+    <title>Módulo NCF - Optica Visum, SRL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -61,6 +61,8 @@
 
         .ncf-b01 { border-left-color: #22d3ee; }
         .ncf-b02 { border-left-color: #10b981; }
+        .ncf-b11 { border-left-color: #ef4444; }
+        .ncf-b12 { border-left-color: #06b6d4; }
         .ncf-b14 { border-left-color: #8b5cf6; }
         .ncf-b15 { border-left-color: #f59e0b; }
 
@@ -245,8 +247,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧾 Sistema NCF - Óptica nVision</h1>
+            <h1>🧾 Sistema NCF - Optica Visum, SRL</h1>
             <p>Comprobantes fiscales para facturación óptica</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">📞 849 797 2424</p>
         </div>
 
         <div id="alertContainer"></div>
@@ -319,6 +322,74 @@
                     <div class="info-item">
                         <div class="info-label">Disponibles:</div>
                         <div class="info-value" id="b02Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B11 - Gubernamental -->
+            <div class="ncf-card ncf-b11">
+                <div class="ncf-header">
+                    <div class="ncf-title">🏛️ B11 - Gubernamental</div>
+                    <div class="ncf-status status-active" id="statusB11">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b11Desde" class="form-input" placeholder="B1100000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b11Hasta" class="form-input" placeholder="B1100005000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b11Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b11Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b11Disponibles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B12 - Zona Franca -->
+            <div class="ncf-card ncf-b12">
+                <div class="ncf-header">
+                    <div class="ncf-title">🏭 B12 - Zona Franca</div>
+                    <div class="ncf-status status-active" id="statusB12">ACTIVO</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Desde:</label>
+                        <input type="text" id="b12Desde" class="form-input" placeholder="B1200000001" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hasta:</label>
+                        <input type="text" id="b12Hasta" class="form-input" placeholder="B1200005000" maxlength="11">
+                    </div>
+                </div>
+
+                <div class="ncf-info">
+                    <div class="info-item">
+                        <div class="info-label">Actual:</div>
+                        <div class="info-value" id="b12Actual">No configurado</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Usados:</div>
+                        <div class="info-value" id="b12Usados">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Disponibles:</div>
+                        <div class="info-value" id="b12Disponibles">0</div>
                     </div>
                 </div>
             </div>
@@ -407,6 +478,8 @@
                     <select id="tipoComprobante" class="form-input">
                         <option value="B01">🧾 B01 - Consumidor Final</option>
                         <option value="B02">🏢 B02 - Empresarial</option>
+                        <option value="B11">🏛️ B11 - Gubernamental</option>
+                        <option value="B12">🏭 B12 - Zona Franca</option>
                         <option value="B14">🔄 B14 - Nota de Crédito</option>
                         <option value="B15">📈 B15 - Nota de Débito</option>
                     </select>
@@ -492,6 +565,8 @@
         let rangosNCF = {
             B01: { desde: null, hasta: null, actual: null },
             B02: { desde: null, hasta: null, actual: null },
+            B11: { desde: null, hasta: null, actual: null },
+            B12: { desde: null, hasta: null, actual: null },
             B14: { desde: null, hasta: null, actual: null },
             B15: { desde: null, hasta: null, actual: null }
         };
@@ -507,7 +582,7 @@
         }
 
         function guardarRangos() {
-            const tipos = ['B01', 'B02', 'B14', 'B15'];
+            const tipos = ['B01', 'B02', 'B11', 'B12', 'B14', 'B15'];
             let configurado = false;
 
             tipos.forEach(tipo => {
@@ -544,7 +619,7 @@
         }
 
         function actualizarEstadisticas() {
-            ['B01', 'B02', 'B14', 'B15'].forEach(tipo => {
+            ['B01', 'B02', 'B11', 'B12', 'B14', 'B15'].forEach(tipo => {
                 const rango = rangosNCF[tipo];
                 const actualElement = document.getElementById(tipo.toLowerCase() + 'Actual');
                 const usadosElement = document.getElementById(tipo.toLowerCase() + 'Usados');
@@ -632,9 +707,16 @@
                 const ncf = obtenerSiguienteNCF(tipo);
                 const fecha = new Date();
                 
-                // Calcular impuestos
-                const subtotal = monto / 1.18;
-                const itbis = monto - subtotal;
+                // Calcular impuestos según el tipo
+                let subtotal, itbis;
+                if (tipo === 'B11' || tipo === 'B12') {
+                    // Gubernamental y Zona Franca normalmente están exentos de ITBIS
+                    subtotal = monto;
+                    itbis = 0;
+                } else {
+                    subtotal = monto / 1.18;
+                    itbis = monto - subtotal;
+                }
                 
                 const factura = {
                     ncf: ncf,
@@ -667,21 +749,44 @@
             doc.setFontSize(20);
             doc.text('FACTURA FISCAL', 105, 30, { align: 'center' });
             
+            doc.setFontSize(16);
+            doc.text('Optica Visum, SRL', 105, 40, { align: 'center' });
+            doc.setFontSize(10);
+            doc.text('Tel: 849 797 2424', 105, 50, { align: 'center' });
+            
             doc.setFontSize(12);
-            doc.text(`NCF: ${factura.ncf}`, 20, 50);
-            doc.text(`Fecha: ${new Date(factura.fecha).toLocaleDateString()}`, 20, 60);
+            doc.text(`NCF: ${factura.ncf}`, 20, 70);
+            doc.text(`Tipo: ${getTipoDescripcion(factura.tipo)}`, 20, 80);
+            doc.text(`Fecha: ${new Date(factura.fecha).toLocaleDateString()}`, 20, 90);
             
             // Cliente
-            doc.text(`Cliente: ${factura.cliente}`, 20, 80);
-            doc.text(`RNC/Cédula: ${factura.rnc}`, 20, 90);
+            doc.text(`Cliente: ${factura.cliente}`, 20, 110);
+            doc.text(`RNC/Cédula: ${factura.rnc}`, 20, 120);
             
             // Totales
-            doc.text(`Subtotal: RD$${factura.subtotal.toFixed(2)}`, 20, 120);
-            doc.text(`ITBIS (18%): RD$${factura.itbis.toFixed(2)}`, 20, 130);
-            doc.text(`TOTAL: RD$${factura.total.toFixed(2)}`, 20, 140);
+            doc.text(`Subtotal: RD${factura.subtotal.toFixed(2)}`, 20, 150);
+            if (factura.itbis > 0) {
+                doc.text(`ITBIS (18%): RD${factura.itbis.toFixed(2)}`, 20, 160);
+            } else {
+                doc.text(`ITBIS: EXENTO`, 20, 160);
+            }
+            doc.setFontSize(14);
+            doc.text(`TOTAL: RD${factura.total.toFixed(2)}`, 20, 175);
             
             // Descargar
             doc.save(`Factura_${factura.ncf}.pdf`);
+        }
+
+        function getTipoDescripcion(tipo) {
+            const tipos = {
+                'B01': 'Consumidor Final',
+                'B02': 'Empresarial',
+                'B11': 'Gubernamental',
+                'B12': 'Zona Franca',
+                'B14': 'Nota de Crédito',
+                'B15': 'Nota de Débito'
+            };
+            return tipos[tipo] || tipo;
         }
 
         function previsualizarFactura() {
@@ -695,10 +800,20 @@
             }
             
             const proximoNCF = rangosNCF[tipo]?.actual || 'No configurado';
-            const subtotal = monto / 1.18;
-            const itbis = monto - subtotal;
             
-            alert(`VISTA PREVIA\n\nNCF: ${proximoNCF}\nCliente: ${cliente}\nSubtotal: RD$${subtotal.toFixed(2)}\nITBIS: RD$${itbis.toFixed(2)}\nTotal: RD$${monto.toFixed(2)}`);
+            let subtotal, itbis;
+            if (tipo === 'B11' || tipo === 'B12') {
+                subtotal = monto;
+                itbis = 0;
+            } else {
+                subtotal = monto / 1.18;
+                itbis = monto - subtotal;
+            }
+            
+            const tipoDesc = getTipoDescripcion(tipo);
+            const itbisText = itbis > 0 ? `RD$${itbis.toFixed(2)}` : 'EXENTO';
+            
+            alert(`VISTA PREVIA\n\nNCF: ${proximoNCF}\nTipo: ${tipoDesc}\nCliente: ${cliente}\nSubtotal: RD$${subtotal.toFixed(2)}\nITBIS: ${itbisText}\nTotal: RD$${monto.toFixed(2)}`);
         }
 
         function generarReporte() {
@@ -717,15 +832,15 @@
                 content.innerHTML = '<div style="text-align: center; padding: 20px;">No hay facturas para este período</div>';
             } else {
                 let html = '<table style="width: 100%; font-size: 12px;">';
-                html += '<tr style="background: rgba(255,255,255,0.2);"><th>NCF</th><th>Cliente</th><th>Fecha</th><th>Total</th></tr>';
+                html += '<tr style="background: rgba(255,255,255,0.2);"><th>NCF</th><th>Tipo</th><th>Cliente</th><th>Fecha</th><th>Total</th></tr>';
                 
                 let totalMes = 0;
                 facturasMes.forEach(f => {
-                    html += `<tr><td>${f.ncf}</td><td>${f.cliente}</td><td>${new Date(f.fecha).toLocaleDateString()}</td><td>RD$${f.total.toFixed(2)}</td></tr>`;
+                    html += `<tr><td>${f.ncf}</td><td>${f.tipo}</td><td>${f.cliente}</td><td>${new Date(f.fecha).toLocaleDateString()}</td><td>RD$${f.total.toFixed(2)}</td></tr>`;
                     totalMes += f.total;
                 });
                 
-                html += `<tr style="background: rgba(255,255,255,0.2); font-weight: bold;"><td colspan="3">TOTAL DEL MES</td><td>RD$${totalMes.toFixed(2)}</td></tr>`;
+                html += `<tr style="background: rgba(255,255,255,0.2); font-weight: bold;"><td colspan="4">TOTAL DEL MES</td><td>RD$${totalMes.toFixed(2)}</td></tr>`;
                 html += '</table>';
                 content.innerHTML = html;
             }
@@ -743,12 +858,14 @@
                 rangosNCF = {
                     B01: { desde: null, hasta: null, actual: null },
                     B02: { desde: null, hasta: null, actual: null },
+                    B11: { desde: null, hasta: null, actual: null },
+                    B12: { desde: null, hasta: null, actual: null },
                     B14: { desde: null, hasta: null, actual: null },
                     B15: { desde: null, hasta: null, actual: null }
                 };
                 facturas = [];
                 
-                ['B01', 'B02', 'B14', 'B15'].forEach(tipo => {
+                ['B01', 'B02', 'B11', 'B12', 'B14', 'B15'].forEach(tipo => {
                     document.getElementById(tipo.toLowerCase() + 'Desde').value = '';
                     document.getElementById(tipo.toLowerCase() + 'Hasta').value = '';
                 });
@@ -770,7 +887,7 @@
         document.getElementById('reporteMes').value = new Date().getMonth() + 1;
 
         // Inicialización
-        console.log('✅ Módulo NCF cargado correctamente');
+        console.log('✅ Módulo NCF - Optica Visum, SRL cargado correctamente');
     </script>
 </body>
 </html>
