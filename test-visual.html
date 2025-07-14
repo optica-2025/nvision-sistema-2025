@@ -3,299 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Vista - Óptica Nvision</title>
+    <title>Test de Vista - NVISION</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%); 
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        .header { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%);
-            min-height: 100vh;
-            padding: 10px;
+        .brand-name { 
+            font-size: 28px; 
+            font-weight: 800; 
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .card {
-            background: white;
+
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .header {
-            text-align: center;
+            padding: 30px;
             margin-bottom: 30px;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #10b981, #059669);
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-        }
-        
-        h1 {
-            font-size: 24px;
-            color: #1f2937;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            color: #6b7280;
-            font-size: 14px;
-        }
-        
-        .instructions {
-            background: #dcfce7;
-            border: 2px solid #10b981;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .instructions h3 {
-            color: #14532d;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .step {
-            display: flex;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #14532d;
-        }
-        
-        .step-number {
-            background: #10b981;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            font-weight: bold;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-        
-        .test-area {
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
-            padding: 40px 20px;
-            background: #f9fafb;
-            border-radius: 15px;
-            margin-bottom: 20px;
         }
-        
-        .letter-display {
+
+        .eye-chart {
             background: white;
-            border: 3px solid #e5e7eb;
-            border-radius: 15px;
+            color: black;
             padding: 40px;
+            border-radius: 15px;
             margin: 20px 0;
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: monospace;
+            line-height: 1.2;
         }
-        
-        .letter {
+
+        .chart-line {
+            margin: 15px 0;
             font-weight: bold;
-            color: #1f2937;
-            line-height: 1;
         }
-        
-        .level-info {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 10px;
+
+        .line-1 { font-size: 60px; }
+        .line-2 { font-size: 50px; }
+        .line-3 { font-size: 40px; }
+        .line-4 { font-size: 30px; }
+        .line-5 { font-size: 20px; }
+        .line-6 { font-size: 16px; }
+        .line-7 { font-size: 12px; }
+
+        .distance-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+            color: #60a5fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: 600;
         }
-        
-        .buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
+
         .btn {
-            padding: 15px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
         }
-        
-        .btn-yes {
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-yes:hover {
-            background: #059669;
-        }
-        
-        .btn-no {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .btn-no:hover {
-            background: #dc2626;
-        }
-        
+
         .btn-primary {
-            background: linear-gradient(45deg, #10b981, #059669);
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
             color: white;
-            grid-column: 1 / -1;
         }
-        
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #059669, #10b981);
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
         }
-        
+
         .btn-secondary {
-            background: linear-gradient(45deg, #0ea5e9, #0284c7);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            grid-column: 1 / -1;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        
-        .progress {
-            background: #e5e7eb;
-            border-radius: 10px;
-            height: 8px;
-            margin-bottom: 10px;
-            overflow: hidden;
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
-        .progress-bar {
-            background: linear-gradient(45deg, #10b981, #059669);
-            height: 100%;
-            transition: width 0.3s;
+
+        .test-instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
         }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 12px;
-            color: #6b7280;
+
+        .test-instructions h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
         }
-        
-        .result {
-            text-align: center;
-            padding: 30px 20px;
+
+        .test-instructions ol {
+            text-align: left;
+            margin-left: 20px;
         }
-        
-        .result-icon {
+
+        .test-instructions li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .color-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .color-circle {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid white;
         }
-        
-        .result-good {
-            background: #dcfce7;
-            color: #16a34a;
+
+        .color-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
-        .result-warning {
-            background: #fef3c7;
-            color: #d97706;
-        }
-        
-        .result-bad {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .result-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #1f2937;
-        }
-        
-        .result-message {
-            font-size: 16px;
-            color: #4b5563;
-            margin-bottom: 20px;
-        }
-        
-        .contact-info {
-            background: #eff6ff;
-            border: 2px solid #3b82f6;
-            border-radius: 15px;
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            color: #f87171;
             padding: 20px;
-            margin-top: 20px;
-            text-align: center;
+            border-radius: 15px;
+            margin: 20px 0;
         }
-        
-        .contact-info h4 {
-            color: #1e40af;
-            margin-bottom: 10px;
-        }
-        
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            display: inline-block;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        
-        .whatsapp-btn:hover {
-            background: #20ba5a;
-        }
-        
-        .hidden {
+
+        .result-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            color: #60a5fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
             display: none;
         }
-        
-        .eye-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .eye-btn {
-            padding: 10px;
-            border: 2px solid #e5e7eb;
+
+        .astigmatism-test {
             background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
+            color: black;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
         }
-        
-        .eye-btn.active {
-            border-color: #10b981;
-            background: #dcfce7;
-            color: #10b981;
+
+        .astigmatism-lines {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+            background: radial-gradient(circle, transparent 40%, black 41%, black 43%, transparent 44%);
+        }
+
+        .astigmatism-line {
+            position: absolute;
+            width: 2px;
+            height: 80px;
+            background: black;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
         }
 
         .footer {
@@ -311,142 +219,145 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        @media (max-width: 768px) {
+            .eye-chart {
+                padding: 20px;
+            }
+            
+            .line-1 { font-size: 40px; }
+            .line-2 { font-size: 35px; }
+            .line-3 { font-size: 30px; }
+            .line-4 { font-size: 25px; }
+            .line-5 { font-size: 18px; }
+            .line-6 { font-size: 14px; }
+            .line-7 { font-size: 10px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Pantalla de Inicio -->
-        <div id="inicio" class="card">
-            <div class="header">
-                <div class="logo">👁️</div>
-                <h1>Test de Vista</h1>
-                <p class="subtitle">Óptica Nvision - Evaluación profesional</p>
+        <div class="header">
+            <div style="font-size: 50px; margin-bottom: 15px;">👁️</div>
+            <h1 class="brand-name">NVISION</h1>
+            <p>Test de Vista Preliminar</p>
+            <p style="margin-top: 10px;">📱 849-797-2424 | 🌐 nvision.com.do</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ IMPORTANTE - AVISO MÉDICO</h3>
+            <p><strong>Este test es solo preliminar y NO reemplaza un examen médico profesional.</strong></p>
+            <p>Los resultados son orientativos. Para un diagnóstico preciso, visite a un optometrista calificado.</p>
+        </div>
+
+        <div class="test-instructions">
+            <h3>📋 Instrucciones del Test</h3>
+            <ol>
+                <li><strong>Posición:</strong> Colóquese a 2 metros (6 pies) de la pantalla</li>
+                <li><strong>Iluminación:</strong> Asegúrese de tener buena luz, sin reflejos en la pantalla</li>
+                <li><strong>Ojos:</strong> Haga el test con cada ojo por separado (cubra el otro)</li>
+                <li><strong>Lectura:</strong> Lea cada línea desde la más grande hasta la más pequeña</li>
+                <li><strong>Dificultad:</strong> Anote en qué línea comenzó a tener dificultades</li>
+            </ol>
+        </div>
+
+        <div class="distance-info">
+            <h3>📏 ¡IMPORTANTE!</h3>
+            <p>Manténgase a exactamente <strong>2 metros (6 pies)</strong> de la pantalla</p>
+            <p>Use el tamaño completo de su pantalla para mejores resultados</p>
+        </div>
+
+        <!-- TEST DE AGUDEZA VISUAL -->
+        <div class="test-section">
+            <h2>👁️ Test de Agudeza Visual</h2>
+            <p>Lea cada línea de arriba hacia abajo. Cubra un ojo a la vez.</p>
+            
+            <div class="eye-chart">
+                <div class="chart-line line-1">E</div>
+                <div class="chart-line line-2">F P</div>
+                <div class="chart-line line-3">T O Z</div>
+                <div class="chart-line line-4">L P E D</div>
+                <div class="chart-line line-5">P E C F D</div>
+                <div class="chart-line line-6">E D F C Z P</div>
+                <div class="chart-line line-7">F E L O P Z D</div>
+                <div class="chart-line line-7">D E F P O T E C</div>
             </div>
             
-            <div class="instructions">
-                <h3>📋 Instrucciones Importantes</h3>
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div>Extiende tu brazo completamente y sostén el celular a esa distancia</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div>Tapa un ojo con la mano (empezaremos con ojo derecho tapado)</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div>Mira las letras que aparecen y responde si las ves claramente</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div>Las letras van de grande a pequeña - responde honestamente</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">5</div>
-                    <div>Si no ves las letras pequeñas, necesitas revisar tu vista</div>
-                </div>
-            </div>
-            
-            <div class="buttons">
-                <button class="btn btn-primary" onclick="iniciarTest()">
-                    Comenzar Test de Vista
-                </button>
-                <button class="btn btn-secondary" onclick="volverInicio()">
-                    🏠 Volver a Nvision
-                </button>
+            <p><strong>¿Hasta qué línea pudo leer claramente?</strong></p>
+            <div style="margin: 20px 0;">
+                <button class="btn btn-secondary" onclick="marcarResultado('linea-7')">Línea 7-8 (Excelente)</button>
+                <button class="btn btn-secondary" onclick="marcarResultado('linea-5')">Línea 5-6 (Bueno)</button>
+                <button class="btn btn-secondary" onclick="marcarResultado('linea-3')">Línea 3-4 (Regular)</button>
+                <button class="btn btn-secondary" onclick="marcarResultado('linea-1')">Línea 1-2 (Necesita corrección)</button>
             </div>
         </div>
-        
-        <!-- Pantalla de Test -->
-        <div id="test" class="hidden">
-            <div class="card">
-                <div class="progress">
-                    <div class="progress-bar" id="progressBar"></div>
+
+        <!-- TEST DE ASTIGMATISMO -->
+        <div class="test-section">
+            <h2>🎯 Test de Astigmatismo</h2>
+            <p>Observe las líneas. ¿Ve algunas más oscuras o nítidas que otras?</p>
+            
+            <div class="astigmatism-test">
+                <div class="astigmatism-lines">
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(0deg);"></div>
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(30deg);"></div>
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(60deg);"></div>
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(90deg);"></div>
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(120deg);"></div>
+                    <div class="astigmatism-line" style="transform: translate(-50%, -50%) rotate(150deg);"></div>
                 </div>
-                <div class="progress-text" id="progressText">Nivel 1 de 8</div>
+                <p style="color: black;"><strong>¿Todas las líneas se ven igual de nítidas y oscuras?</strong></p>
             </div>
             
-            <div class="card">
-                <div class="eye-selector">
-                    <button class="eye-btn active" id="btnAmbos" onclick="cambiarOjo('ambos')">
-                        👁️👁️ Ambos
-                    </button>
-                    <button class="eye-btn" id="btnIzquierdo" onclick="cambiarOjo('izquierdo')">
-                        👁️ Izquierdo
-                    </button>
-                    <button class="eye-btn" id="btnDerecho" onclick="cambiarOjo('derecho')">
-                        👁️ Derecho
-                    </button>
+            <div style="margin: 20px 0;">
+                <button class="btn btn-secondary" onclick="marcarAstigmatismo('no')">Sí, todas iguales</button>
+                <button class="btn btn-secondary" onclick="marcarAstigmatismo('si')">No, algunas diferentes</button>
+            </div>
+        </div>
+
+        <!-- TEST DE COLORES -->
+        <div class="test-section">
+            <h2>🌈 Test Básico de Colores</h2>
+            <p>Identifique los colores de los círculos:</p>
+            
+            <div class="color-test">
+                <div>
+                    <div class="color-circle" style="background: #ff0000;" onclick="identificarColor('rojo')"></div>
+                    <p>¿Qué color ve?</p>
                 </div>
-                
-                <div class="level-info" id="levelInfo">Nivel: Muy fácil</div>
-                
-                <div class="test-area">
-                    <p style="color: #ef4444; font-weight: bold; margin-bottom: 15px;">
-                        📏 Extiende tu brazo completamente
-                    </p>
-                    <p style="color: #10b981; font-weight: bold; margin-bottom: 20px;" id="eyeInstruction">
-                        🖐️ Tapa tu ojo derecho con la mano
-                    </p>
-                    
-                    <div class="letter-display">
-                        <div class="letter" id="letter">E</div>
-                    </div>
-                    
-                    <p style="font-size: 16px; color: #4b5563;">
-                        ¿Puedes ver claramente esta letra?
-                    </p>
+                <div>
+                    <div class="color-circle" style="background: #00ff00;" onclick="identificarColor('verde')"></div>
+                    <p>¿Qué color ve?</p>
                 </div>
-                
-                <div class="buttons">
-                    <button class="btn btn-yes" onclick="responder(true)">
-                        ✅ SÍ VEO
-                    </button>
-                    <button class="btn btn-no" onclick="responder(false)">
-                        ❌ NO VEO
-                    </button>
+                <div>
+                    <div class="color-circle" style="background: #0000ff;" onclick="identificarColor('azul')"></div>
+                    <p>¿Qué color ve?</p>
+                </div>
+                <div>
+                    <div class="color-circle" style="background: #ffff00;" onclick="identificarColor('amarillo')"></div>
+                    <p>¿Qué color ve?</p>
                 </div>
             </div>
         </div>
-        
-        <!-- Pantalla de Resultado -->
-        <div id="resultado" class="hidden">
-            <div class="card">
-                <div class="result">
-                    <div class="result-icon" id="resultIcon">✅</div>
-                    <div class="result-title" id="resultTitle">Tu vista parece estar bien</div>
-                    <div class="result-message" id="resultMessage">
-                        Pudiste ver la mayoría de letras correctamente
-                    </div>
-                    
-                    <div id="resultDetails" style="text-align: left; background: #f9fafb; padding: 15px; border-radius: 10px; margin: 20px 0;">
-                        <h4 style="margin-bottom: 10px;">Resumen del test:</h4>
-                        <div id="summaryText"></div>
-                    </div>
-                    
-                    <div class="buttons">
-                        <button class="btn btn-primary" onclick="reiniciarTest()">
-                            🔄 Hacer nuevo test
-                        </button>
-                        <button class="btn btn-secondary" onclick="volverInicio()">
-                            🏠 Volver a Nvision
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="contact-info">
-                    <h4>🏥 Óptica Nvision Oficial</h4>
-                    <p style="color: #1e40af; margin-bottom: 10px;">
-                        Agenda tu cita profesional con nosotros
-                    </p>
-                    <a href="https://wa.me/18497972424?text=Hola Óptica Nvision, hice el test de vista y necesito agendar una cita" class="whatsapp-btn">
-                        📱 WhatsApp: 849-797-2424
-                    </a>
-                    <p style="font-size: 12px; color: #6b7280; margin-top: 15px;">
-                        * Este test es solo referencial. Para diagnóstico profesional, visita Óptica Nvision.
-                    </p>
-                </div>
-            </div>
+
+        <div id="resultBox" class="result-box">
+            <h3>📊 Resultados del Test</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Solicitar Examen Profesional</h2>
+            <p>Para un diagnóstico preciso y completo, agenda tu examen profesional:</p>
+            
+            <button class="btn btn-whatsapp" onclick="solicitarExamen()">
+                📅 Agendar Examen Profesional
+            </button>
+            <button class="btn btn-primary" onclick="consultarResultados()">
+                💬 Consultar Resultados
+            </button>
+            <button class="btn btn-secondary" onclick="volverInicio()">
+                🏠 Volver al Inicio
+            </button>
         </div>
     </div>
 
@@ -455,130 +366,161 @@
     </div>
 
     <script>
-        const niveles = [
-            { tamano: '80px', letra: 'E', nivel: 'Grande' },
-            { tamano: '50px', letra: 'F', nivel: 'Medio' },
-            { tamano: '35px', letra: 'P', nivel: 'Normal' },
-            { tamano: '25px', letra: 'T', nivel: 'Pequeño' },
-            { tamano: '18px', letra: 'O', nivel: 'Muy pequeño' },
-            { tamano: '14px', letra: 'Z', nivel: 'Diminuto' },
-            { tamano: '12px', letra: 'D', nivel: 'Mínimo' },
-            { tamano: '10px', letra: 'R', nivel: 'Micro' }
-        ];
-        
-        let nivelActual = 0;
-        let respuestas = [];
-        let ojoActual = 'ambos';
-        
-        function iniciarTest() {
-            document.getElementById('inicio').classList.add('hidden');
-            document.getElementById('test').classList.remove('hidden');
-            actualizarTest();
-        }
-        
-        function cambiarOjo(ojo) {
-            ojoActual = ojo;
+        let resultados = {
+            agudeza: '',
+            astigmatismo: '',
+            colores: [],
+            comentarios: ''
+        };
+
+        function marcarResultado(linea) {
+            resultados.agudeza = linea;
             
-            document.querySelectorAll('.eye-btn').forEach(btn => btn.classList.remove('active'));
-            
-            if (ojo === 'ambos') {
-                document.getElementById('btnAmbos').classList.add('active');
-                document.getElementById('eyeInstruction').textContent = '👁️👁️ Usa ambos ojos';
-            } else if (ojo === 'izquierdo') {
-                document.getElementById('btnIzquierdo').classList.add('active');
-                document.getElementById('eyeInstruction').textContent = '🖐️ Tapa tu ojo DERECHO con la mano';
-            } else {
-                document.getElementById('btnDerecho').classList.add('active');
-                document.getElementById('eyeInstruction').textContent = '🖐️ Tapa tu ojo IZQUIERDO con la mano';
-            }
-        }
-        
-        function actualizarTest() {
-            const nivel = niveles[nivelActual];
-            
-            document.getElementById('letter').style.fontSize = nivel.tamano;
-            document.getElementById('letter').textContent = nivel.letra;
-            document.getElementById('levelInfo').textContent = `Nivel: ${nivel.nivel}`;
-            document.getElementById('progressText').textContent = `Nivel ${nivelActual + 1} de ${niveles.length}`;
-            
-            const progreso = ((nivelActual + 1) / niveles.length) * 100;
-            document.getElementById('progressBar').style.width = progreso + '%';
-        }
-        
-        function responder(puedeVer) {
-            respuestas.push({
-                nivel: nivelActual,
-                puedeVer: puedeVer,
-                ojo: ojoActual,
-                tamano: niveles[nivelActual].tamano
+            // Marcar botón activo
+            document.querySelectorAll('.test-section button').forEach(btn => {
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
             });
+            event.target.style.background = 'linear-gradient(45deg, #3b82f6, #8b5cf6)';
             
-            if (nivelActual < niveles.length - 1) {
-                nivelActual++;
-                actualizarTest();
-            } else {
-                mostrarResultado();
-            }
+            actualizarResultados();
         }
-        
-        function mostrarResultado() {
-            document.getElementById('test').classList.add('hidden');
-            document.getElementById('resultado').classList.remove('hidden');
+
+        function marcarAstigmatismo(tiene) {
+            resultados.astigmatismo = tiene;
             
-            const respuestasPositivas = respuestas.filter(r => r.puedeVer).length;
-            const porcentaje = (respuestasPositivas / respuestas.length) * 100;
+            // Marcar botón activo en sección de astigmatismo
+            const botones = event.target.parentElement.querySelectorAll('button');
+            botones.forEach(btn => {
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+            });
+            event.target.style.background = 'linear-gradient(45deg, #3b82f6, #8b5cf6)';
             
-            let resultado;
-            if (porcentaje >= 85) {
-                resultado = {
-                    icon: '✅',
-                    title: 'Tu vista parece estar bien',
-                    message: 'Pudiste ver la mayoría de letras correctamente. Mantén revisiones regulares.',
-                    class: 'result-good'
-                };
-            } else if (porcentaje >= 60) {
-                resultado = {
-                    icon: '⚠️',
-                    title: 'Podrías necesitar lentes',
-                    message: 'Tienes algunas dificultades con letras pequeñas. Te recomendamos una consulta.',
-                    class: 'result-warning'
-                };
-            } else {
-                resultado = {
-                    icon: '❌',
-                    title: 'Recomendamos consulta urgente',
-                    message: 'Tienes dificultades evidentes con la visión. Es importante que visites un profesional.',
-                    class: 'result-bad'
-                };
+            actualizarResultados();
+        }
+
+        function identificarColor(color) {
+            if (!resultados.colores.includes(color)) {
+                resultados.colores.push(color);
             }
             
-            document.getElementById('resultIcon').textContent = resultado.icon;
-            document.getElementById('resultIcon').className = `result-icon ${resultado.class}`;
-            document.getElementById('resultTitle').textContent = resultado.title;
-            document.getElementById('resultMessage').textContent = resultado.message;
+            // Efecto visual
+            event.target.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                event.target.style.transform = 'scale(1)';
+            }, 200);
             
-            let resumen = `<p>Pudiste ver <strong>${respuestasPositivas} de ${respuestas.length}</strong> letras claramente.</p>`;
-            resumen += `<p style="margin-top: 10px;">Porcentaje de aciertos: <strong>${Math.round(porcentaje)}%</strong></p>`;
-            
-            document.getElementById('summaryText').innerHTML = resumen;
+            actualizarResultados();
         }
-        
-        function reiniciarTest() {
-            nivelActual = 0;
-            respuestas = [];
-            ojoActual = 'ambos';
+
+        function actualizarResultados() {
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
             
-            document.getElementById('resultado').classList.add('hidden');
-            document.getElementById('inicio').classList.remove('hidden');
-            
-            cambiarOjo('ambos');
+            if (resultados.agudeza || resultados.astigmatismo || resultados.colores.length > 0) {
+                resultBox.style.display = 'block';
+                
+                let contenido = '<div style="text-align: left;">';
+                
+                if (resultados.agudeza) {
+                    const interpretacion = {
+                        'linea-7': '👁️ <strong>Excelente:</strong> Su agudeza visual parece muy buena',
+                        'linea-5': '👁️ <strong>Buena:</strong> Su agudeza visual es adecuada',
+                        'linea-3': '👁️ <strong>Regular:</strong> Podría beneficiarse de corrección visual',
+                        'linea-1': '👁️ <strong>Atención:</strong> Se recomienda examen profesional urgente'
+                    };
+                    contenido += `<p>${interpretacion[resultados.agudeza]}</p>`;
+                }
+                
+                if (resultados.astigmatismo) {
+                    const astigmatismo = resultados.astigmatismo === 'si' 
+                        ? '🎯 <strong>Posible astigmatismo:</strong> Algunas líneas se ven diferentes'
+                        : '🎯 <strong>Sin astigmatismo aparente:</strong> Las líneas se ven uniformes';
+                    contenido += `<p>${astigmatismo}</p>`;
+                }
+                
+                if (resultados.colores.length > 0) {
+                    contenido += `<p>🌈 <strong>Colores identificados:</strong> ${resultados.colores.join(', ')}</p>`;
+                }
+                
+                contenido += '<p style="margin-top: 15px;"><strong>⚠️ Recuerde:</strong> Estos resultados son preliminares. Un examen profesional es necesario para un diagnóstico preciso.</p>';
+                contenido += '</div>';
+                
+                resultContent.innerHTML = contenido;
+                
+                // Generar comentarios para WhatsApp
+                resultados.comentarios = generarComentarios();
+            }
         }
-        
+
+        function generarComentarios() {
+            let comentarios = '📊 RESULTADOS DEL TEST PRELIMINAR:\n\n';
+            
+            if (resultados.agudeza) {
+                const textos = {
+                    'linea-7': 'Agudeza visual: Excelente (líneas 7-8)',
+                    'linea-5': 'Agudeza visual: Buena (líneas 5-6)',
+                    'linea-3': 'Agudeza visual: Regular (líneas 3-4)',
+                    'linea-1': 'Agudeza visual: Necesita atención (líneas 1-2)'
+                };
+                comentarios += `👁️ ${textos[resultados.agudeza]}\n`;
+            }
+            
+            if (resultados.astigmatismo) {
+                const texto = resultados.astigmatismo === 'si' 
+                    ? 'Posible astigmatismo detectado'
+                    : 'Sin astigmatismo aparente';
+                comentarios += `🎯 ${texto}\n`;
+            }
+            
+            if (resultados.colores.length > 0) {
+                comentarios += `🌈 Colores identificados: ${resultados.colores.join(', ')}\n`;
+            }
+            
+            comentarios += '\n⚠️ Estos resultados son preliminares y requieren confirmación profesional.';
+            
+            return comentarios;
+        }
+
+        function solicitarExamen() {
+            const mensaje = `📅 *SOLICITUD DE EXAMEN PROFESIONAL*\n\n` +
+                          `Hola! He realizado el test preliminar en su sitio web y me interesa agendar un examen profesional completo.\n\n` +
+                          `${resultados.comentarios || 'Test preliminar completado'}\n\n` +
+                          `Por favor, ayúdenme a agendar una cita para:\n` +
+                          `• Examen completo de la vista\n` +
+                          `• Evaluación profesional\n` +
+                          `• Recomendaciones de corrección si es necesario\n\n` +
+                          `📱 NVISION\n` +
+                          `☎️ 849-797-2424\n` +
+                          `🌐 nvision.com.do`;
+            
+            const url = `https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+
+        function consultarResultados() {
+            if (!resultados.comentarios) {
+                alert('Complete el test primero para poder consultar los resultados.');
+                return;
+            }
+            
+            const mensaje = `💬 *CONSULTA SOBRE RESULTADOS DEL TEST*\n\n` +
+                          `He completado el test preliminar de vista y me gustaría consultar sobre los resultados:\n\n` +
+                          `${resultados.comentarios}\n\n` +
+                          `¿Podrían darme más información sobre qué significan estos resultados y qué pasos seguir?\n\n` +
+                          `📱 NVISION\n` +
+                          `☎️ 849-797-2424\n` +
+                          `🌐 nvision.com.do`;
+            
+            const url = `https://wa.me/18497972424?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+
         function volverInicio() {
             window.location.href = 'index.html';
         }
-        
-        console.log('✅ Test Visual Óptica Nvision cargado correctamente');
+
+        // Inicialización
+        console.log('✅ Test de Vista NVISION cargado correctamente');
     </script>
 </body>
 </html>
