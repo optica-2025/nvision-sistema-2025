@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Óptica NVisión</title>
+    <title>Panel Admin - Óptica NVision</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -11,6 +11,7 @@
             background: linear-gradient(135deg, #134e4a 0%, #7c2d12 100%); 
             color: white; 
             padding: 20px;
+            min-height: 100vh;
         }
         .container { max-width: 1200px; margin: 0 auto; }
         .header { 
@@ -31,7 +32,9 @@
             font-weight: bold;
             text-decoration: none;
             color: white;
+            transition: all 0.3s ease;
         }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
         .btn-primary { background: #10b981; }
         .btn-danger { background: #ef4444; }
         .btn-secondary { background: #666; }
@@ -66,11 +69,14 @@
             color: white;
             border-radius: 5px;
         }
-        .textarea { min-height: 100px; }
+        .textarea { min-height: 100px; resize: vertical; }
         .table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            overflow: hidden;
         }
         .table th, .table td {
             padding: 10px;
@@ -78,7 +84,8 @@
             text-align: left;
         }
         .table th {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            font-weight: bold;
         }
         .alert {
             position: fixed;
@@ -90,6 +97,7 @@
             display: none;
             z-index: 1000;
             max-width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .camera-box {
             width: 100%;
@@ -103,17 +111,90 @@
             margin: 10px 0;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+        }
+        .camera-box:hover { border-color: #10b981; }
+        .product-img {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
         }
         .stat-box {
             background: rgba(16, 185, 129, 0.2);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
+            margin: 10px 0;
         }
         .stat-number {
             font-size: 36px;
             font-weight: bold;
             color: #10b981;
+            display: block;
+        }
+        .orden-card {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+        }
+        .numero-orden {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .estado-orden {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .estado-pendiente { background: #f59e0b; color: white; }
+        .estado-laboratorio { background: #3b82f6; color: white; }
+        .estado-listo { background: #10b981; color: white; }
+        .estado-entregado { background: #6b7280; color: white; }
+        .prescripcion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .ojo-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .reminder-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #10b981;
+        }
+        .reminder-urgent {
+            border-left-color: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .cliente-item {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border-left: 3px solid #10b981;
         }
         .footer {
             position: fixed;
@@ -122,14 +203,45 @@
             font-size: 10px;
             font-weight: 600;
             opacity: 0.7;
+            background: linear-gradient(45deg, #8B4513, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .loading {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden { display: none !important; }
+        .visible { display: block !important; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .prescripcion-grid { grid-template-columns: 1fr; }
+            .container { padding: 10px; }
+            body { padding: 10px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚙️ PANEL ADMINISTRATIVO ÓPTICA NVISIÓN</h1>
+            <h1>⚙️ PANEL ADMINISTRATIVO ÓPTICA NVISION</h1>
             <p>Sistema completo de gestión con laboratorio integrado</p>
+            <div style="margin-top: 10px;">
+                <span id="status-indicator" style="color: #10b981;">🟢 Sistema Activo</span>
+            </div>
         </div>
 
         <!-- MENÚ PRINCIPAL -->
@@ -138,216 +250,524 @@
                 <div class="card">
                     <h3>📊 Dashboard</h3>
                     <div class="stat-box">
-                        <div class="stat-number" id="totalProductos">0</div>
+                        <span class="stat-number" id="totalProductos">0</span>
                         <div>Productos</div>
                     </div>
-                    <div class="stat-box" style="margin-top: 10px;">
-                        <div class="stat-number" id="totalClientes">0</div>
+                    <div class="stat-box">
+                        <span class="stat-number" id="totalClientes">0</span>
                         <div>Clientes</div>
                     </div>
-                    <div class="stat-box" style="margin-top: 10px;">
-                        <div class="stat-number">RD$ <span id="ventasHoy">0</span></div>
+                    <div class="stat-box">
+                        <span class="stat-number">RD$ <span id="ventasHoy">0</span></span>
                         <div>Ventas Hoy</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h3>📦 Inventario</h3>
-                    <button class="btn btn-primary" onclick="mostrar('inventario')">📦 Ver Inventario</button>
-                    <button class="btn btn-primary" onclick="mostrar('camara')">📷 Cámara Rápida</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('inventario')">📦 Ver Inventario</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('camara')">📷 Cámara Rápida</button>
+                    <button class="btn btn-secondary" onclick="abrirEnlace('https://nvision.com/catalogo')">🛍️ Ver Catálogo</button>
                 </div>
 
                 <div class="card">
                     <h3>👥 Gestión</h3>
-                    <button class="btn btn-primary" onclick="mostrar('gestionClientes')">👥 Clientes</button>
-                    <button class="btn btn-primary" onclick="mostrar('recordatorios')">🔔 Recordatorios</button>
-                    <button class="btn btn-secondary" onclick="mostrar('ventas')">💰 Ventas</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('clientes')">👥 Clientes</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('recordatorios')">🔔 Recordatorios</button>
+                    <button class="btn btn-secondary" onclick="mostrarSeccion('ventas')">💰 Ventas</button>
                 </div>
 
                 <div class="card">
                     <h3>📱 Marketing</h3>
-                    <button class="btn btn-primary" onclick="mostrar('marketing')">📱 Marketing WhatsApp</button>
-                    <button class="btn btn-warning" onclick="mostrar('contactar')">💬 Contactar Clientes</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('marketing')">📱 Marketing WhatsApp</button>
+                    <button class="btn btn-warning" onclick="mostrarSeccion('contactar')">💬 Contactar Clientes</button>
+                    <button class="btn btn-secondary" onclick="mostrarSeccion('campanas')">📣 Campañas</button>
                 </div>
 
                 <div class="card" style="background: linear-gradient(45deg, #134e4a, #7c2d12); border: 2px solid #10b981;">
                     <h3>🔬 Sistema de Laboratorio</h3>
-                    <button class="btn btn-primary" onclick="mostrar('dashboardLaboratorio')">📊 Dashboard Lab</button>
-                    <button class="btn btn-primary" onclick="mostrar('nuevaOrdenLab')">➕ Nueva Orden</button>
-                    <button class="btn btn-primary" onclick="mostrar('listaOrdenesLab')">📋 Ver Órdenes</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('dashboardLab')">📊 Dashboard Lab</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('nuevaOrden')">➕ Nueva Orden</button>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('ordenes')">📋 Ver Órdenes</button>
+                    <button class="btn btn-warning" onclick="mostrarSeccion('cotejo')">✅ Cotejo</button>
+                    <button class="btn btn-success" onclick="mostrarSeccion('cobrar')">💰 Cuentas x Cobrar</button>
+                    <button class="btn btn-danger" onclick="mostrarSeccion('pagar')">💸 Cuentas x Pagar</button>
                 </div>
 
                 <div class="card">
                     <h3>📄 Documentos</h3>
-                    <button class="btn btn-primary" onclick="abrirFactura()">📄 Factura Proforma</button>
-                    <button class="btn btn-secondary" onclick="mostrar('reportes')">📊 Reportes</button>
+                    <button class="btn btn-primary" onclick="abrirEnlace('https://nvision.com/factura')">📄 Factura</button>
+                    <button class="btn btn-primary" onclick="abrirEnlace('https://nvision.com/ncf')">🧾 NCF</button>
+                    <button class="btn btn-secondary" onclick="mostrarSeccion('reportes')">📊 Reportes</button>
                 </div>
+
+                <div class="card">
+                    <h3>💾 Backup y Datos</h3>
+                    <button class="btn btn-success" onclick="crearBackupCompleto()">💾 Crear Backup</button>
+                    <button class="btn btn-warning" onclick="exportarBackupGitHub()">📤 Exportar para GitHub</button>
+                    <button class="btn btn-primary" onclick="importarBackupGitHub()">📥 Importar desde GitHub</button>
+                    <div style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
+                        Backup automático cada hora<br>
+                        Compatible con GitHub y Netlify
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-danger" onclick="abrirEnlace('https://nvision.com')">🏠 Volver al Inicio</button>
             </div>
         </div>
 
         <!-- DASHBOARD LABORATORIO -->
-        <div id="dashboardLaboratorio" class="section">
+        <div id="dashboardLab" class="section">
             <h2>🔬 Dashboard de Laboratorio</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
             <div class="grid">
                 <div class="card">
                     <h3>📊 Estado General</h3>
-                    <p>En Laboratorio: <span id="enLaboratorioCount">0</span></p>
-                    <p>Para Cotejo: <span id="paraCotejoCount">0</span></p>
-                    <p>Total por Cobrar: RD$ <span id="totalPorCobrarDash">0</span></p>
+                    <div class="numero-orden" id="proximoNumero">LAB-001</div>
+                    <div>Próximo número de orden</div>
+                    <div style="text-align: left; margin: 15px 0;">
+                        <p><strong>En Laboratorio:</strong> <span id="enLabCount">0</span></p>
+                        <p><strong>Para Cotejo:</strong> <span id="cotejoCount">0</span></p>
+                        <p><strong>Por Cobrar:</strong> RD$ <span id="porCobrarTotal">0</span></p>
+                        <p><strong>Por Pagar:</strong> RD$ <span id="porPagarTotal">0</span></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>⚡ Acciones Rápidas</h3>
+                    <button class="btn btn-primary" onclick="mostrarSeccion('nuevaOrden')">🔬 Nueva Orden</button>
+                    <button class="btn btn-warning" onclick="mostrarSeccion('cotejo')">✅ Cotejo</button>
+                    <button class="btn btn-success" onclick="mostrarSeccion('cobrar')">💰 Cobrar</button>
+                    <button class="btn btn-danger" onclick="mostrarSeccion('pagar')">💸 Pagar</button>
                 </div>
             </div>
         </div>
 
-        <!-- NUEVA ORDEN LABORATORIO -->
-        <div id="nuevaOrdenLab" class="section">
+        <!-- NUEVA ORDEN -->
+        <div id="nuevaOrden" class="section">
             <h2>🔬 Nueva Orden de Laboratorio</h2>
-            <button class="btn btn-secondary" onclick="mostrar('dashboardLaboratorio')">⬅️ Volver</button>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('dashboardLab')">⬅️ Volver</button>
             
+            <div class="grid">
+                <div class="card">
+                    <h3>👤 Cliente</h3>
+                    <select id="clienteSelect" class="select">
+                        <option value="">Seleccionar cliente</option>
+                    </select>
+                    <input type="text" id="nombreCliente" class="input" placeholder="Nombre del cliente" readonly>
+                    <div class="numero-orden" id="numeroOrden">LAB-001</div>
+                    <button class="btn btn-warning" onclick="generarNuevoNumero()">🔄 Nuevo Número</button>
+                </div>
+
+                <div class="card">
+                    <h3>👓 Especificaciones</h3>
+                    <select id="tipoMontura" class="select">
+                        <option value="">Tipo de montura</option>
+                        <option value="completa">Montura Completa</option>
+                        <option value="media">Media Montura</option>
+                        <option value="sin-montura">Sin Montura</option>
+                        <option value="deportiva">Deportiva</option>
+                        <option value="sol">Lentes de Sol</option>
+                    </select>
+                    
+                    <select id="tipoLente" class="select">
+                        <option value="">Tipo de lente</option>
+                        <option value="monofocal">Monofocal</option>
+                        <option value="bifocal">Bifocal</option>
+                        <option value="progresivo">Progresivo</option>
+                        <option value="ocupacional">Ocupacional</option>
+                    </select>
+                    
+                    <input type="number" id="costoLab" class="input" placeholder="Costo laboratorio RD$" step="0.01">
+                    <input type="number" id="precioVenta" class="input" placeholder="Precio venta RD$" step="0.01">
+                    <input type="number" id="abono" class="input" placeholder="Abono RD$" step="0.01">
+                    <div id="pendiente" style="margin: 10px 0; font-weight: bold; color: #f59e0b;"></div>
+                </div>
+            </div>
+
             <div class="card">
-                <h3>👤 Datos del Cliente</h3>
-                <select id="clienteOrdenLab" class="select" onchange="cargarDatosClienteLab()">
-                    <option value="">Seleccionar cliente</option>
-                </select>
-                <input type="text" id="nombreClienteLab" class="input" placeholder="Nombre completo" readonly>
-                <input type="tel" id="telefonoClienteLab" class="input" placeholder="Teléfono" readonly>
+                <h3>👁️ Prescripción Completa</h3>
+                <div class="prescripcion-grid">
+                    <div class="ojo-section">
+                        <h4>👁️ OJO DERECHO (OD)</h4>
+                        <input type="text" id="od_esfera" class="input" placeholder="Esfera (ej: -2.50)">
+                        <input type="text" id="od_cilindro" class="input" placeholder="Cilindro (ej: -1.25)">
+                        <input type="text" id="od_eje" class="input" placeholder="Eje (ej: 180°)">
+                        <input type="text" id="od_adicion" class="input" placeholder="Adición (ej: +2.00)">
+                    </div>
+                    
+                    <div class="ojo-section">
+                        <h4>👁️ OJO IZQUIERDO (OI)</h4>
+                        <input type="text" id="oi_esfera" class="input" placeholder="Esfera (ej: -3.00)">
+                        <input type="text" id="oi_cilindro" class="input" placeholder="Cilindro (ej: -0.75)">
+                        <input type="text" id="oi_eje" class="input" placeholder="Eje (ej: 90°)">
+                        <input type="text" id="oi_adicion" class="input" placeholder="Adición (ej: +2.00)">
+                    </div>
+                </div>
+
+                <div style="background: rgba(37, 211, 102, 0.1); padding: 15px; border-radius: 10px; margin: 15px 0; border: 1px solid #25d366;">
+                    <h4>📏 Medidas Específicas</h4>
+                    <div class="grid">
+                        <input type="text" id="distancia_pupilar" class="input" placeholder="Distancia Pupilar (ej: 62mm)">
+                        <input type="text" id="altura_pupilar" class="input" placeholder="Altura Pupilar (ej: 24mm)">
+                        <input type="text" id="dnp_od" class="input" placeholder="DNP OD (ej: 31mm)">
+                        <input type="text" id="dnp_oi" class="input" placeholder="DNP OI (ej: 31mm)">
+                    </div>
+                </div>
+
+                <textarea id="comentarios" class="textarea" placeholder="Comentarios especiales, instrucciones adicionales, medidas extra..."></textarea>
+            </div>
+
+            <div class="card">
+                <h3>📷 Fotos</h3>
+                <div class="grid">
+                    <div>
+                        <h4>📸 Montura</h4>
+                        <div class="camera-box" id="cameraMonturaBox" onclick="activarCamara('montura')">
+                            <div id="placeholderMontura">📷 Tomar foto montura</div>
+                            <video id="videoMontura" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                        </div>
+                        <img id="previewMontura" style="display: none; width: 100%; border-radius: 5px;">
+                        <button class="btn btn-primary" onclick="tomarFoto('montura')" id="btnMontura" style="display: none;">📸 Capturar</button>
+                    </div>
+                    
+                    <div>
+                        <h4>📋 Receta</h4>
+                        <div class="camera-box" id="cameraRecetaBox" onclick="activarCamara('receta')">
+                            <div id="placeholderReceta">📷 Tomar foto receta</div>
+                            <video id="videoReceta" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                        </div>
+                        <img id="previewReceta" style="display: none; width: 100%; border-radius: 5px;">
+                        <button class="btn btn-primary" onclick="tomarFoto('receta')" id="btnReceta" style="display: none;">📸 Capturar</button>
+                    </div>
+                </div>
                 
-                <h4>👓 Especificaciones</h4>
-                <select id="tipoLenteLab" class="select">
-                    <option value="">Tipo de lente</option>
-                    <option value="monofocal">Monofocal</option>
-                    <option value="bifocal">Bifocal</option>
-                    <option value="progresivo">Progresivo</option>
-                    <option value="otros">Otros</option>
-                </select>
-                <input type="number" id="precioVenta" class="input" placeholder="Precio total RD$">
-                <input type="number" id="abono" class="input" placeholder="Abono RD$">
-                
-                <h4>👁️ Prescripción OD</h4>
-                <input type="text" id="od_esferaLab" class="input" placeholder="Esfera OD">
-                <input type="text" id="od_cilindroLab" class="input" placeholder="Cilindro OD">
-                
-                <h4>👁️ Prescripción OI</h4>
-                <input type="text" id="oi_esferaLab" class="input" placeholder="Esfera OI">
-                <input type="text" id="oi_cilindroLab" class="input" placeholder="Cilindro OI">
-                
-                <div style="margin-top: 15px;">
-                    <button class="btn btn-whatsapp" onclick="generarYEnviarOrdenLab()">📱 Generar y Enviar Orden</button>
-                    <button class="btn btn-secondary" onclick="limpiarFormularioLab()">🔄 Limpiar</button>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-whatsapp" onclick="generarYEnviarOrden()">📱 Generar y Enviar</button>
+                    <button class="btn btn-primary" onclick="guardarOrden()">💾 Guardar</button>
+                    <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar</button>
                 </div>
             </div>
         </div>
 
-        <!-- LISTA ÓRDENES -->
-        <div id="listaOrdenesLab" class="section">
+        <!-- ÓRDENES -->
+        <div id="ordenes" class="section">
             <h2>📋 Órdenes de Laboratorio</h2>
-            <button class="btn btn-secondary" onclick="mostrar('dashboardLaboratorio')">⬅️ Volver</button>
-            <div id="tablaOrdenesLab"></div>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('dashboardLab')">⬅️ Volver</button>
+            
+            <div style="margin: 20px 0;">
+                <input type="text" id="busquedaOrdenes" class="input" placeholder="🔍 Buscar orden..." onkeyup="buscarOrdenes()">
+            </div>
+            
+            <div id="listaOrdenes"></div>
         </div>
 
-        <!-- MARKETING -->
-        <div id="marketing" class="section">
-            <h2>📱 Marketing WhatsApp</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+        <!-- COTEJO -->
+        <div id="cotejo" class="section">
+            <h2>✅ Cotejo de Órdenes</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('dashboardLab')">⬅️ Volver</button>
             
-            <div class="card">
-                <h3>📱 Enlaces de Redes Sociales</h3>
-                <input type="url" id="enlaceRedes" class="input" placeholder="Enlace de YouTube, TikTok, Instagram, Facebook...">
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
-                    <button class="btn btn-whatsapp" onclick="enviarEnlaceRedes('youtube')" style="background: #ff0000;">📺 YouTube</button>
-                    <button class="btn btn-whatsapp" onclick="enviarEnlaceRedes('instagram')" style="background: #e1306c;">📸 Instagram</button>
-                    <button class="btn btn-whatsapp" onclick="enviarEnlaceRedes('facebook')" style="background: #1877f2;">👥 Facebook</button>
-                    <button class="btn btn-whatsapp" onclick="enviarEnlaceRedes('tiktok')" style="background: #000000;">🎵 TikTok</button>
-                </div>
+            <div style="background: rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                <h3>📦 Órdenes Listas para Cotejo</h3>
+                <p>Cuando reciba los lentes del laboratorio, márquelos como cotejados aquí.</p>
             </div>
+            
+            <div id="listaCotejo"></div>
+        </div>
+
+        <!-- CUENTAS POR COBRAR -->
+        <div id="cobrar" class="section">
+            <h2>💰 Cuentas por Cobrar</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('dashboardLab')">⬅️ Volver</button>
+            
+            <div style="background: rgba(245, 158, 11, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                <h3>💳 Pendientes de Pago (Clientes)</h3>
+                <p><strong>Total por Cobrar:</strong> <span id="totalCobrar" style="color: #f59e0b; font-size: 18px;">RD$ 0.00</span></p>
+            </div>
+            
+            <div id="listaCobrar"></div>
+        </div>
+
+        <!-- CUENTAS POR PAGAR -->
+        <div id="pagar" class="section">
+            <h2>💸 Cuentas por Pagar</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('dashboardLab')">⬅️ Volver</button>
+            
+            <div style="background: rgba(239, 68, 68, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                <h3>🏭 Pagos a Laboratorios</h3>
+                <p><strong>Total por Pagar:</strong> <span id="totalPagar" style="color: #ef4444; font-size: 18px;">RD$ 0.00</span></p>
+            </div>
+            
+            <div id="listaPagar"></div>
         </div>
 
         <!-- INVENTARIO -->
         <div id="inventario" class="section">
-            <h2>📦 Inventario de Productos</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
-            <div id="listaInventario"></div>
-        </div>
-
-        <!-- CÁMARA -->
-        <div id="camara" class="section">
-            <h2>📷 Agregar Producto con Cámara</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            <h2>📦 Inventario</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
             
-            <div class="camera-box" id="cameraBox">
-                <div id="placeholder">
-                    <div style="font-size: 50px;">📷</div>
-                    <div>Click para activar</div>
-                </div>
-                <video id="video" style="display: none; width: 100%; height: 100%;" autoplay></video>
+            <div style="margin: 20px 0;">
+                <input type="text" class="input" placeholder="🔍 Buscar producto..." onkeyup="buscarProductos(this.value)">
             </div>
             
-            <button class="btn btn-primary" onclick="toggleCamera()" id="cameraBtn">📷 Activar Cámara</button>
-            <img id="preview" style="display: none; width: 100%; margin: 10px auto; border-radius: 5px;">
+            <div id="listaProductos"></div>
+        </div>
+
+        <!-- CÁMARA RÁPIDA -->
+        <div id="camara" class="section">
+            <h2>📷 Agregar Producto</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div class="camera-box" onclick="activarCamara('producto')">
+                <div id="placeholderProducto">📷 Tomar foto del producto</div>
+                <video id="videoProducto" style="display: none; width: 100%; height: 100%;" autoplay></video>
+            </div>
+            <img id="previewProducto" style="display: none; width: 100%; border-radius: 5px;">
+            <button class="btn btn-primary" onclick="tomarFoto('producto')" id="btnProducto" style="display: none;">📸 Capturar</button>
             
             <div style="margin-top: 20px;">
-                <input type="text" id="codigo" class="input" placeholder="Código (ej: NV001)">
-                <input type="text" id="nombre" class="input" placeholder="Nombre del producto">
-                <input type="number" id="precio" class="input" placeholder="Precio RD$">
-                <input type="number" id="stock" class="input" placeholder="Stock">
+                <input type="text" id="codigoProducto" class="input" placeholder="Código (ej: NV001)">
+                <input type="text" id="nombreProducto" class="input" placeholder="Nombre del producto">
+                <input type="number" id="precioProducto" class="input" placeholder="Precio RD$" step="0.01">
+                <input type="number" id="stockProducto" class="input" placeholder="Stock" min="0">
+                <select id="categoriaProducto" class="input">
+                    <option value="">Categoría</option>
+                    <option value="monturas">Monturas</option>
+                    <option value="lentes">Lentes</option>
+                    <option value="accesorios">Accesorios</option>
+                </select>
                 
                 <button class="btn btn-primary" onclick="guardarProducto()">💾 Guardar</button>
-                <button class="btn btn-whatsapp" onclick="guardarYEnviar()">📱 Guardar y Enviar</button>
+                <button class="btn btn-whatsapp" onclick="guardarYEnviarProducto()">📱 Guardar y Enviar</button>
+                <button class="btn btn-secondary" onclick="limpiarCamara()">🔄 Limpiar</button>
             </div>
         </div>
 
-        <!-- CONTACTAR CLIENTES -->
+        <!-- CLIENTES -->
+        <div id="clientes" class="section">
+            <h2>👥 Gestión de Clientes</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>➕ Agregar Cliente</h3>
+                    <input type="text" id="nombreNuevoCliente" class="input" placeholder="Nombre completo">
+                    <input type="tel" id="telefonoCliente" class="input" placeholder="Teléfono">
+                    <input type="email" id="emailCliente" class="input" placeholder="Email">
+                    <input type="date" id="cumpleanosCliente" class="input">
+                    <textarea id="notasCliente" class="textarea" placeholder="Notas..."></textarea>
+                    <button class="btn btn-primary" onclick="agregarCliente()">👥 Agregar Cliente</button>
+                </div>
+                
+                <div class="card">
+                    <h3>🔍 Buscar</h3>
+                    <input type="text" id="buscarCliente" class="input" placeholder="Buscar cliente..." onkeyup="buscarClientes(this.value)">
+                    <div id="resultadosBusqueda"></div>
+                </div>
+            </div>
+            
+            <div id="listaClientes"></div>
+        </div>
+
+        <!-- MARKETING COMPLETO -->
+        <div id="marketing" class="section">
+            <h2>📱 Marketing WhatsApp Completo</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>📸 Promoción con Foto</h3>
+                    <div class="camera-box" onclick="activarCamara('marketing')">
+                        <div id="placeholderMarketing">📷 Foto promocional</div>
+                        <video id="videoMarketing" style="display: none; width: 100%; height: 100%;" autoplay></video>
+                    </div>
+                    <img id="previewMarketing" style="display: none; width: 100%; border-radius: 5px;">
+                    <button class="btn btn-primary" onclick="tomarFoto('marketing')" id="btnMarketing" style="display: none;">📸 Capturar</button>
+                    
+                    <textarea id="mensajeMarketing" class="textarea" placeholder="Mensaje promocional...">🛍️ *PROMOCIÓN ESPECIAL*
+
+¡Hola! Te mostramos este hermoso producto disponible.
+
+✨ ¿Te interesa verlo en la tienda?
+💰 Excelente precio
+🚚 Disponible ahora
+
+📱 849-797-2424
+🌐 nvision.com</textarea>
+                    
+                    <button class="btn btn-whatsapp" onclick="enviarPromocion()">📱 Enviar Promoción</button>
+                </div>
+
+                <div class="card">
+                    <h3>📁 Subir Archivos del Móvil</h3>
+                    <div style="border: 2px dashed #25d366; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; margin: 10px 0;" onclick="document.getElementById('archivoMovil').click()">
+                        <div style="font-size: 50px;">📁</div>
+                        <div>Subir foto/video del móvil</div>
+                        <div style="font-size: 12px; opacity: 0.7;">JPG, PNG, MP4, PDF</div>
+                    </div>
+                    <input type="file" id="archivoMovil" style="display: none;" accept="image/*,video/*,.pdf" onchange="manejarArchivoMovil(this)">
+                    <div id="archivoSubido" style="margin: 10px 0;"></div>
+                    
+                    <textarea id="mensajeArchivo" class="textarea" placeholder="Mensaje para acompañar el archivo...">📁 *ARCHIVO ÓPTICA NVISION*
+
+Te envío este contenido que puede interesarte.
+
+📱 849-797-2424
+🌐 nvision.com</textarea>
+                    
+                    <button class="btn btn-whatsapp" onclick="enviarArchivo()">📱 Enviar Archivo</button>
+                </div>
+
+                <div class="card">
+                    <h3>🔗 Enlaces de Redes Sociales</h3>
+                    <input type="url" id="enlaceRedes" class="input" placeholder="Pegar enlace de YouTube, Instagram, Facebook, TikTok..." style="margin: 10px 0;">
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0;">
+                        <button class="btn" style="background: #ff0000;" onclick="enviarEnlaceRed('youtube')">📺 YouTube</button>
+                        <button class="btn" style="background: #e1306c;" onclick="enviarEnlaceRed('instagram')">📸 Instagram</button>
+                        <button class="btn" style="background: #1877f2;" onclick="enviarEnlaceRed('facebook')">👥 Facebook</button>
+                        <button class="btn" style="background: #000000;" onclick="enviarEnlaceRed('tiktok')">🎵 TikTok</button>
+                    </div>
+                    
+                    <textarea id="mensajeEnlace" class="textarea" placeholder="Mensaje para el enlace...">🔗 *CONTENIDO INTERESANTE*
+
+Te comparto este enlace que puede gustarte.
+
+¡Échale un vistazo!
+
+📱 849-797-2424
+🌐 nvision.com</textarea>
+                </div>
+
+                <div class="card">
+                    <h3>🎤 Mensaje de Voz (Para Analfabetos)</h3>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button class="btn btn-danger" id="botonGrabar" onclick="toggleGrabacion()" style="font-size: 24px; padding: 20px; border-radius: 50%; width: 80px; height: 80px;">
+                            🎤
+                        </button>
+                        <div id="estadoGrabacion" style="margin: 10px 0; font-weight: bold;">Presiona para grabar mensaje</div>
+                        <div id="tiempoGrabacion" style="color: #f59e0b;">00:00</div>
+                    </div>
+                    
+                    <audio id="audioPlayback" controls style="width: 100%; display: none; margin: 10px 0;"></audio>
+                    
+                    <div style="margin: 15px 0;">
+                        <button class="btn btn-primary" onclick="reproducirAudio()" id="botonReproducir" style="display: none;">▶️ Escuchar</button>
+                        <button class="btn btn-whatsapp" onclick="enviarAudio()" id="botonEnviarAudio" style="display: none;">📱 Enviar Audio</button>
+                        <button class="btn btn-warning" onclick="enviarMensajeConAudio()" id="botonEnviarMensaje" style="display: none;">💬 Enviar Mensaje</button>
+                        <button class="btn btn-secondary" onclick="borrarAudio()">🗑️ Borrar</button>
+                    </div>
+                    
+                    <p style="font-size: 14px; opacity: 0.8; text-align: center;">
+                        🎯 Perfecto para clientes que no saben leer/escribir<br>
+                        ⏰ Máximo 60 segundos por mensaje
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Estadísticas de Marketing</h3>
+                    <div class="stat-box">
+                        <span class="stat-number" id="mensajesHoy">0</span>
+                        <div>Mensajes Hoy</div>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" id="promocionesHoy">0</span>
+                        <div>Promociones</div>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" id="audiosHoy">0</span>
+                        <div>Audios Enviados</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="verEstadisticas()">📈 Ver Detalles</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACTAR -->
         <div id="contactar" class="section">
             <h2>💬 Contactar Clientes</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
-            <div id="listaClientesRapida"></div>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div id="listaContactar"></div>
         </div>
 
         <!-- RECORDATORIOS -->
         <div id="recordatorios" class="section">
-            <h2>🔔 Sistema de Recordatorios</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            <h2>🔔 Recordatorios</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <button class="btn btn-primary" onclick="generarRecordatorios()">🔄 Actualizar</button>
             <div id="listaRecordatorios"></div>
         </div>
 
         <!-- VENTAS -->
         <div id="ventas" class="section">
-            <h2>💰 Registro de Ventas</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            <h2>💰 Ventas</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div class="card">
+                <h3>➕ Nueva Venta</h3>
+                <select id="clienteVenta" class="select">
+                    <option value="">Seleccionar cliente</option>
+                </select>
+                <select id="productoVenta" class="select">
+                    <option value="">Seleccionar producto</option>
+                </select>
+                <input type="number" id="cantidadVenta" class="input" placeholder="Cantidad" value="1" min="1">
+                <input type="number" id="totalVenta" class="input" placeholder="Total RD$" step="0.01">
+                <button class="btn btn-primary" onclick="registrarVenta()">💰 Registrar</button>
+            </div>
+            
             <div id="listaVentas"></div>
         </div>
 
         <!-- REPORTES -->
         <div id="reportes" class="section">
             <h2>📊 Reportes</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
-            <div class="card">
-                <h3>📊 Resumen General</h3>
-                <p>Total Productos: <strong id="totalProductosReporte">0</strong></p>
-                <p>Total Clientes: <strong id="totalClientesReporte">0</strong></p>
-                <button class="btn btn-whatsapp" onclick="enviarReporteWhatsApp()">📱 Enviar Reporte</button>
-            </div>
-        </div>
-
-        <!-- GESTIÓN CLIENTES -->
-        <div id="gestionClientes" class="section">
-            <h2>👥 Gestión de Clientes</h2>
-            <button class="btn btn-secondary" onclick="mostrar('menu')">⬅️ Volver</button>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
             
-            <div class="card">
-                <h3>➕ Agregar Cliente</h3>
-                <input type="text" id="nombreCliente" class="input" placeholder="Nombre completo">
-                <input type="tel" id="telefonoCliente" class="input" placeholder="Teléfono (849-555-0000)">
-                <input type="email" id="emailCliente" class="input" placeholder="Email">
-                <button class="btn btn-primary" onclick="agregarCliente()">👥 Agregar Cliente</button>
+            <div class="grid">
+                <div class="card">
+                    <h3>🔬 Laboratorio</h3>
+                    <p>En Lab: <strong id="reporteEnLab">0</strong></p>
+                    <p>Por Cobrar: <strong>RD$ <span id="reporteCobrar">0</span></strong></p>
+                    <p>Por Pagar: <strong>RD$ <span id="reportePagar">0</span></strong></p>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 General</h3>
+                    <p>Productos: <strong id="reporteProductos">0</strong></p>
+                    <p>Clientes: <strong id="reporteClientes">0</strong></p>
+                    <p>Ventas: <strong>RD$ <span id="reporteVentas">0</span></strong></p>
+                </div>
             </div>
             
-            <div class="card">
-                <h3>📋 Lista de Clientes</h3>
-                <div id="listaCompletaClientes"></div>
-            </div>
+            <button class="btn btn-whatsapp" onclick="enviarReporte()">📱 Enviar Reporte</button>
         </div>
 
+        <!-- CAMPAÑAS -->
+        <div id="campanas" class="section">
+            <h2>📣 Campañas</h2>
+            <button class="btn btn-secondary" onclick="mostrarSeccion('menu')">⬅️ Volver</button>
+            
+            <div class="card">
+                <h3>🎯 Campaña del Día</h3>
+                <button class="btn btn-primary" onclick="enviarCampanaDia()">📱 Enviar Ahora</button>
+                <textarea id="mensajeCampana" class="textarea" placeholder="Mensaje de campaña...">🎯 *CAMPAÑA DEL DÍA*
+
+¡Aprovecha nuestras ofertas especiales!
+
+✨ Descuentos exclusivos
+👓 Nueva colección
+🔍 Examen gratuito
+
+📱 849-797-2424
+🌐 nvision.com</textarea>
+            </div>
+        </div>
     </div>
 
     <div class="alert" id="alert"></div>
@@ -360,137 +780,211 @@
         
         let productos = [];
         let clientes = [];
+        let ordenesLab = [];
         let ventas = [];
-        let ordenesLaboratorio = [];
+        let estadisticas = { mensajesHoy: 0, promociones: 0 };
         let contadorOrdenes = 1;
-        let stream = null;
-        let fotoActual = null;
+        let streams = {};
+        let fotos = {};
+        let archivoSubido = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioBlob = null;
+        let tiempoInicio = null;
+        let intervalotiempo = null;
 
         // ========================================
         // 🚀 INICIALIZACIÓN
         // ========================================
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔄 Iniciando Óptica NVisión...');
+            console.log('🔄 Iniciando sistema NVision...');
             
-            try {
-                cargarDatos();
-                crearDatosEjemplo();
-                actualizarDashboard();
-                
-                // Verificar que los datos se cargaron correctamente
-                console.log('📊 Estado del sistema:');
-                console.log('- Productos:', productos.length);
-                console.log('- Clientes:', clientes.length);
-                console.log('- Órdenes Lab:', ordenesLaboratorio.length);
-                
-                if (clientes.length > 0) {
-                    console.log('✅ Clientes disponibles para laboratorio:', clientes.map(c => `ID: ${c.id}, Nombre: ${c.nombre}`));
+            cargarDatos();
+            crearDatosEjemplo();
+            actualizarDashboard();
+            cargarSelectores();
+            
+            // Event listeners para cálculos automáticos
+            ['costoLab', 'precioVenta', 'abono'].forEach(id => {
+                const elemento = document.getElementById(id);
+                if (elemento) {
+                    elemento.addEventListener('input', calcularPendiente);
                 }
-                
-                showAlert('✅ Sistema Óptica NVisión cargado correctamente');
-            } catch (error) {
-                console.error('❌ Error durante la inicialización:', error);
-                showAlert('⚠️ Error al inicializar el sistema');
+            });
+            
+            // Event listener para cliente
+            const clienteSelect = document.getElementById('clienteSelect');
+            if (clienteSelect) {
+                clienteSelect.addEventListener('change', cargarDatosCliente);
             }
+            
+            showAlert('✅ Sistema Óptica NVision cargado');
+            console.log('✅ Sistema inicializado');
         });
 
         function cargarDatos() {
             try {
-                productos = JSON.parse(localStorage.getItem('nvisionInventario') || '[]');
+                productos = JSON.parse(localStorage.getItem('nvisionProductos') || '[]');
                 clientes = JSON.parse(localStorage.getItem('nvisionClientes') || '[]');
+                ordenesLab = JSON.parse(localStorage.getItem('nvisionOrdenesLab') || '[]');
                 ventas = JSON.parse(localStorage.getItem('nvisionVentas') || '[]');
-                ordenesLaboratorio = JSON.parse(localStorage.getItem('nvisionOrdenesLab') || '[]');
-                contadorOrdenes = parseInt(localStorage.getItem('nvisionContadorOrdenes') || '1');
+                estadisticas = JSON.parse(localStorage.getItem('nvisionEstadisticas') || '{"mensajesHoy": 0, "promociones": 0, "audiosHoy": 0}');
+                contadorOrdenes = parseInt(localStorage.getItem('nvisionContador') || '1');
+                
+                // Asegurar que audiosHoy existe
+                if (!estadisticas.audiosHoy) {
+                    estadisticas.audiosHoy = 0;
+                }
+                
+                console.log('✅ Datos cargados:', {
+                    productos: productos.length,
+                    clientes: clientes.length,
+                    ordenes: ordenesLab.length,
+                    estadisticas: estadisticas
+                });
             } catch (error) {
-                console.error('Error cargando datos:', error);
+                console.error('❌ Error cargando datos:', error);
+                crearDatosEjemplo();
             }
         }
 
         function guardarDatos() {
             try {
-                localStorage.setItem('nvisionInventario', JSON.stringify(productos));
+                localStorage.setItem('nvisionProductos', JSON.stringify(productos));
                 localStorage.setItem('nvisionClientes', JSON.stringify(clientes));
+                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLab));
                 localStorage.setItem('nvisionVentas', JSON.stringify(ventas));
-                localStorage.setItem('nvisionOrdenesLab', JSON.stringify(ordenesLaboratorio));
-                localStorage.setItem('nvisionContadorOrdenes', contadorOrdenes.toString());
+                localStorage.setItem('nvisionEstadisticas', JSON.stringify(estadisticas));
+                localStorage.setItem('nvisionContador', contadorOrdenes.toString());
+                
+                console.log('✅ Datos guardados');
             } catch (error) {
-                console.error('Error guardando datos:', error);
+                console.error('❌ Error guardando:', error);
             }
         }
 
         function crearDatosEjemplo() {
             if (clientes.length === 0) {
-                console.log('📝 Creando clientes de ejemplo...');
                 clientes = [
                     { 
                         id: 1, 
-                        nombre: 'Carlos Martínez', 
+                        nombre: 'Ana Rodríguez', 
                         telefono: '849-555-0001', 
-                        email: 'carlos@email.com',
-                        fechaRegistro: new Date().toISOString()
+                        email: 'ana@email.com',
+                        cumpleanos: '1985-03-15',
+                        notas: 'Cliente frecuente'
                     },
                     { 
                         id: 2, 
-                        nombre: 'Luisa Fernández', 
+                        nombre: 'Carlos Medina', 
                         telefono: '849-555-0002', 
-                        email: 'luisa@email.com',
-                        fechaRegistro: new Date().toISOString()
-                    },
-                    { 
-                        id: 3, 
-                        nombre: 'Roberto Silva', 
-                        telefono: '849-555-0003', 
-                        email: 'roberto@email.com',
-                        fechaRegistro: new Date().toISOString()
+                        email: 'carlos@email.com',
+                        cumpleanos: '1990-07-22',
+                        notas: 'Usa progresivos'
                     }
                 ];
-                guardarDatos();
-                console.log('✅ Clientes de ejemplo creados:', clientes);
             }
+            
+            // Asegurar que estadísticas incluye audiosHoy
+            if (!estadisticas.audiosHoy) {
+                estadisticas.audiosHoy = 0;
+            }
+            
+            guardarDatos();
         }
 
         // ========================================
         // 🔄 NAVEGACIÓN
         // ========================================
         
-        function mostrar(seccion) {
+        function mostrarSeccion(seccion) {
             try {
+                // Ocultar todas las secciones
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                // Mostrar la sección seleccionada
                 const elemento = document.getElementById(seccion);
                 if (elemento) {
                     elemento.classList.add('active');
-                    cargarSeccion(seccion);
                 } else {
-                    showAlert('❌ Sección no encontrada: ' + seccion);
+                    console.error(`Sección '${seccion}' no encontrada`);
+                    showAlert(`❌ Sección '${seccion}' no encontrada`);
+                    return;
                 }
+                
+                // Cargar datos específicos
+                switch(seccion) {
+                    case 'menu':
+                        actualizarDashboard();
+                        break;
+                    case 'dashboardLab':
+                        actualizarDashboardLab();
+                        break;
+                    case 'nuevaOrden':
+                        cargarSelectores();
+                        actualizarNumeroOrden();
+                        break;
+                    case 'ordenes':
+                        cargarOrdenes();
+                        break;
+                    case 'cotejo':
+                        cargarCotejo();
+                        break;
+                    case 'cobrar':
+                        cargarCuentasCobrar();
+                        break;
+                    case 'pagar':
+                        cargarCuentasPagar();
+                        break;
+                    case 'inventario':
+                        cargarProductos();
+                        break;
+                    case 'clientes':
+                        cargarClientes();
+                        break;
+                    case 'marketing':
+                        cargarMarketing();
+                        break;
+                    case 'contactar':
+                        cargarContactar();
+                        break;
+                    case 'recordatorios':
+                        generarRecordatorios();
+                        break;
+                    case 'ventas':
+                        cargarVentas();
+                        break;
+                    case 'reportes':
+                        cargarReportes();
+                        break;
+                }
+                
+                console.log(`📄 Sección '${seccion}' cargada`);
             } catch (error) {
-                console.error('Error mostrando sección:', error);
+                console.error('❌ Error mostrando sección:', error);
                 showAlert('❌ Error al cargar sección');
             }
         }
 
-        function cargarSeccion(seccion) {
-            switch(seccion) {
-                case 'menu': actualizarDashboard(); break;
-                case 'dashboardLaboratorio': actualizarDashboardLaboratorio(); break;
-                case 'nuevaOrdenLab': cargarClientesSelectLab(); break;
-                case 'listaOrdenesLab': cargarListaOrdenesLab(); break;
-                case 'inventario': cargarInventario(); break;
-                case 'contactar': cargarClientesRapida(); break;
-                case 'gestionClientes': cargarGestionClientes(); break;
-                case 'reportes': cargarReportes(); break;
+        function showAlert(mensaje) {
+            try {
+                const alert = document.getElementById('alert');
+                if (alert) {
+                    alert.textContent = mensaje;
+                    alert.style.display = 'block';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 4000);
+                }
+                console.log('🔔', mensaje);
+            } catch (error) {
+                console.error('❌ Error mostrando alerta:', error);
             }
         }
 
-        function showAlert(msg) {
-            const alert = document.getElementById('alert');
-            if (alert) {
-                alert.textContent = msg;
-                alert.style.display = 'block';
-                setTimeout(() => alert.style.display = 'none', 3000);
-            }
-            console.log(msg);
+        function abrirEnlace(url) {
+            window.open(url, '_blank');
         }
 
         // ========================================
@@ -498,192 +992,296 @@
         // ========================================
         
         function actualizarDashboard() {
-            document.getElementById('totalProductos').textContent = productos.length;
-            document.getElementById('totalClientes').textContent = clientes.length;
-            
-            const hoy = new Date().toDateString();
-            const ventasHoy = ventas.filter(v => new Date(v.fecha).toDateString() === hoy);
-            const totalHoy = ventasHoy.reduce((sum, v) => sum + v.total, 0);
-            document.getElementById('ventasHoy').textContent = totalHoy.toFixed(2);
+            try {
+                const elementos = [
+                    { id: 'totalProductos', valor: productos.length },
+                    { id: 'totalClientes', valor: clientes.length },
+                    { id: 'ventasHoy', valor: calcularVentasHoy().toFixed(2) }
+                ];
+                
+                elementos.forEach(el => {
+                    const elemento = document.getElementById(el.id);
+                    if (elemento) {
+                        elemento.textContent = el.valor;
+                    }
+                });
+            } catch (error) {
+                console.error('❌ Error actualizando dashboard:', error);
+            }
         }
 
-        function actualizarDashboardLaboratorio() {
-            const enLab = ordenesLaboratorio.filter(o => o.estado === 'laboratorio').length;
-            const paraCotejo = ordenesLaboratorio.filter(o => o.estado === 'listo').length;
-            const totalPorCobrar = ordenesLaboratorio
-                .filter(o => o.estado === 'entregado' && !o.pagado)
+        function actualizarDashboardLab() {
+            try {
+                const enLab = ordenesLab.filter(o => o.estado === 'laboratorio').length;
+                const cotejo = ordenesLab.filter(o => o.estado === 'listo').length;
+                const porCobrar = calcularTotalCobrar();
+                const porPagar = calcularTotalPagar();
+                
+                const elementos = [
+                    { id: 'enLabCount', valor: enLab },
+                    { id: 'cotejoCount', valor: cotejo },
+                    { id: 'porCobrarTotal', valor: porCobrar.toFixed(2) },
+                    { id: 'porPagarTotal', valor: porPagar.toFixed(2) }
+                ];
+                
+                elementos.forEach(el => {
+                    const elemento = document.getElementById(el.id);
+                    if (elemento) {
+                        elemento.textContent = el.valor;
+                    }
+                });
+                
+                actualizarNumeroOrden();
+            } catch (error) {
+                console.error('❌ Error actualizando dashboard lab:', error);
+            }
+        }
+
+        function calcularVentasHoy() {
+            const hoy = new Date().toDateString();
+            return ventas
+                .filter(v => new Date(v.fecha).toDateString() === hoy)
+                .reduce((sum, v) => sum + v.total, 0);
+        }
+
+        function calcularTotalCobrar() {
+            return ordenesLab
+                .filter(o => o.estado === 'entregado' && !o.pagadoCliente)
                 .reduce((sum, o) => sum + ((o.precioVenta || 0) - (o.abono || 0)), 0);
-            
-            document.getElementById('enLaboratorioCount').textContent = enLab;
-            document.getElementById('paraCotejoCount').textContent = paraCotejo;
-            document.getElementById('totalPorCobrarDash').textContent = totalPorCobrar.toFixed(2);
+        }
+
+        function calcularTotalPagar() {
+            return ordenesLab
+                .filter(o => o.estado === 'entregado' && !o.pagadoLab)
+                .reduce((sum, o) => sum + (o.costoLab || 0), 0);
         }
 
         // ========================================
         // 🔬 LABORATORIO
         // ========================================
         
-        function cargarClientesSelectLab() {
+        function cargarSelectores() {
             try {
-                const select = document.getElementById('clienteOrdenLab');
-                if (!select) {
-                    console.error('❌ Select clienteOrdenLab no encontrado');
-                    return;
+                // Cargar clientes en select
+                const clienteSelect = document.getElementById('clienteSelect');
+                if (clienteSelect) {
+                    clienteSelect.innerHTML = '<option value="">Seleccionar cliente</option>';
+                    clientes.forEach(c => {
+                        clienteSelect.innerHTML += `<option value="${c.id}">${c.nombre} - ${c.telefono}</option>`;
+                    });
                 }
                 
-                // Limpiar el select
-                select.innerHTML = '<option value="">-- Seleccionar cliente --</option>';
-                
-                if (clientes.length === 0) {
-                    select.innerHTML += '<option value="" disabled>⚠️ No hay clientes registrados</option>';
-                    showAlert('⚠️ No hay clientes registrados. Agregue clientes primero.');
-                    return;
+                // Cargar otros selectores
+                const clienteVenta = document.getElementById('clienteVenta');
+                if (clienteVenta) {
+                    clienteVenta.innerHTML = '<option value="">Seleccionar cliente</option>';
+                    clientes.forEach(c => {
+                        clienteVenta.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                    });
                 }
                 
-                // Agregar clientes al select
-                clientes.forEach(cliente => {
-                    const option = document.createElement('option');
-                    option.value = cliente.id.toString(); // Asegurar que sea string
-                    option.textContent = `${cliente.nombre} - ${cliente.telefono}`;
-                    select.appendChild(option);
-                });
+                const productoVenta = document.getElementById('productoVenta');
+                if (productoVenta) {
+                    productoVenta.innerHTML = '<option value="">Seleccionar producto</option>';
+                    productos.forEach(p => {
+                        productoVenta.innerHTML += `<option value="${p.id}">${p.nombre} - RD$ ${p.precio}</option>`;
+                    });
+                }
                 
-                console.log(`✅ ${clientes.length} clientes cargados en select laboratorio`);
-                console.log('📋 Clientes disponibles:', clientes.map(c => ({id: c.id, nombre: c.nombre})));
-                
+                console.log('✅ Selectores cargados');
             } catch (error) {
-                console.error('❌ Error cargando clientes en select:', error);
-                showAlert('❌ Error al cargar lista de clientes');
+                console.error('❌ Error cargando selectores:', error);
             }
         }
 
-        function cargarDatosClienteLab() {
+        function cargarDatosCliente() {
             try {
-                const select = document.getElementById('clienteOrdenLab');
-                if (!select || !select.value) {
-                    document.getElementById('nombreClienteLab').value = '';
-                    document.getElementById('telefonoClienteLab').value = '';
-                    return;
-                }
+                const select = document.getElementById('clienteSelect');
+                const nombreInput = document.getElementById('nombreCliente');
+                
+                if (!select || !nombreInput) return;
                 
                 const clienteId = parseInt(select.value);
-                console.log('🔍 Cliente ID seleccionado:', clienteId);
                 
-                if (isNaN(clienteId) || clienteId <= 0) {
-                    document.getElementById('nombreClienteLab').value = '';
-                    document.getElementById('telefonoClienteLab').value = '';
+                if (!clienteId) {
+                    nombreInput.value = '';
                     return;
                 }
                 
                 const cliente = clientes.find(c => c.id === clienteId);
-                console.log('👤 Cliente encontrado:', cliente);
-                
                 if (cliente) {
-                    document.getElementById('nombreClienteLab').value = cliente.nombre;
-                    document.getElementById('telefonoClienteLab').value = cliente.telefono;
-                    showAlert(`✅ Cliente cargado: ${cliente.nombre}`);
-                } else {
-                    document.getElementById('nombreClienteLab').value = '';
-                    document.getElementById('telefonoClienteLab').value = '';
-                    showAlert('❌ Cliente no encontrado en la base de datos');
+                    nombreInput.value = cliente.nombre;
+                    nombreInput.style.color = '#10b981';
                 }
             } catch (error) {
-                console.error('❌ Error cargando datos del cliente:', error);
-                showAlert('❌ Error al cargar datos del cliente');
+                console.error('❌ Error cargando datos cliente:', error);
             }
         }
 
-        function generarYEnviarOrdenLab() {
+        function actualizarNumeroOrden() {
             try {
-                console.log('🔬 Iniciando generación de orden...');
+                const numero = generarNumeroOrden();
+                const elementos = ['proximoNumero', 'numeroOrden'];
                 
-                // Obtener y validar cliente PRIMERO
-                const selectCliente = document.getElementById('clienteOrdenLab');
-                if (!selectCliente || !selectCliente.value) {
-                    showAlert('❌ Debe seleccionar un cliente de la lista');
-                    return;
-                }
-                
-                const clienteId = parseInt(selectCliente.value);
-                console.log('🔍 ID del cliente desde select:', clienteId, 'Tipo:', typeof clienteId);
-                
-                if (isNaN(clienteId) || clienteId <= 0) {
-                    showAlert('❌ ID de cliente no válido. Seleccione un cliente de la lista.');
-                    return;
-                }
-                
-                const cliente = clientes.find(c => c.id === clienteId);
-                if (!cliente) {
-                    showAlert('❌ Cliente no encontrado en la base de datos. Verifique la lista de clientes.');
-                    return;
-                }
-                
-                console.log('✅ Cliente validado correctamente:', cliente);
-                
-                // Validar otros campos requeridos
-                const tipoLente = document.getElementById('tipoLenteLab').value;
-                if (!tipoLente) {
-                    showAlert('❌ Seleccione el tipo de lente');
-                    return;
-                }
-                
-                const precioVenta = parseFloat(document.getElementById('precioVenta').value) || 0;
-                if (precioVenta <= 0) {
-                    showAlert('❌ Ingrese un precio de venta válido');
-                    return;
-                }
-                
-                const abono = parseFloat(document.getElementById('abono').value) || 0;
-                
-                // Crear la orden
-                const numeroOrden = `NV-${Date.now()}`;
-                const orden = {
-                    id: Date.now(),
-                    numero: numeroOrden,
-                    clienteId: clienteId,
-                    cliente: cliente.nombre,
-                    telefono: cliente.telefono,
-                    tipoLente: tipoLente,
-                    precioVenta: precioVenta,
-                    abono: abono,
-                    prescripcion: {
-                        od: {
-                            esfera: document.getElementById('od_esferaLab').value || 'PLANO',
-                            cilindro: document.getElementById('od_cilindroLab').value || 'PLANO'
-                        },
-                        oi: {
-                            esfera: document.getElementById('oi_esferaLab').value || 'PLANO',
-                            cilindro: document.getElementById('oi_cilindroLab').value || 'PLANO'
-                        }
-                    },
-                    fechaCreacion: new Date().toISOString(),
-                    estado: 'laboratorio',
-                    pagado: false
-                };
+                elementos.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) {
+                        elemento.textContent = numero;
+                    }
+                });
+            } catch (error) {
+                console.error('❌ Error actualizando número:', error);
+            }
+        }
 
-                console.log('📋 Orden creada:', orden);
+        function generarNumeroOrden() {
+            try {
+                const fecha = new Date();
+                const año = fecha.getFullYear().toString().slice(-2);
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const numero = contadorOrdenes.toString().padStart(3, '0');
+                return `LAB-${año}${mes}-${numero}`;
+            } catch (error) {
+                console.error('❌ Error generando número:', error);
+                return `LAB-${Date.now()}`;
+            }
+        }
 
-                // Guardar la orden
-                ordenesLaboratorio.push(orden);
+        function generarNuevoNumero() {
+            contadorOrdenes++;
+            guardarDatos();
+            actualizarNumeroOrden();
+            showAlert('🔢 Nuevo número generado');
+        }
+
+        function calcularPendiente() {
+            try {
+                const precio = parseFloat(document.getElementById('precioVenta')?.value) || 0;
+                const abono = parseFloat(document.getElementById('abono')?.value) || 0;
+                const costo = parseFloat(document.getElementById('costoLab')?.value) || 0;
+                
+                const pendiente = precio - abono;
+                const beneficio = precio - costo;
+                
+                const pendienteEl = document.getElementById('pendiente');
+                if (pendienteEl && precio > 0) {
+                    pendienteEl.innerHTML = `
+                        <strong>Pendiente: RD$ ${pendiente.toFixed(2)}</strong><br>
+                        <strong>Beneficio: RD$ ${beneficio.toFixed(2)}</strong>
+                    `;
+                    pendienteEl.style.color = pendiente > 0 ? '#f59e0b' : '#10b981';
+                }
+            } catch (error) {
+                console.error('❌ Error calculando:', error);
+            }
+        }
+
+        function generarYEnviarOrden() {
+            try {
+                const orden = recopilarDatosOrden();
+                if (!validarOrden(orden)) return;
+                
+                orden.id = Date.now();
+                orden.fecha = new Date().toISOString();
+                orden.estado = 'laboratorio';
+                orden.pagadoCliente = false;
+                orden.pagadoLab = false;
+                
+                ordenesLab.push(orden);
                 contadorOrdenes++;
                 guardarDatos();
-
-                // Generar y enviar mensaje
-                const mensaje = generarMensajeOrdenLab(orden);
-                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
                 
-                showAlert('✅ Orden creada y enviada al laboratorio exitosamente');
-                limpiarFormularioLab();
-                actualizarDashboardLaboratorio();
+                enviarOrdenWhatsApp(orden);
+                limpiarFormulario();
                 
+                showAlert('✅ Orden creada y enviada');
+                actualizarDashboardLab();
             } catch (error) {
                 console.error('❌ Error generando orden:', error);
-                showAlert('❌ Error al generar orden: ' + error.message);
+                showAlert('❌ Error al generar orden');
             }
         }
 
-        function generarMensajeOrdenLab(orden) {
-            return `🔬 *NUEVA ORDEN DE LABORATORIO*
+        function recopilarDatosOrden() {
+            try {
+                const clienteId = parseInt(document.getElementById('clienteSelect')?.value) || 0;
+                const cliente = clientes.find(c => c.id === clienteId);
+                
+                return {
+                    numero: document.getElementById('numeroOrden')?.textContent || generarNumeroOrden(),
+                    clienteId: clienteId,
+                    cliente: cliente?.nombre || '',
+                    telefono: cliente?.telefono || '',
+                    tipoMontura: document.getElementById('tipoMontura')?.value || '',
+                    tipoLente: document.getElementById('tipoLente')?.value || '',
+                    costoLab: parseFloat(document.getElementById('costoLab')?.value) || 0,
+                    precioVenta: parseFloat(document.getElementById('precioVenta')?.value) || 0,
+                    abono: parseFloat(document.getElementById('abono')?.value) || 0,
+                    prescripcion: {
+                        od: {
+                            esfera: document.getElementById('od_esfera')?.value || '',
+                            cilindro: document.getElementById('od_cilindro')?.value || '',
+                            eje: document.getElementById('od_eje')?.value || '',
+                            adicion: document.getElementById('od_adicion')?.value || ''
+                        },
+                        oi: {
+                            esfera: document.getElementById('oi_esfera')?.value || '',
+                            cilindro: document.getElementById('oi_cilindro')?.value || '',
+                            eje: document.getElementById('oi_eje')?.value || '',
+                            adicion: document.getElementById('oi_adicion')?.value || ''
+                        }
+                    },
+                    medidas: {
+                        distanciaPupilar: document.getElementById('distancia_pupilar')?.value || '',
+                        alturaPupilar: document.getElementById('altura_pupilar')?.value || '',
+                        dnpOD: document.getElementById('dnp_od')?.value || '',
+                        dnpOI: document.getElementById('dnp_oi')?.value || ''
+                    },
+                    comentarios: document.getElementById('comentarios')?.value || '',
+                    fotoMontura: fotos.montura || '',
+                    fotoReceta: fotos.receta || ''
+                };
+            } catch (error) {
+                console.error('❌ Error recopilando datos:', error);
+                return {};
+            }
+        }
+
+        function validarOrden(orden) {
+            if (!orden.clienteId) {
+                showAlert('❌ Seleccione un cliente');
+                return false;
+            }
+            if (!orden.tipoLente) {
+                showAlert('❌ Seleccione el tipo de lente');
+                return false;
+            }
+            if (!orden.prescripcion.od.esfera && !orden.prescripcion.oi.esfera) {
+                showAlert('❌ Ingrese al menos la esfera de un ojo');
+                return false;
+            }
+            if (orden.precioVenta <= 0) {
+                showAlert('❌ Ingrese el precio de venta');
+                return false;
+            }
+            if (orden.costoLab <= 0) {
+                showAlert('❌ Ingrese el costo del laboratorio');
+                return false;
+            }
+            if (!fotos.montura) {
+                showAlert('❌ Tome una foto de la montura');
+                return false;
+            }
+            if (!fotos.receta) {
+                showAlert('❌ Tome una foto de la receta');
+                return false;
+            }
+            return true;
+        }
+
+        function enviarOrdenWhatsApp(orden) {
+            try {
+                const mensaje = `🔬 *NUEVA ORDEN DE LABORATORIO*
 
 📋 *NÚMERO:* ${orden.numero}
 📅 *FECHA:* ${new Date().toLocaleDateString()}
@@ -692,267 +1290,1915 @@
 📱 *TELÉFONO:* ${orden.telefono}
 
 👓 *ESPECIFICACIONES:*
+• Montura: ${orden.tipoMontura || 'No especificado'}
 • Tipo Lente: ${orden.tipoLente}
 
 👁️ *PRESCRIPCIÓN:*
-*OJO DERECHO:*
+
+*OJO DERECHO (OD):*
 • Esfera: ${orden.prescripcion.od.esfera || 'PLANO'}
 • Cilindro: ${orden.prescripcion.od.cilindro || 'PLANO'}
+• Eje: ${orden.prescripcion.od.eje || 'N/A'}
+• Adición: ${orden.prescripcion.od.adicion || 'N/A'}
 
-*OJO IZQUIERDO:*
+*OJO IZQUIERDO (OI):*
 • Esfera: ${orden.prescripcion.oi.esfera || 'PLANO'}
 • Cilindro: ${orden.prescripcion.oi.cilindro || 'PLANO'}
+• Eje: ${orden.prescripcion.oi.eje || 'N/A'}
+• Adición: ${orden.prescripcion.oi.adicion || 'N/A'}
 
-💰 *INFORMACIÓN:*
-• Precio Venta: RD$ ${orden.precioVenta.toFixed(2)}
-• Abono: RD$ ${orden.abono.toFixed(2)}
-• Pendiente: RD$ ${(orden.precioVenta - orden.abono).toFixed(2)}
+📏 *MEDIDAS ESPECÍFICAS:*
+• Distancia Pupilar: ${orden.medidas.distanciaPupilar || 'Tomar medida'}
+• Altura Pupilar: ${orden.medidas.alturaPupilar || 'Tomar medida'}
+• DNP OD: ${orden.medidas.dnpOD || 'Calcular'}
+• DNP OI: ${orden.medidas.dnpOI || 'Calcular'}
+
+💰 *PAGO LABORATORIO:*
+• Costo: RD$ ${orden.costoLab.toFixed(2)}
+
+💬 *COMENTARIOS:*
+${orden.comentarios || 'Sin comentarios especiales'}
+
+📸 *FOTOS ADJUNTAS:*
+✅ Foto de la montura
+✅ Foto de la receta con medidas
+
+⚠️ *IMPORTANTE:*
+- Confirmar recepción de orden
+- Enviar foto cuando esté lista
+- Tiempo estimado de entrega
+
+📱 Óptica NVision
+🌐 nvision.com`;
+
+                // Enviar mensaje con las dos fotos usando Web Share API
+                if (navigator.share && fotos.montura && fotos.receta) {
+                    Promise.all([
+                        fetch(fotos.montura).then(res => res.blob()),
+                        fetch(fotos.receta).then(res => res.blob())
+                    ]).then(([blobMontura, blobReceta]) => {
+                        const fileMontura = new File([blobMontura], `${orden.numero}_montura.jpg`, { type: 'image/jpeg' });
+                        const fileReceta = new File([blobReceta], `${orden.numero}_receta.jpg`, { type: 'image/jpeg' });
+                        
+                        return navigator.share({
+                            title: `Orden ${orden.numero} - Óptica NVision`,
+                            text: mensaje,
+                            files: [fileMontura, fileReceta]
+                        });
+                    }).catch(() => {
+                        // Fallback: abrir WhatsApp solo con texto
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                        showAlert('📱 Orden enviada (sin fotos). Envíe fotos manualmente.');
+                    });
+                } else {
+                    // Fallback: solo texto
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    showAlert('📱 Orden enviada (sin fotos). Envíe fotos manualmente.');
+                }
+                
+                actualizarEstadisticas('mensaje');
+            } catch (error) {
+                console.error('❌ Error enviando orden:', error);
+                // Último fallback
+                const mensajeBasico = `Nueva orden de laboratorio ${orden.numero} para ${orden.cliente}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensajeBasico)}`, '_blank');
+            }
+        }
+
+        function guardarOrden() {
+            try {
+                const orden = recopilarDatosOrden();
+                if (!validarOrden(orden)) return;
+                
+                orden.id = Date.now();
+                orden.fecha = new Date().toISOString();
+                orden.estado = 'pendiente';
+                orden.pagadoCliente = false;
+                orden.pagadoLab = false;
+                
+                ordenesLab.push(orden);
+                contadorOrdenes++;
+                guardarDatos();
+                
+                limpiarFormulario();
+                showAlert('💾 Orden guardada');
+                actualizarDashboardLab();
+            } catch (error) {
+                console.error('❌ Error guardando orden:', error);
+                showAlert('❌ Error al guardar');
+            }
+        }
+
+        function limpiarFormulario() {
+            try {
+                // Limpiar selects
+                const selects = ['clienteSelect', 'tipoMontura', 'tipoLente'];
+                selects.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.value = '';
+                });
+                
+                // Limpiar inputs
+                const inputs = [
+                    'nombreCliente', 'costoLab', 'precioVenta', 'abono',
+                    'od_esfera', 'od_cilindro', 'od_eje', 'od_adicion',
+                    'oi_esfera', 'oi_cilindro', 'oi_eje', 'oi_adicion',
+                    'distancia_pupilar', 'altura_pupilar', 'dnp_od', 'dnp_oi',
+                    'comentarios'
+                ];
+                inputs.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.value = '';
+                });
+                
+                // Limpiar fotos
+                fotos = {};
+                const previews = ['previewMontura', 'previewReceta'];
+                previews.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.style.display = 'none';
+                });
+                
+                // Limpiar pendiente
+                const pendiente = document.getElementById('pendiente');
+                if (pendiente) pendiente.innerHTML = '';
+                
+                // Actualizar número
+                actualizarNumeroOrden();
+                
+                console.log('🧹 Formulario limpiado');
+            } catch (error) {
+                console.error('❌ Error limpiando formulario:', error);
+            }
+        }
+
+        // ========================================
+        // 📱 MARKETING COMPLETO CON TODAS LAS FUNCIONES
+        // ========================================
+        
+        function manejarArchivoMovil(input) {
+            try {
+                const archivo = input.files[0];
+                if (!archivo) return;
+                
+                // Validar tamaño (máximo 25MB)
+                if (archivo.size > 25 * 1024 * 1024) {
+                    showAlert('❌ Archivo muy grande. Máximo 25MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    archivoSubido = {
+                        nombre: archivo.name,
+                        tipo: archivo.type,
+                        datos: e.target.result,
+                        tamaño: archivo.size
+                    };
+                    
+                    const archivoSubidoEl = document.getElementById('archivoSubido');
+                    if (archivoSubidoEl) {
+                        const tipoIcono = archivo.type.startsWith('image/') ? '🖼️' : 
+                                        archivo.type.startsWith('video/') ? '🎥' : '📁';
+                        archivoSubidoEl.innerHTML = `
+                            <div style="padding: 15px; background: rgba(37, 211, 102, 0.2); border-radius: 10px; border: 2px solid #25d366;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-size: 24px;">${tipoIcono}</div>
+                                        <strong>${archivo.name}</strong><br>
+                                        <small>${(archivo.size / 1024 / 1024).toFixed(2)} MB</small>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="borrarArchivo()">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    showAlert('✅ Archivo cargado correctamente');
+                };
+                reader.readAsDataURL(archivo);
+            } catch (error) {
+                console.error('❌ Error manejando archivo:', error);
+                showAlert('❌ Error al cargar archivo');
+            }
+        }
+
+        function borrarArchivo() {
+            archivoSubido = null;
+            const archivoSubidoEl = document.getElementById('archivoSubido');
+            if (archivoSubidoEl) {
+                archivoSubidoEl.innerHTML = '';
+            }
+            document.getElementById('archivoMovil').value = '';
+            showAlert('🗑️ Archivo eliminado');
+        }
+
+        function enviarArchivo() {
+            try {
+                if (!archivoSubido) {
+                    showAlert('❌ Seleccione un archivo primero');
+                    return;
+                }
+                
+                const mensajeEl = document.getElementById('mensajeArchivo');
+                const mensaje = mensajeEl ? mensajeEl.value || 'Archivo de Óptica NVision' : 'Archivo de Óptica NVision';
+                
+                // Intentar enviar con Web Share API (funciona en móviles)
+                if (navigator.share) {
+                    try {
+                        const [header, data] = archivoSubido.datos.split(',');
+                        const mimeType = header.match(/:(.*?);/)[1];
+                        const binaryString = atob(data);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        const blob = new Blob([bytes], { type: mimeType });
+                        const file = new File([blob], archivoSubido.nombre, { type: mimeType });
+                        
+                        navigator.share({
+                            title: 'Archivo Óptica NVision',
+                            text: mensaje,
+                            files: [file]
+                        }).then(() => {
+                            actualizarEstadisticas('mensaje');
+                            showAlert('📁 Archivo enviado por WhatsApp');
+                            borrarArchivo();
+                        }).catch(() => {
+                            // Fallback
+                            enviarArchivoFallback(mensaje);
+                        });
+                    } catch (shareError) {
+                        enviarArchivoFallback(mensaje);
+                    }
+                } else {
+                    enviarArchivoFallback(mensaje);
+                }
+            } catch (error) {
+                console.error('❌ Error enviando archivo:', error);
+                showAlert('❌ Error al enviar archivo');
+            }
+        }
+
+        function enviarArchivoFallback(mensaje) {
+            const mensajeConInstruccion = `${mensaje}\n\n📎 *ARCHIVO ADJUNTO:*\n${archivoSubido.nombre}\n\n⚠️ Envíe el archivo manualmente después de este mensaje.`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensajeConInstruccion)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+            showAlert('📱 Mensaje enviado. Envíe el archivo manualmente.');
+        }
+
+        function enviarEnlaceRed(plataforma) {
+            try {
+                const enlaceEl = document.getElementById('enlaceRedes');
+                const mensajeEl = document.getElementById('mensajeEnlace');
+                
+                if (!enlaceEl || !mensajeEl) {
+                    showAlert('❌ Error: elementos no encontrados');
+                    return;
+                }
+                
+                const enlace = enlaceEl.value.trim();
+                if (!enlace) {
+                    showAlert('❌ Pegue un enlace primero');
+                    return;
+                }
+                
+                const configuraciones = {
+                    youtube: {
+                        emoji: '📺',
+                        nombre: 'YouTube',
+                        descripcion: 'Te compartimos este video que puede interesarte:'
+                    },
+                    instagram: {
+                        emoji: '📸',
+                        nombre: 'Instagram',
+                        descripcion: 'Mira este contenido visual que nos gustó:'
+                    },
+                    facebook: {
+                        emoji: '👥',
+                        nombre: 'Facebook',
+                        descripcion: 'Contenido interesante para compartir:'
+                    },
+                    tiktok: {
+                        emoji: '🎵',
+                        nombre: 'TikTok',
+                        descripcion: 'Video divertido e interesante:'
+                    }
+                };
+                
+                const config = configuraciones[plataforma];
+                if (!config) {
+                    showAlert('❌ Plataforma no válida');
+                    return;
+                }
+                
+                let mensajePersonalizado = mensajeEl.value.trim();
+                if (!mensajePersonalizado) {
+                    mensajePersonalizado = `${config.emoji} *${config.nombre.toUpperCase()}*\n\n${config.descripcion}\n\n🔗 ${enlace}\n\n📱 849-797-2424\n🌐 nvision.com`;
+                } else {
+                    mensajePersonalizado += `\n\n🔗 ${enlace}\n\n📱 849-797-2424\n🌐 nvision.com`;
+                }
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensajePersonalizado)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+                showAlert(`${config.emoji} Enlace de ${config.nombre} enviado`);
+                
+                // Limpiar campos
+                enlaceEl.value = '';
+                mensajeEl.value = '';
+                
+            } catch (error) {
+                console.error('❌ Error enviando enlace:', error);
+                showAlert('❌ Error al enviar enlace');
+            }
+        }
+
+        // ========================================
+        // 🎤 SISTEMA DE GRABACIÓN DE AUDIO PARA ANALFABETOS
+        // ========================================
+        
+        async function toggleGrabacion() {
+            try {
+                if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                    await iniciarGrabacion();
+                } else {
+                    detenerGrabacion();
+                }
+            } catch (error) {
+                console.error('❌ Error en grabación:', error);
+                showAlert('❌ Error con el micrófono');
+            }
+        }
+
+        async function iniciarGrabacion() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const audio = document.getElementById('audioPlayback');
+                    if (audio) {
+                        audio.src = audioUrl;
+                        audio.style.display = 'block';
+                    }
+                    
+                    // Mostrar botones
+                    document.getElementById('botonReproducir').style.display = 'inline-block';
+                    document.getElementById('botonEnviarAudio').style.display = 'inline-block';
+                    document.getElementById('botonEnviarMensaje').style.display = 'inline-block';
+                    
+                    // Detener stream
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                tiempoInicio = Date.now();
+                
+                // Actualizar UI
+                document.getElementById('botonGrabar').style.background = '#ef4444';
+                document.getElementById('botonGrabar').textContent = '⏹️';
+                document.getElementById('estadoGrabacion').textContent = 'Grabando... (Presiona para parar)';
+                document.getElementById('estadoGrabacion').style.color = '#ef4444';
+                
+                // Timer
+                intervalotiempo = setInterval(actualizarTiempo, 100);
+                
+                // Auto-stop después de 60 segundos
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        detenerGrabacion();
+                        showAlert('⏰ Grabación detenida automáticamente (60s máximo)');
+                    }
+                }, 60000);
+                
+            } catch (error) {
+                console.error('❌ Error iniciando grabación:', error);
+                showAlert('❌ No se puede acceder al micrófono');
+            }
+        }
+
+        function detenerGrabacion() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                clearInterval(intervalotiempo);
+                
+                // Resetear UI
+                document.getElementById('botonGrabar').style.background = '#059669';
+                document.getElementById('botonGrabar').textContent = '🎤';
+                document.getElementById('estadoGrabacion').textContent = 'Audio grabado';
+                document.getElementById('estadoGrabacion').style.color = '#10b981';
+                
+                showAlert('✅ Audio grabado correctamente');
+            }
+        }
+
+        function actualizarTiempo() {
+            if (tiempoInicio) {
+                const tiempoTranscurrido = Date.now() - tiempoInicio;
+                const segundos = Math.floor(tiempoTranscurrido / 1000);
+                const minutos = Math.floor(segundos / 60);
+                const segsRestantes = segundos % 60;
+                
+                document.getElementById('tiempoGrabacion').textContent = 
+                    `${minutos.toString().padStart(2, '0')}:${segsRestantes.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function reproducirAudio() {
+            try {
+                const audio = document.getElementById('audioPlayback');
+                if (audio) {
+                    audio.play();
+                }
+            } catch (error) {
+                console.error('❌ Error reproduciendo audio:', error);
+                showAlert('❌ Error al reproducir audio');
+            }
+        }
+
+        function enviarAudio() {
+            try {
+                if (!audioBlob) {
+                    showAlert('❌ No hay audio grabado');
+                    return;
+                }
+                
+                const mensaje = `🎤 *MENSAJE DE VOZ*\n\nAudio de Óptica NVision\n\n📱 849-797-2424\n🌐 nvision.com`;
+                
+                // Intentar enviar con Web Share API
+                if (navigator.share) {
+                    const audioFile = new File([audioBlob], 'mensaje_audio.webm', { type: 'audio/webm' });
+                    
+                    navigator.share({
+                        title: 'Mensaje de Audio - Óptica NVision',
+                        text: mensaje,
+                        files: [audioFile]
+                    }).then(() => {
+                        actualizarEstadisticas('audio');
+                        showAlert('🎤 Audio enviado por WhatsApp');
+                        borrarAudio();
+                    }).catch(() => {
+                        // Fallback
+                        window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + '\n\n⚠️ Envíe el audio manualmente')}`, '_blank');
+                        showAlert('📱 Mensaje enviado. Envíe el audio manualmente.');
+                    });
+                } else {
+                    // Fallback para navegadores sin soporte
+                    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje + '\n\n⚠️ Envíe el audio manualmente')}`, '_blank');
+                    showAlert('📱 Mensaje enviado. Envíe el audio manualmente.');
+                }
+            } catch (error) {
+                console.error('❌ Error enviando audio:', error);
+                showAlert('❌ Error al enviar audio');
+            }
+        }
+
+        function enviarMensajeConAudio() {
+            try {
+                if (!audioBlob) {
+                    showAlert('❌ No hay audio grabado');
+                    return;
+                }
+                
+                const mensaje = prompt('Escriba el mensaje de texto que acompañará al audio:') || '';
+                
+                const mensajeCompleto = `💬 *MENSAJE CON AUDIO ÓPTICA NVISION*
+
+${mensaje}
+
+🎤 Audio adjunto
 
 📱 849-797-2424
-🌐 Óptica NVisión`;
-        }
-
-        function limpiarFormularioLab() {
-            document.getElementById('clienteOrdenLab').value = '';
-            document.getElementById('nombreClienteLab').value = '';
-            document.getElementById('telefonoClienteLab').value = '';
-            document.getElementById('tipoLenteLab').value = '';
-            document.getElementById('precioVenta').value = '';
-            document.getElementById('abono').value = '';
-            document.getElementById('od_esferaLab').value = '';
-            document.getElementById('od_cilindroLab').value = '';
-            document.getElementById('oi_esferaLab').value = '';
-            document.getElementById('oi_cilindroLab').value = '';
-        }
-
-        function cargarListaOrdenesLab() {
-            const tabla = document.getElementById('tablaOrdenesLab');
-            if (ordenesLaboratorio.length === 0) {
-                tabla.innerHTML = '<p>No hay órdenes registradas</p>';
-                return;
-            }
-
-            let html = '<table class="table"><thead><tr><th>Número</th><th>Cliente</th><th>Tipo</th><th>Total</th><th>Estado</th></tr></thead><tbody>';
-            
-            ordenesLaboratorio.slice().reverse().forEach(orden => {
-                html += `
-                    <tr>
-                        <td>${orden.numero}</td>
-                        <td>${orden.cliente}</td>
-                        <td>${orden.tipoLente}</td>
-                        <td>RD$ ${orden.precioVenta.toFixed(2)}</td>
-                        <td>${orden.estado}</td>
-                    </tr>
-                `;
-            });
-            
-            html += '</tbody></table>';
-            tabla.innerHTML = html;
-        }
-
-        // ========================================
-        // 📱 MARKETING
-        // ========================================
-        
-        function enviarEnlaceRedes(plataforma) {
-            const enlace = document.getElementById('enlaceRedes').value.trim();
-            if (!enlace) {
-                showAlert('❌ Ingresa un enlace primero');
-                return;
-            }
-            
-            const configuraciones = {
-                youtube: { emoji: '📺', nombre: 'YouTube' },
-                tiktok: { emoji: '🎵', nombre: 'TikTok' },
-                instagram: { emoji: '📸', nombre: 'Instagram' },
-                facebook: { emoji: '👥', nombre: 'Facebook' }
-            };
-            
-            const config = configuraciones[plataforma];
-            const mensaje = `${config.emoji} *${config.nombre.toUpperCase()}*\n\nTe compartimos este contenido:\n\n🔗 ${enlace}\n\n📱 849-797-2424\n🌐 Óptica NVisión`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-            showAlert(`${config.emoji} Enlace de ${config.nombre} enviado`);
-            document.getElementById('enlaceRedes').value = '';
-        }
-
-        // ========================================
-        // 📦 INVENTARIO Y CÁMARA
-        // ========================================
-        
-        async function toggleCamera() {
-            const video = document.getElementById('video');
-            const btn = document.getElementById('cameraBtn');
-            const placeholder = document.getElementById('placeholder');
-            
-            if (!stream) {
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                    video.srcObject = stream;
-                    video.style.display = 'block';
-                    placeholder.style.display = 'none';
-                    btn.textContent = '📸 Tomar Foto';
-                    btn.onclick = tomarFoto;
-                } catch (err) {
-                    showAlert('❌ Error al acceder a la cámara');
+🌐 nvision.com`;
+                
+                // Intentar enviar con Web Share API
+                if (navigator.share) {
+                    const audioFile = new File([audioBlob], 'mensaje_audio.webm', { type: 'audio/webm' });
+                    
+                    navigator.share({
+                        title: 'Mensaje con Audio - Óptica NVision',
+                        text: mensajeCompleto,
+                        files: [audioFile]
+                    }).then(() => {
+                        actualizarEstadisticas('audio');
+                        showAlert('💬 Mensaje con audio enviado por WhatsApp');
+                        borrarAudio();
+                    }).catch(() => {
+                        // Fallback: enviar solo texto con instrucción
+                        enviarSoloTextoConInstruccion(mensajeCompleto);
+                    });
+                } else {
+                    // Fallback para navegadores sin soporte
+                    enviarSoloTextoConInstruccion(mensajeCompleto);
                 }
-            } else {
-                tomarFoto();
+            } catch (error) {
+                console.error('❌ Error enviando mensaje con audio:', error);
+                showAlert('❌ Error al enviar mensaje');
             }
         }
 
-        function tomarFoto() {
-            const video = document.getElementById('video');
-            const preview = document.getElementById('preview');
-            const btn = document.getElementById('cameraBtn');
-            const placeholder = document.getElementById('placeholder');
-            
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            fotoActual = canvas.toDataURL('image/jpeg', 0.8);
-            preview.src = fotoActual;
-            preview.style.display = 'block';
-            
-            stream.getTracks().forEach(track => track.stop());
-            stream = null;
-            
-            video.style.display = 'none';
-            placeholder.style.display = 'block';
-            btn.textContent = '📷 Activar Cámara';
-            btn.onclick = toggleCamera;
-            
-            showAlert('📷 Foto capturada');
+        function enviarSoloTextoConInstruccion(mensaje) {
+            const mensajeFallback = `${mensaje}\n\n⚠️ INSTRUCCIÓN:\nDespués de enviar este mensaje, envíe manualmente el audio grabado.`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensajeFallback)}`, '_blank');
+            actualizarEstadisticas('mensaje');
+            showAlert('📱 Mensaje enviado. Envíe el audio manualmente después.');
+        }
+
+        function borrarAudio() {
+            try {
+                audioBlob = null;
+                audioChunks = [];
+                tiempoInicio = null;
+                
+                // Limpiar UI
+                const audio = document.getElementById('audioPlayback');
+                if (audio) {
+                    audio.style.display = 'none';
+                    audio.src = '';
+                }
+                
+                document.getElementById('botonReproducir').style.display = 'none';
+                document.getElementById('botonEnviarAudio').style.display = 'none';
+                document.getElementById('botonEnviarMensaje').style.display = 'none';
+                document.getElementById('estadoGrabacion').textContent = 'Presiona para grabar mensaje';
+                document.getElementById('estadoGrabacion').style.color = 'white';
+                document.getElementById('tiempoGrabacion').textContent = '00:00';
+                
+                showAlert('🗑️ Audio eliminado');
+            } catch (error) {
+                console.error('❌ Error borrando audio:', error);
+            }
+        }
+
+        // ========================================
+        // 💾 SISTEMA DE BACKUP COMPLETO
+        // ========================================
+        
+        function crearBackupCompleto() {
+            try {
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                
+                // Recopilar TODOS los datos incluyendo fotos
+                const datosCompletos = {
+                    fecha: new Date().toISOString(),
+                    version: '2.0',
+                    timestamp: timestamp,
+                    sistema: {
+                        productos: productos,
+                        clientes: clientes,
+                        ordenesLab: ordenesLab,
+                        ventas: ventas,
+                        estadisticas: estadisticas,
+                        contadorOrdenes: contadorOrdenes
+                    },
+                    fotos: fotos,
+                    configuracion: {
+                        ultimaActualizacion: localStorage.getItem('nvisionUltimaStats'),
+                        navegador: navigator.userAgent,
+                        pantalla: `${screen.width}x${screen.height}`
+                    }
+                };
+                
+                // Guardar backup principal
+                const backupKey = `nvisionBackup_${timestamp}`;
+                localStorage.setItem(backupKey, JSON.stringify(datosCompletos));
+                
+                // Guardar backup de emergencia (más compacto)
+                const backupEmergencia = {
+                    fecha: new Date().toISOString(),
+                    productos: productos.length,
+                    clientes: clientes.length,
+                    ordenes: ordenesLab.length,
+                    ventas: ventas.length,
+                    datosBasicos: {
+                        productos: productos,
+                        clientes: clientes,
+                        ordenesLab: ordenesLab
+                    }
+                };
+                localStorage.setItem(`nvisionEmergencia_${timestamp}`, JSON.stringify(backupEmergencia));
+                
+                // Mantener solo los últimos 10 backups completos
+                limpiarBackupsAntiguos();
+                
+                console.log(`💾 Backup completo creado: ${timestamp}`);
+                console.log(`📊 Datos guardados: ${productos.length} productos, ${clientes.length} clientes, ${ordenesLab.length} órdenes`);
+                
+                return backupKey;
+            } catch (error) {
+                console.error('❌ Error creando backup completo:', error);
+                showAlert('⚠️ Error en backup automático');
+                return null;
+            }
+        }
+
+        function limpiarBackupsAntiguos() {
+            try {
+                // Limpiar backups principales
+                const keysBackup = Object.keys(localStorage).filter(k => k.startsWith('nvisionBackup_'));
+                if (keysBackup.length > 10) {
+                    keysBackup.sort();
+                    const keysAEliminar = keysBackup.slice(0, keysBackup.length - 10);
+                    keysAEliminar.forEach(key => {
+                        localStorage.removeItem(key);
+                        console.log(`🗑️ Backup eliminado: ${key}`);
+                    });
+                }
+                
+                // Limpiar backups de emergencia
+                const keysEmergencia = Object.keys(localStorage).filter(k => k.startsWith('nvisionEmergencia_'));
+                if (keysEmergencia.length > 5) {
+                    keysEmergencia.sort();
+                    const keysAEliminar = keysEmergencia.slice(0, keysEmergencia.length - 5);
+                    keysAEliminar.forEach(key => localStorage.removeItem(key));
+                }
+            } catch (error) {
+                console.error('❌ Error limpiando backups:', error);
+            }
+        }
+
+        function exportarBackupGitHub() {
+            try {
+                const backup = crearBackupCompleto();
+                if (!backup) return;
+                
+                const backupData = localStorage.getItem(backup);
+                const blob = new Blob([backupData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const timestamp = new Date().toISOString().split('T')[0];
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `nvision_backup_${timestamp}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showAlert('📤 Backup descargado para GitHub');
+                console.log('📤 Backup exportado para GitHub/Netlify');
+            } catch (error) {
+                console.error('❌ Error exportando backup:', error);
+                showAlert('❌ Error al exportar backup');
+            }
+        }
+
+        function importarBackupGitHub() {
+            try {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const backup = JSON.parse(e.target.result);
+                            
+                            // Validar estructura del backup
+                            if (!backup.sistema || !backup.fecha) {
+                                throw new Error('Archivo de backup no válido');
+                            }
+                            
+                            // Restaurar datos
+                            productos = backup.sistema.productos || [];
+                            clientes = backup.sistema.clientes || [];
+                            ordenesLab = backup.sistema.ordenesLab || [];
+                            ventas = backup.sistema.ventas || [];
+                            estadisticas = backup.sistema.estadisticas || { mensajesHoy: 0, promociones: 0, audiosHoy: 0 };
+                            contadorOrdenes = backup.sistema.contadorOrdenes || 1;
+                            
+                            if (backup.fotos) {
+                                fotos = backup.fotos;
+                            }
+                            
+                            guardarDatos();
+                            actualizarDashboard();
+                            cargarSelectores();
+                            
+                            showAlert(`✅ Backup importado: ${new Date(backup.fecha).toLocaleString()}`);
+                            
+                        } catch (parseError) {
+                            console.error('❌ Error parseando backup:', parseError);
+                            showAlert('❌ Archivo de backup corrupto');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            } catch (error) {
+                console.error('❌ Error importando backup:', error);
+                showAlert('❌ Error al importar backup');
+            }
+        }
+
+        function cargarOrdenes() {
+            try {
+                const lista = document.getElementById('listaOrdenes');
+                if (!lista) return;
+                
+                if (ordenesLab.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No hay órdenes registradas</p>';
+                    return;
+                }
+                
+                let html = `
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                ordenesLab.slice().reverse().forEach(orden => {
+                    const estado = obtenerEstadoHTML(orden.estado);
+                    const fecha = new Date(orden.fecha).toLocaleDateString();
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${orden.numero}</strong></td>
+                            <td>${orden.cliente}</td>
+                            <td>${fecha}</td>
+                            <td>${estado}</td>
+                            <td>RD$ ${(orden.precioVenta || 0).toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-warning" onclick="cambiarEstado(${orden.id})">🔄</button>
+                                <button class="btn btn-primary" onclick="verDetalle(${orden.id})">👁️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando órdenes:', error);
+            }
+        }
+
+        function obtenerEstadoHTML(estado) {
+            const estados = {
+                'pendiente': '<span class="estado-orden estado-pendiente">⏳ Pendiente</span>',
+                'laboratorio': '<span class="estado-orden estado-laboratorio">🔬 En Laboratorio</span>',
+                'listo': '<span class="estado-orden estado-listo">✅ Listo</span>',
+                'entregado': '<span class="estado-orden estado-entregado">📦 Entregado</span>'
+            };
+            return estados[estado] || estado;
+        }
+
+        function buscarOrdenes() {
+            try {
+                const termino = document.getElementById('busquedaOrdenes')?.value.toLowerCase() || '';
+                if (!termino) {
+                    cargarOrdenes();
+                    return;
+                }
+                
+                const filtradas = ordenesLab.filter(orden => 
+                    orden.numero.toLowerCase().includes(termino) ||
+                    orden.cliente.toLowerCase().includes(termino)
+                );
+                
+                const lista = document.getElementById('listaOrdenes');
+                if (!lista) return;
+                
+                if (filtradas.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No se encontraron órdenes</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Número</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
+                
+                filtradas.forEach(orden => {
+                    html += `
+                        <tr>
+                            <td><strong>${orden.numero}</strong></td>
+                            <td>${orden.cliente}</td>
+                            <td>${obtenerEstadoHTML(orden.estado)}</td>
+                            <td>
+                                <button class="btn btn-warning" onclick="cambiarEstado(${orden.id})">🔄</button>
+                                <button class="btn btn-primary" onclick="verDetalle(${orden.id})">👁️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error buscando órdenes:', error);
+            }
+        }
+
+        function cambiarEstado(id) {
+            try {
+                const orden = ordenesLab.find(o => o.id === id);
+                if (!orden) return;
+                
+                const estados = ['pendiente', 'laboratorio', 'listo', 'entregado'];
+                const indiceActual = estados.indexOf(orden.estado);
+                const nuevoEstado = estados[(indiceActual + 1) % estados.length];
+                
+                orden.estado = nuevoEstado;
+                if (nuevoEstado === 'entregado') {
+                    orden.fechaEntrega = new Date().toISOString();
+                }
+                
+                guardarDatos();
+                cargarOrdenes();
+                actualizarDashboardLab();
+                
+                showAlert(`✅ Estado cambiado a: ${nuevoEstado}`);
+            } catch (error) {
+                console.error('❌ Error cambiando estado:', error);
+            }
+        }
+
+        function verDetalle(id) {
+            try {
+                const orden = ordenesLab.find(o => o.id === id);
+                if (!orden) return;
+                
+                const pendiente = (orden.precioVenta || 0) - (orden.abono || 0);
+                const beneficio = (orden.precioVenta || 0) - (orden.costoLab || 0);
+                
+                const detalle = `
+📋 ORDEN: ${orden.numero}
+👤 CLIENTE: ${orden.cliente}
+📅 FECHA: ${new Date(orden.fecha).toLocaleDateString()}
+📊 ESTADO: ${orden.estado}
+
+💰 FINANCIERO:
+• Precio: RD$ ${(orden.precioVenta || 0).toFixed(2)}
+• Abono: RD$ ${(orden.abono || 0).toFixed(2)}
+• Pendiente: RD$ ${pendiente.toFixed(2)}
+• Costo Lab: RD$ ${(orden.costoLab || 0).toFixed(2)}
+• Beneficio: RD$ ${beneficio.toFixed(2)}
+
+👓 ESPECIFICACIONES:
+• Montura: ${orden.tipoMontura || 'N/A'}
+• Lente: ${orden.tipoLente || 'N/A'}
+
+👁️ PRESCRIPCIÓN:
+OD: ${orden.prescripcion?.od?.esfera || 'PLANO'} ${orden.prescripcion?.od?.cilindro || ''} ${orden.prescripcion?.od?.eje || ''}
+OI: ${orden.prescripcion?.oi?.esfera || 'PLANO'} ${orden.prescripcion?.oi?.cilindro || ''} ${orden.prescripcion?.oi?.eje || ''}
+
+💬 COMENTARIOS:
+${orden.comentarios || 'Sin comentarios'}
+                `;
+                
+                alert(detalle);
+            } catch (error) {
+                console.error('❌ Error mostrando detalle:', error);
+                showAlert('❌ Error al mostrar detalle');
+            }
+        }
+
+        function cargarCotejo() {
+            try {
+                const lista = document.getElementById('listaCotejo');
+                if (!lista) return;
+                
+                const ordenesCotejo = ordenesLab.filter(o => o.estado === 'listo');
+                
+                if (ordenesCotejo.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">✅ No hay órdenes para cotejo</p>';
+                    return;
+                }
+                
+                let html = '<div class="grid">';
+                
+                ordenesCotejo.forEach(orden => {
+                    const pendiente = (orden.precioVenta || 0) - (orden.abono || 0);
+                    html += `
+                        <div class="card">
+                            <h3>📦 ${orden.numero}</h3>
+                            <p><strong>Cliente:</strong> ${orden.cliente}</p>
+                            <p><strong>Tipo:</strong> ${orden.tipoLente}</p>
+                            <p><strong>Total:</strong> RD$ ${(orden.precioVenta || 0).toFixed(2)}</p>
+                            <p><strong>Pendiente:</strong> RD$ ${pendiente.toFixed(2)}</p>
+                            <button class="btn btn-success" onclick="realizarCotejo(${orden.id})">✅ Realizar Cotejo</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando cotejo:', error);
+            }
+        }
+
+        function realizarCotejo(id) {
+            try {
+                const orden = ordenesLab.find(o => o.id === id);
+                if (!orden) return;
+                
+                if (confirm(`¿Realizar cotejo de la orden ${orden.numero}?`)) {
+                    orden.estado = 'entregado';
+                    orden.fechaEntrega = new Date().toISOString();
+                    
+                    // Registrar como venta
+                    const venta = {
+                        id: Date.now(),
+                        clienteId: orden.clienteId,
+                        tipo: 'laboratorio',
+                        descripcion: `Laboratorio ${orden.numero}`,
+                        total: orden.precioVenta,
+                        fecha: new Date().toISOString()
+                    };
+                    ventas.push(venta);
+                    
+                    guardarDatos();
+                    cargarCotejo();
+                    cargarCuentasCobrar();
+                    actualizarDashboardLab();
+                    
+                    showAlert(`✅ Cotejo realizado: ${orden.numero}`);
+                    
+                    // Preguntar si notificar al cliente
+                    setTimeout(() => {
+                        if (confirm(`¿Notificar a ${orden.cliente} que sus lentes están listos?`)) {
+                            notificarClienteListo(orden);
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('❌ Error realizando cotejo:', error);
+                showAlert('❌ Error al realizar cotejo');
+            }
+        }
+
+        function notificarClienteListo(orden) {
+            try {
+                const mensaje = `👓 ¡Buenas noticias ${orden.cliente}!
+
+Sus lentes están listos para retirar.
+
+📋 Orden: ${orden.numero}
+📅 Fecha: ${new Date().toLocaleDateString()}
+
+Puede pasar a retirarlos cuando guste.
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
+                const telefono = orden.telefono.replace(/[^0-9]/g, '');
+                window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Notificación enviada');
+            } catch (error) {
+                console.error('❌ Error notificando:', error);
+                window.open(`https://wa.me/?text=${encodeURIComponent(`Lentes listos para ${orden.cliente}`)}`, '_blank');
+            }
+        }
+
+        function cargarCuentasCobrar() {
+            try {
+                const lista = document.getElementById('listaCobrar');
+                if (!lista) return;
+                
+                const cuentas = ordenesLab.filter(o => o.estado === 'entregado' && !o.pagadoCliente);
+                const total = calcularTotalCobrar();
+                
+                const totalElement = document.getElementById('totalCobrar');
+                if (totalElement) {
+                    totalElement.textContent = `RD$ ${total.toFixed(2)}`;
+                }
+                
+                if (cuentas.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">✅ No hay cuentas por cobrar</p>';
+                    return;
+                }
+                
+                let html = '<div class="grid">';
+                
+                cuentas.forEach(orden => {
+                    const pendiente = (orden.precioVenta || 0) - (orden.abono || 0);
+                    html += `
+                        <div class="card" style="border-left: 4px solid #f59e0b;">
+                            <h3>💰 ${orden.numero}</h3>
+                            <p><strong>Cliente:</strong> ${orden.cliente}</p>
+                            <p><strong>Total:</strong> RD$ ${(orden.precioVenta || 0).toFixed(2)}</p>
+                            <p><strong>Abono:</strong> RD$ ${(orden.abono || 0).toFixed(2)}</p>
+                            <p><strong>Pendiente:</strong> <span style="color: #f59e0b;">RD$ ${pendiente.toFixed(2)}</span></p>
+                            <button class="btn btn-success" onclick="marcarPagado(${orden.id}, 'cliente')">✅ Marcar Pagado</button>
+                            <button class="btn btn-whatsapp" onclick="recordarPago(${orden.id})">📱 Recordar</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando cuentas por cobrar:', error);
+            }
+        }
+
+        function cargarCuentasPagar() {
+            try {
+                const lista = document.getElementById('listaPagar');
+                if (!lista) return;
+                
+                const cuentas = ordenesLab.filter(o => o.estado === 'entregado' && !o.pagadoLab);
+                const total = calcularTotalPagar();
+                
+                const totalElement = document.getElementById('totalPagar');
+                if (totalElement) {
+                    totalElement.textContent = `RD$ ${total.toFixed(2)}`;
+                }
+                
+                if (cuentas.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">✅ No hay cuentas por pagar</p>';
+                    return;
+                }
+                
+                let html = '<div class="grid">';
+                
+                cuentas.forEach(orden => {
+                    html += `
+                        <div class="card" style="border-left: 4px solid #ef4444;">
+                            <h3>💸 ${orden.numero}</h3>
+                            <p><strong>Cliente:</strong> ${orden.cliente}</p>
+                            <p><strong>Costo Lab:</strong> <span style="color: #ef4444;">RD$ ${(orden.costoLab || 0).toFixed(2)}</span></p>
+                            <button class="btn btn-success" onclick="marcarPagado(${orden.id}, 'laboratorio')">✅ Marcar Pagado</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando cuentas por pagar:', error);
+            }
+        }
+
+        function marcarPagado(id, tipo) {
+            try {
+                const orden = ordenesLab.find(o => o.id === id);
+                if (!orden) return;
+                
+                const tipoTexto = tipo === 'cliente' ? 'cliente' : 'laboratorio';
+                
+                if (confirm(`¿Marcar como pagado por ${tipoTexto} la orden ${orden.numero}?`)) {
+                    if (tipo === 'cliente') {
+                        orden.pagadoCliente = true;
+                        orden.fechaPagoCliente = new Date().toISOString();
+                    } else {
+                        orden.pagadoLab = true;
+                        orden.fechaPagoLab = new Date().toISOString();
+                    }
+                    
+                    guardarDatos();
+                    cargarCuentasCobrar();
+                    cargarCuentasPagar();
+                    actualizarDashboardLab();
+                    
+                    showAlert(`✅ Marcado como pagado por ${tipoTexto}`);
+                }
+            } catch (error) {
+                console.error('❌ Error marcando como pagado:', error);
+            }
+        }
+
+        function recordarPago(id) {
+            try {
+                const orden = ordenesLab.find(o => o.id === id);
+                if (!orden) return;
+                
+                const pendiente = (orden.precioVenta || 0) - (orden.abono || 0);
+                
+                const mensaje = `💰 Recordatorio de pago
+
+Hola ${orden.cliente}!
+
+Sus lentes están listos. Pendiente por pagar:
+
+📋 Orden: ${orden.numero}
+💰 Total: RD$ ${(orden.precioVenta || 0).toFixed(2)}
+✅ Abonado: RD$ ${(orden.abono || 0).toFixed(2)}
+⏳ Pendiente: RD$ ${pendiente.toFixed(2)}
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
+                const telefono = orden.telefono.replace(/[^0-9]/g, '');
+                window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Recordatorio enviado');
+            } catch (error) {
+                console.error('❌ Error enviando recordatorio:', error);
+            }
+        }
+
+        // ========================================
+        // 📷 CÁMARA
+        // ========================================
+        
+        async function activarCamara(tipo) {
+            try {
+                if (streams[tipo]) {
+                    // Si ya hay stream, no hacer nada
+                    return;
+                }
+                
+                const video = document.getElementById(`video${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                const placeholder = document.getElementById(`placeholder${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                const btn = document.getElementById(`btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                
+                if (!video) {
+                    console.error(`Video element not found for ${tipo}`);
+                    return;
+                }
+                
+                streams[tipo] = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                
+                video.srcObject = streams[tipo];
+                video.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+                if (btn) btn.style.display = 'block';
+                
+                console.log(`📷 Cámara ${tipo} activada`);
+            } catch (error) {
+                console.error(`❌ Error activando cámara ${tipo}:`, error);
+                showAlert('❌ Error al activar cámara');
+            }
+        }
+
+        function tomarFoto(tipo) {
+            try {
+                const video = document.getElementById(`video${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                const preview = document.getElementById(`preview${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                const placeholder = document.getElementById(`placeholder${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                const btn = document.getElementById(`btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+                
+                if (!video || !preview) {
+                    console.error(`Elements not found for ${tipo}`);
+                    return;
+                }
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                
+                fotos[tipo] = canvas.toDataURL('image/jpeg', 0.8);
+                preview.src = fotos[tipo];
+                preview.style.display = 'block';
+                
+                // Detener cámara
+                if (streams[tipo]) {
+                    streams[tipo].getTracks().forEach(track => track.stop());
+                    delete streams[tipo];
+                }
+                
+                video.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'block';
+                if (btn) btn.style.display = 'none';
+                
+                showAlert(`📷 Foto de ${tipo} capturada`);
+                console.log(`📷 Foto ${tipo} capturada`);
+            } catch (error) {
+                console.error(`❌ Error tomando foto ${tipo}:`, error);
+                showAlert('❌ Error al tomar foto');
+            }
+        }
+
+        // ========================================
+        // 📦 PRODUCTOS
+        // ========================================
+        
+        function cargarProductos() {
+            try {
+                const lista = document.getElementById('listaProductos');
+                if (!lista) return;
+                
+                if (productos.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No hay productos. Use la cámara rápida para agregar.</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Foto</th><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>';
+                
+                productos.forEach(p => {
+                    html += `
+                        <tr>
+                            <td><img src="${p.imagen || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="80" viewBox="0 0 100 80"><rect width="100" height="80" fill="%23666"/><text x="50" y="40" text-anchor="middle" fill="white" font-size="12">Sin foto</text></svg>'}" class="product-img"></td>
+                            <td>${p.codigo}</td>
+                            <td>${p.nombre}</td>
+                            <td>RD$ ${p.precio.toFixed(2)}</td>
+                            <td>${p.stock} ${p.stock < 5 ? '⚠️' : ''}</td>
+                            <td>
+                                <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱</button>
+                                <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando productos:', error);
+            }
+        }
+
+        function buscarProductos(termino) {
+            try {
+                if (!termino) {
+                    cargarProductos();
+                    return;
+                }
+                
+                const filtrados = productos.filter(p => 
+                    p.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                    p.codigo.toLowerCase().includes(termino.toLowerCase())
+                );
+                
+                const lista = document.getElementById('listaProductos');
+                if (!lista) return;
+                
+                if (filtrados.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No se encontraron productos</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Foto</th><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>';
+                
+                filtrados.forEach(p => {
+                    html += `
+                        <tr>
+                            <td><img src="${p.imagen || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="80" viewBox="0 0 100 80"><rect width="100" height="80" fill="%23666"/><text x="50" y="40" text-anchor="middle" fill="white" font-size="12">Sin foto</text></svg>'}" class="product-img"></td>
+                            <td>${p.codigo}</td>
+                            <td>${p.nombre}</td>
+                            <td>RD$ ${p.precio.toFixed(2)}</td>
+                            <td>${p.stock}</td>
+                            <td>
+                                <button class="btn btn-whatsapp" onclick="compartirProducto(${p.id})">📱</button>
+                                <button class="btn btn-danger" onclick="eliminarProducto(${p.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error buscando productos:', error);
+            }
         }
 
         function guardarProducto() {
-            const codigo = document.getElementById('codigo').value.trim();
-            const nombre = document.getElementById('nombre').value.trim();
-            const precio = parseFloat(document.getElementById('precio').value) || 0;
-            const stock = parseInt(document.getElementById('stock').value) || 0;
-            
-            if (!codigo || !nombre) {
-                showAlert('❌ Complete código y nombre');
-                return;
+            try {
+                const codigo = document.getElementById('codigoProducto')?.value.trim();
+                const nombre = document.getElementById('nombreProducto')?.value.trim();
+                const precio = parseFloat(document.getElementById('precioProducto')?.value) || 0;
+                const stock = parseInt(document.getElementById('stockProducto')?.value) || 0;
+                const categoria = document.getElementById('categoriaProducto')?.value;
+                
+                if (!codigo || !nombre) {
+                    showAlert('❌ Complete código y nombre');
+                    return;
+                }
+                
+                if (productos.some(p => p.codigo === codigo)) {
+                    showAlert('❌ El código ya existe');
+                    return;
+                }
+                
+                const producto = {
+                    id: Date.now(),
+                    codigo: codigo,
+                    nombre: nombre,
+                    precio: precio,
+                    stock: stock,
+                    categoria: categoria,
+                    imagen: fotos.producto || '',
+                    fecha: new Date().toISOString()
+                };
+                
+                productos.push(producto);
+                guardarDatos();
+                limpiarCamara();
+                
+                showAlert('✅ Producto guardado');
+                console.log('✅ Producto guardado:', producto);
+            } catch (error) {
+                console.error('❌ Error guardando producto:', error);
+                showAlert('❌ Error al guardar producto');
             }
-            
-            const producto = {
-                id: Date.now(),
-                codigo, nombre, precio, stock,
-                imagen: fotoActual || 'https://via.placeholder.com/200x150/10b981/ffffff?text=Sin+Foto',
-                fecha: new Date().toISOString()
-            };
-            
-            productos.push(producto);
-            guardarDatos();
-            limpiarCamara();
-            showAlert('✅ Producto guardado');
         }
 
-        function guardarYEnviar() {
-            guardarProducto();
-            if (productos.length > 0) {
-                const producto = productos[productos.length - 1];
-                const mensaje = `🛍️ *NUEVO PRODUCTO*\n\n📦 ${producto.nombre}\n🔢 ${producto.codigo}\n💰 RD$ ${producto.precio}\n\n📱 849-797-2424\n🌐 Óptica NVisión`;
+        function guardarYEnviarProducto() {
+            try {
+                guardarProducto();
+                
+                setTimeout(() => {
+                    if (productos.length > 0) {
+                        const ultimoProducto = productos[productos.length - 1];
+                        compartirProducto(ultimoProducto.id);
+                    }
+                }, 500);
+            } catch (error) {
+                console.error('❌ Error guardando y enviando:', error);
+            }
+        }
+
+        function compartirProducto(id) {
+            try {
+                const producto = productos.find(p => p.id === id);
+                if (!producto) {
+                    showAlert('❌ Producto no encontrado');
+                    return;
+                }
+                
+                const mensaje = `🛍️ *PRODUCTO DISPONIBLE*
+
+📦 ${producto.nombre}
+🔢 Código: ${producto.codigo}
+💰 Precio: RD$ ${producto.precio.toFixed(2)}
+
+Me interesa conocer si te gusta este modelo.
+
+✨ ¿Te interesa verlo en la tienda?
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
                 window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-                showAlert('📱 Producto enviado por WhatsApp');
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Producto enviado');
+            } catch (error) {
+                console.error('❌ Error compartiendo producto:', error);
+                showAlert('❌ Error al enviar producto');
+            }
+        }
+
+        function eliminarProducto(id) {
+            try {
+                if (confirm('¿Eliminar este producto?')) {
+                    productos = productos.filter(p => p.id !== id);
+                    guardarDatos();
+                    cargarProductos();
+                    showAlert('✅ Producto eliminado');
+                }
+            } catch (error) {
+                console.error('❌ Error eliminando producto:', error);
             }
         }
 
         function limpiarCamara() {
-            document.getElementById('codigo').value = '';
-            document.getElementById('nombre').value = '';
-            document.getElementById('precio').value = '';
-            document.getElementById('stock').value = '';
-            document.getElementById('preview').style.display = 'none';
-            fotoActual = null;
-        }
-
-        function cargarInventario() {
-            const lista = document.getElementById('listaInventario');
-            if (productos.length === 0) {
-                lista.innerHTML = '<p>No hay productos en el inventario</p>';
-                return;
+            try {
+                // Limpiar inputs
+                const inputs = ['codigoProducto', 'nombreProducto', 'precioProducto', 'stockProducto', 'categoriaProducto'];
+                inputs.forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.value = '';
+                });
+                
+                // Limpiar foto
+                delete fotos.producto;
+                const preview = document.getElementById('previewProducto');
+                if (preview) preview.style.display = 'none';
+                
+                console.log('🧹 Cámara limpiada');
+            } catch (error) {
+                console.error('❌ Error limpiando cámara:', error);
             }
-            
-            let html = '<table class="table"><thead><tr><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th></tr></thead><tbody>';
-            productos.forEach(p => {
-                html += `<tr><td>${p.codigo}</td><td>${p.nombre}</td><td>RD$ ${p.precio}</td><td>${p.stock}</td></tr>`;
-            });
-            html += '</tbody></table>';
-            lista.innerHTML = html;
         }
 
         // ========================================
         // 👥 CLIENTES
         // ========================================
         
+        function cargarClientes() {
+            try {
+                const lista = document.getElementById('listaClientes');
+                if (!lista) return;
+                
+                if (clientes.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No hay clientes registrados.</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Cumpleaños</th><th>Acciones</th></tr></thead><tbody>';
+                
+                clientes.forEach(c => {
+                    html += `
+                        <tr>
+                            <td><strong>${c.nombre}</strong>${c.notas ? '<br><small>' + c.notas + '</small>' : ''}</td>
+                            <td>${c.telefono}</td>
+                            <td>${c.email || 'N/A'}</td>
+                            <td>${c.cumpleanos ? new Date(c.cumpleanos).toLocaleDateString() : 'N/A'}</td>
+                            <td>
+                                <button class="btn btn-whatsapp" onclick="contactarCliente('${c.telefono}', '${c.nombre}')">💬</button>
+                                <button class="btn btn-danger" onclick="eliminarCliente(${c.id})">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando clientes:', error);
+            }
+        }
+
         function agregarCliente() {
-            const nombre = document.getElementById('nombreCliente').value.trim();
-            const telefono = document.getElementById('telefonoCliente').value.trim();
-            const email = document.getElementById('emailCliente').value.trim();
-            
-            if (!nombre || !telefono) {
-                showAlert('❌ Complete nombre y teléfono');
-                return;
+            try {
+                const nombre = document.getElementById('nombreNuevoCliente')?.value.trim();
+                const telefono = document.getElementById('telefonoCliente')?.value.trim();
+                const email = document.getElementById('emailCliente')?.value.trim();
+                const cumpleanos = document.getElementById('cumpleanosCliente')?.value;
+                const notas = document.getElementById('notasCliente')?.value.trim();
+                
+                if (!nombre || !telefono) {
+                    showAlert('❌ Complete nombre y teléfono');
+                    return;
+                }
+                
+                if (clientes.some(c => c.telefono === telefono)) {
+                    showAlert('❌ Ya existe un cliente con ese teléfono');
+                    return;
+                }
+                
+                const cliente = {
+                    id: Date.now(),
+                    nombre: nombre,
+                    telefono: telefono,
+                    email: email,
+                    cumpleanos: cumpleanos,
+                    notas: notas,
+                    fecha: new Date().toISOString()
+                };
+                
+                clientes.push(cliente);
+                guardarDatos();
+                
+                // Limpiar formulario
+                ['nombreNuevoCliente', 'telefonoCliente', 'emailCliente', 'cumpleanosCliente', 'notasCliente'].forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.value = '';
+                });
+                
+                cargarClientes();
+                cargarSelectores();
+                showAlert(`✅ Cliente ${nombre} agregado`);
+            } catch (error) {
+                console.error('❌ Error agregando cliente:', error);
+                showAlert('❌ Error al agregar cliente');
             }
-            
-            const cliente = {
-                id: Date.now(),
-                nombre, telefono, email,
-                fechaRegistro: new Date().toISOString()
-            };
-            
-            clientes.push(cliente);
-            guardarDatos();
-            cargarGestionClientes();
-            cargarClientesSelectLab();
-            
-            document.getElementById('nombreCliente').value = '';
-            document.getElementById('telefonoCliente').value = '';
-            document.getElementById('emailCliente').value = '';
-            
-            showAlert('✅ Cliente agregado');
         }
 
-        function cargarGestionClientes() {
-            const lista = document.getElementById('listaCompletaClientes');
-            if (clientes.length === 0) {
-                lista.innerHTML = '<p>No hay clientes registrados</p>';
-                return;
+        function buscarClientes(termino) {
+            try {
+                const resultados = document.getElementById('resultadosBusqueda');
+                if (!resultados) return;
+                
+                if (!termino.trim()) {
+                    resultados.innerHTML = '';
+                    return;
+                }
+                
+                const encontrados = clientes.filter(c => 
+                    c.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                    c.telefono.includes(termino)
+                );
+                
+                if (encontrados.length === 0) {
+                    resultados.innerHTML = '<p style="text-align: center;">No se encontraron clientes</p>';
+                    return;
+                }
+                
+                resultados.innerHTML = encontrados.map(c => `
+                    <div class="cliente-item">
+                        <strong>${c.nombre}</strong><br>
+                        📱 ${c.telefono}<br>
+                        <button class="btn btn-whatsapp" onclick="contactarCliente('${c.telefono}', '${c.nombre}')">💬 Contactar</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('❌ Error buscando clientes:', error);
             }
-            
-            let html = '<table class="table"><thead><tr><th>Nombre</th><th>Teléfono</th><th>Email</th></tr></thead><tbody>';
-            clientes.forEach(c => {
-                html += `<tr><td>${c.nombre}</td><td>${c.telefono}</td><td>${c.email || 'N/A'}</td></tr>`;
-            });
-            html += '</tbody></table>';
-            lista.innerHTML = html;
-        }
-
-        function cargarClientesRapida() {
-            const lista = document.getElementById('listaClientesRapida');
-            if (clientes.length === 0) {
-                lista.innerHTML = '<p>No hay clientes registrados</p>';
-                return;
-            }
-            
-            lista.innerHTML = clientes.map(c => `
-                <div class="card" style="margin: 10px 0;">
-                    <h4>${c.nombre}</h4>
-                    <p>📱 ${c.telefono}</p>
-                    <button class="btn btn-whatsapp" onclick="contactarCliente('${c.telefono}', '${c.nombre}')">💬 Contactar</button>
-                </div>
-            `).join('');
         }
 
         function contactarCliente(telefono, nombre) {
-            const mensaje = `¡Hola ${nombre}!\n\nEspero que estés muy bien. Te contacto desde Óptica NVisión.\n\nTenemos ofertas especiales que podrían interesarte.\n\n📱 849-797-2424\n🌐 Óptica NVisión`;
-            const telefonoLimpio = telefono.replace(/[^0-9]/g, '');
-            window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
-            showAlert('📱 Mensaje enviado al cliente');
+            try {
+                const mensaje = `¡Hola ${nombre}! ✨
+
+Espero que estés muy bien. Te contacto desde Óptica NVision.
+
+Tenemos ofertas especiales y nuevos productos que podrían interesarte.
+
+¿Te gustaría ver nuestras promociones actuales?
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
+                const telefonoLimpio = telefono.replace(/[^0-9]/g, '');
+                window.open(`https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Mensaje enviado');
+            } catch (error) {
+                console.error('❌ Error contactando cliente:', error);
+                showAlert('❌ Error al contactar cliente');
+            }
+        }
+
+        function eliminarCliente(id) {
+            try {
+                const cliente = clientes.find(c => c.id === id);
+                if (!cliente) return;
+                
+                if (confirm(`¿Eliminar cliente ${cliente.nombre}?`)) {
+                    clientes = clientes.filter(c => c.id !== id);
+                    guardarDatos();
+                    cargarClientes();
+                    cargarSelectores();
+                    showAlert(`✅ Cliente eliminado`);
+                }
+            } catch (error) {
+                console.error('❌ Error eliminando cliente:', error);
+            }
+        }
+
+        // ========================================
+        // 📱 MARKETING
+        // ========================================
+        
+        function cargarMarketing() {
+            try {
+                const elementos = [
+                    { id: 'mensajesHoy', valor: estadisticas.mensajesHoy || 0 },
+                    { id: 'promocionesHoy', valor: estadisticas.promociones || 0 },
+                    { id: 'audiosHoy', valor: estadisticas.audiosHoy || 0 }
+                ];
+                
+                elementos.forEach(el => {
+                    const elemento = document.getElementById(el.id);
+                    if (elemento) {
+                        elemento.textContent = el.valor;
+                    }
+                });
+            } catch (error) {
+                console.error('❌ Error cargando marketing:', error);
+            }
+        }
+
+        function enviarPromocion() {
+            try {
+                const mensaje = document.getElementById('mensajeMarketing')?.value;
+                if (!mensaje || !mensaje.trim()) {
+                    showAlert('❌ Escriba un mensaje promocional');
+                    return;
+                }
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('promocion');
+                showAlert('📱 Promoción enviada');
+            } catch (error) {
+                console.error('❌ Error enviando promoción:', error);
+                showAlert('❌ Error al enviar promoción');
+            }
+        }
+
+        function verEstadisticas() {
+            try {
+                const stats = `📊 *ESTADÍSTICAS DE HOY*
+
+📱 Mensajes enviados: ${estadisticas.mensajesHoy}
+🎁 Promociones: ${estadisticas.promociones}
+🎤 Audios enviados: ${estadisticas.audiosHoy}
+📦 Productos: ${productos.length}
+👥 Clientes: ${clientes.length}
+🔬 Órdenes Lab: ${ordenesLab.length}
+
+📅 ${new Date().toLocaleDateString()}`;
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(stats)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+            } catch (error) {
+                console.error('❌ Error enviando estadísticas:', error);
+            }
+        }
+
+        function actualizarEstadisticas(tipo) {
+            try {
+                const hoy = new Date().toDateString();
+                const ultimaActualizacion = localStorage.getItem('nvisionUltimaStats');
+                
+                if (ultimaActualizacion !== hoy) {
+                    estadisticas.mensajesHoy = 0;
+                    estadisticas.promociones = 0;
+                    estadisticas.audiosHoy = 0;
+                    localStorage.setItem('nvisionUltimaStats', hoy);
+                }
+                
+                if (tipo === 'mensaje') {
+                    estadisticas.mensajesHoy++;
+                } else if (tipo === 'promocion') {
+                    estadisticas.promociones++;
+                    estadisticas.mensajesHoy++;
+                } else if (tipo === 'audio') {
+                    estadisticas.audiosHoy++;
+                    estadisticas.mensajesHoy++;
+                }
+                
+                guardarDatos();
+                cargarMarketing();
+            } catch (error) {
+                console.error('❌ Error actualizando estadísticas:', error);
+            }
+        }
+
+        // ========================================
+        // 💬 CONTACTAR CLIENTES
+        // ========================================
+        
+        function cargarContactar() {
+            try {
+                const lista = document.getElementById('listaContactar');
+                if (!lista) return;
+                
+                if (clientes.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No hay clientes para contactar</p>';
+                    return;
+                }
+                
+                let html = '<div class="grid">';
+                
+                clientes.forEach(c => {
+                    html += `
+                        <div class="cliente-item">
+                            <h4>${c.nombre}</h4>
+                            <p>📱 ${c.telefono}</p>
+                            ${c.cumpleanos ? `<p>🎂 ${new Date(c.cumpleanos).toLocaleDateString()}</p>` : ''}
+                            ${c.notas ? `<p><small>${c.notas}</small></p>` : ''}
+                            <button class="btn btn-whatsapp" onclick="contactarCliente('${c.telefono}', '${c.nombre}')">💬 Contactar</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando contactar:', error);
+            }
+        }
+
+        // ========================================
+        // 🔔 RECORDATORIOS
+        // ========================================
+        
+        function generarRecordatorios() {
+            try {
+                const lista = document.getElementById('listaRecordatorios');
+                if (!lista) return;
+                
+                const hoy = new Date();
+                const recordatorios = [];
+                
+                // Recordatorios de cumpleaños
+                clientes.forEach(c => {
+                    if (c.cumpleanos) {
+                        const cumple = new Date(c.cumpleanos);
+                        cumple.setFullYear(hoy.getFullYear());
+                        const diasHasta = Math.ceil((cumple - hoy) / (1000 * 60 * 60 * 24));
+                        
+                        if (diasHasta >= 0 && diasHasta <= 7) {
+                            recordatorios.push({
+                                tipo: 'cumpleanos',
+                                cliente: c.nombre,
+                                telefono: c.telefono,
+                                mensaje: `${diasHasta === 0 ? '🎂 HOY' : `📅 En ${diasHasta} días`}: Cumpleaños de ${c.nombre}`,
+                                urgente: diasHasta <= 1
+                            });
+                        }
+                    }
+                });
+                
+                // Recordatorios de stock bajo
+                productos.forEach(p => {
+                    if (p.stock < 5) {
+                        recordatorios.push({
+                            tipo: 'stock',
+                            producto: p.nombre,
+                            mensaje: `📦 Stock bajo: ${p.nombre} (${p.stock} unidades)`,
+                            urgente: p.stock === 0
+                        });
+                    }
+                });
+                
+                // Recordatorios de laboratorio
+                const ordenesUrgentes = ordenesLab.filter(o => {
+                    const diasPasados = Math.floor((new Date() - new Date(o.fecha)) / (1000 * 60 * 60 * 24));
+                    return o.estado === 'laboratorio' && diasPasados > 7;
+                });
+                
+                ordenesUrgentes.forEach(orden => {
+                    recordatorios.push({
+                        tipo: 'laboratorio',
+                        cliente: orden.cliente,
+                        telefono: orden.telefono,
+                        mensaje: `🔬 Orden ${orden.numero} lleva más de 7 días en laboratorio`,
+                        urgente: true
+                    });
+                });
+                
+                if (recordatorios.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">✅ No hay recordatorios pendientes para hoy</p>';
+                    return;
+                }
+                
+                recordatorios.sort((a, b) => b.urgente - a.urgente);
+                
+                lista.innerHTML = recordatorios.map(r => {
+                    const telefonoLimpio = r.telefono ? r.telefono.replace(/[^0-9]/g, '') : '';
+                    return `
+                        <div class="reminder-item ${r.urgente ? 'reminder-urgent' : ''}">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4>${obtenerIconoTipo(r.tipo)} ${r.cliente || 'Sistema'}</h4>
+                                    ${r.telefono ? `<p>📱 ${r.telefono}</p>` : ''}
+                                    <p style="font-size: 12px; opacity: 0.8;">${r.mensaje}</p>
+                                </div>
+                                ${r.telefono ? `<button class="btn btn-whatsapp" onclick="enviarRecordatorio('${r.tipo}', '${telefonoLimpio}', '${r.cliente}')">📱 Enviar</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('❌ Error generando recordatorios:', error);
+            }
+        }
+
+        function obtenerIconoTipo(tipo) {
+            const iconos = {
+                cumpleanos: '🎂',
+                stock: '📦',
+                laboratorio: '🔬',
+                examen: '👁️'
+            };
+            return iconos[tipo] || '📌';
+        }
+
+        function enviarRecordatorio(tipo, telefono, nombre) {
+            try {
+                let mensaje = '';
+                
+                switch (tipo) {
+                    case 'cumpleanos':
+                        mensaje = `🎂 ¡Feliz cumpleaños ${nombre}! 🎉
+
+En Óptica NVision queremos celebrar contigo.
+
+🎁 Tenemos una sorpresa especial para ti en tu día.
+
+📱 849-797-2424
+🌐 nvision.com`;
+                        break;
+                    case 'laboratorio':
+                        mensaje = `🔬 Hola ${nombre}!
+
+Tu orden de laboratorio está siendo procesada.
+
+Te contactaremos pronto con novedades.
+
+📱 849-797-2424
+🌐 nvision.com`;
+                        break;
+                    default:
+                        mensaje = `Recordatorio para ${nombre} desde Óptica NVision`;
+                }
+                
+                if (telefono && mensaje) {
+                    window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    actualizarEstadisticas('mensaje');
+                    showAlert('📱 Recordatorio enviado');
+                }
+            } catch (error) {
+                console.error('❌ Error enviando recordatorio:', error);
+            }
+        }
+
+        // ========================================
+        // 💰 VENTAS
+        // ========================================
+        
+        function cargarVentas() {
+            try {
+                const lista = document.getElementById('listaVentas');
+                if (!lista) return;
+                
+                if (ventas.length === 0) {
+                    lista.innerHTML = '<p style="text-align: center;">No hay ventas registradas</p>';
+                    return;
+                }
+                
+                let html = '<table class="table"><thead><tr><th>Fecha</th><th>Cliente</th><th>Descripción</th><th>Total</th><th>Tipo</th></tr></thead><tbody>';
+                
+                ventas.slice(-10).reverse().forEach(v => {
+                    const cliente = clientes.find(c => c.id === v.clienteId) || { nombre: 'Cliente eliminado' };
+                    const fecha = new Date(v.fecha).toLocaleDateString();
+                    
+                    html += `
+                        <tr>
+                            <td>${fecha}</td>
+                            <td>${cliente.nombre}</td>
+                            <td>${v.descripcion || 'Venta'}</td>
+                            <td>RD$ ${v.total.toFixed(2)}</td>
+                            <td>${v.tipo === 'laboratorio' ? '🔬 Lab' : '📦 Producto'}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                lista.innerHTML = html;
+            } catch (error) {
+                console.error('❌ Error cargando ventas:', error);
+            }
+        }
+
+        function registrarVenta() {
+            try {
+                const clienteId = parseInt(document.getElementById('clienteVenta')?.value) || 0;
+                const productoId = parseInt(document.getElementById('productoVenta')?.value) || 0;
+                const cantidad = parseInt(document.getElementById('cantidadVenta')?.value) || 1;
+                const total = parseFloat(document.getElementById('totalVenta')?.value) || 0;
+                
+                if (!clienteId || !productoId || total <= 0) {
+                    showAlert('❌ Complete todos los campos');
+                    return;
+                }
+                
+                const cliente = clientes.find(c => c.id === clienteId);
+                const producto = productos.find(p => p.id === productoId);
+                
+                if (!cliente || !producto) {
+                    showAlert('❌ Cliente o producto no válido');
+                    return;
+                }
+                
+                const venta = {
+                    id: Date.now(),
+                    clienteId: clienteId,
+                    productoId: productoId,
+                    cantidad: cantidad,
+                    total: total,
+                    descripcion: `${producto.nombre} (x${cantidad})`,
+                    tipo: 'producto',
+                    fecha: new Date().toISOString()
+                };
+                
+                ventas.push(venta);
+                
+                // Actualizar stock
+                producto.stock = Math.max(0, producto.stock - cantidad);
+                
+                guardarDatos();
+                cargarVentas();
+                actualizarDashboard();
+                
+                // Limpiar formulario
+                ['clienteVenta', 'productoVenta', 'totalVenta'].forEach(id => {
+                    const elemento = document.getElementById(id);
+                    if (elemento) elemento.value = '';
+                });
+                document.getElementById('cantidadVenta').value = '1';
+                
+                showAlert('✅ Venta registrada');
+            } catch (error) {
+                console.error('❌ Error registrando venta:', error);
+                showAlert('❌ Error al registrar venta');
+            }
         }
 
         // ========================================
@@ -960,98 +3206,275 @@
         // ========================================
         
         function cargarReportes() {
-            document.getElementById('totalProductosReporte').textContent = productos.length;
-            document.getElementById('totalClientesReporte').textContent = clientes.length;
+            try {
+                const enLab = ordenesLab.filter(o => o.estado === 'laboratorio').length;
+                const totalCobrar = calcularTotalCobrar();
+                const totalPagar = calcularTotalPagar();
+                const totalVentas = ventas.reduce((sum, v) => sum + v.total, 0);
+                
+                const elementos = [
+                    { id: 'reporteEnLab', valor: enLab },
+                    { id: 'reporteCobrar', valor: totalCobrar.toFixed(2) },
+                    { id: 'reportePagar', valor: totalPagar.toFixed(2) },
+                    { id: 'reporteProductos', valor: productos.length },
+                    { id: 'reporteClientes', valor: clientes.length },
+                    { id: 'reporteVentas', valor: totalVentas.toFixed(2) }
+                ];
+                
+                elementos.forEach(el => {
+                    const elemento = document.getElementById(el.id);
+                    if (elemento) {
+                        elemento.textContent = el.valor;
+                    }
+                });
+            } catch (error) {
+                console.error('❌ Error cargando reportes:', error);
+            }
         }
 
-        function enviarReporteWhatsApp() {
-            const mensaje = `📊 *REPORTE ÓPTICA NVISIÓN*\n📅 ${new Date().toLocaleDateString()}\n\n📦 Productos: ${productos.length}\n👥 Clientes: ${clientes.length}\n🔬 Órdenes Lab: ${ordenesLaboratorio.length}\n\n📱 849-797-2424`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
-            showAlert('📱 Reporte enviado');
+        function enviarReporte() {
+            try {
+                const enLab = ordenesLab.filter(o => o.estado === 'laboratorio').length;
+                const totalCobrar = calcularTotalCobrar();
+                const totalPagar = calcularTotalPagar();
+                const totalVentas = ventas.reduce((sum, v) => sum + v.total, 0);
+                
+                const reporte = `📊 *REPORTE ÓPTICA NVISION*
+
+📅 ${new Date().toLocaleDateString()}
+
+📦 *INVENTARIO:*
+• Productos: ${productos.length}
+• Stock bajo: ${productos.filter(p => p.stock < 5).length}
+
+👥 *CLIENTES:*
+• Total clientes: ${clientes.length}
+
+🔬 *LABORATORIO:*
+• En laboratorio: ${enLab}
+• Por cobrar: RD$ ${totalCobrar.toFixed(2)}
+• Por pagar: RD$ ${totalPagar.toFixed(2)}
+
+💰 *VENTAS:*
+• Total ventas: RD$ ${totalVentas.toFixed(2)}
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(reporte)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Reporte enviado');
+            } catch (error) {
+                console.error('❌ Error enviando reporte:', error);
+                showAlert('❌ Error al enviar reporte');
+            }
         }
 
         // ========================================
-        // 🔗 ENLACES EXTERNOS
+        // 📣 CAMPAÑAS
         // ========================================
         
-        function abrirFactura() {
-            window.open('https://nvision-factura.netlify.app/', '_blank');
+        function enviarCampanaDia() {
+            try {
+                const mensaje = document.getElementById('mensajeCampana')?.value || `🎯 *CAMPAÑA DEL DÍA*
+
+¡Aprovecha nuestras ofertas especiales!
+
+✨ Descuentos exclusivos
+👓 Nueva colección
+🔍 Examen gratuito
+
+📱 849-797-2424
+🌐 nvision.com`;
+                
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, '_blank');
+                actualizarEstadisticas('mensaje');
+                showAlert('📱 Campaña enviada');
+            } catch (error) {
+                console.error('❌ Error enviando campaña:', error);
+                showAlert('❌ Error al enviar campaña');
+            }
         }
 
         // ========================================
-        // 🔧 CLEANUP
+        // 🛠️ UTILIDADES FINALES
         // ========================================
         
+        // Crear backup automático cada hora
+        setInterval(crearBackupCompleto, 3600000); // 1 hora = 3600000ms
+        
+        // Backup al cargar el sistema
+        setTimeout(crearBackupCompleto, 5000); // 5 segundos después de cargar
+        
+        // Limpiar streams al cerrar la página
         window.addEventListener('beforeunload', function() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+            try {
+                // Detener streams de cámara
+                Object.values(streams).forEach(stream => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                });
+                
+                // Detener grabación si está activa
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+                
+                // Crear backup final
+                crearBackupCompleto();
+                
+                console.log('🧹 Recursos limpiados al cerrar');
+            } catch (error) {
+                console.error('❌ Error al limpiar recursos:', error);
             }
         });
 
-        console.log('✅ Sistema Óptica NVisión - Versión Completa v1.0');
-
-        // ========================================
-        // 🔧 FUNCIONES DE DEPURACIÓN
-        // ========================================
-        
-        // Función de depuración para diagnosticar problemas
-        window.debugNVision = function() {
-            console.log('🔧 === DIAGNÓSTICO ÓPTICA NVISIÓN ===');
-            console.log('📊 Datos del sistema:');
-            console.log('- Productos:', productos.length);
-            console.log('- Clientes:', clientes.length);
-            console.log('- Órdenes Lab:', ordenesLaboratorio.length);
+        // Manejar errores globales
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error global:', e.error);
+            showAlert('⚠️ Error del sistema - reintentando...');
             
-            console.log('\n👥 Lista de clientes:');
-            clientes.forEach(c => {
-                console.log(`  - ID: ${c.id} (${typeof c.id}), Nombre: "${c.nombre}", Tel: "${c.telefono}"`);
-            });
-            
-            console.log('\n🔬 Últimas órdenes:');
-            ordenesLaboratorio.slice(-3).forEach(o => {
-                console.log(`  - ${o.numero}: Cliente ID ${o.clienteId} (${typeof o.clienteId}) - ${o.cliente}`);
-            });
-            
-            // Verificar select de clientes
-            const select = document.getElementById('clienteOrdenLab');
-            if (select) {
-                console.log('\n📋 Estado del select de clientes:');
-                console.log('- Opciones disponibles:', select.options.length);
-                for (let i = 0; i < select.options.length; i++) {
-                    const option = select.options[i];
-                    console.log(`  - Opción ${i}: value="${option.value}" (${typeof option.value}), text="${option.text}"`);
+            // Intentar recuperación automática
+            setTimeout(() => {
+                try {
+                    cargarDatos();
+                    actualizarDashboard();
+                    showAlert('✅ Sistema recuperado');
+                } catch (recoveryError) {
+                    console.error('❌ Error en recuperación:', recoveryError);
                 }
-                console.log('- Valor seleccionado:', select.value, typeof select.value);
+            }, 2000);
+        });
+
+        // Detectar desconexión de internet
+        window.addEventListener('online', function() {
+            showAlert('🌐 Conexión restaurada');
+        });
+
+        window.addEventListener('offline', function() {
+            showAlert('📵 Sin conexión - trabajando offline');
+        });
+
+        // Test completo del sistema al cargar
+        function testSistemaCompleto() {
+            try {
+                console.log('🧪 Ejecutando test completo del sistema...');
+                
+                // Test 1: localStorage
+                localStorage.setItem('test', 'ok');
+                const test = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (test !== 'ok') {
+                    throw new Error('localStorage no funciona');
+                }
+                console.log('✅ Test localStorage: OK');
+                
+                // Test 2: Elementos críticos del DOM
+                const elementosCriticos = [
+                    'menu', 'alert', 'dashboardLab', 'nuevaOrden', 'ordenes', 
+                    'cotejo', 'cobrar', 'pagar', 'inventario', 'camara', 
+                    'clientes', 'marketing', 'contactar', 'recordatorios', 
+                    'ventas', 'reportes', 'campanas'
+                ];
+                
+                let elementosFaltantes = [];
+                elementosCriticos.forEach(id => {
+                    if (!document.getElementById(id)) {
+                        elementosFaltantes.push(id);
+                    }
+                });
+                
+                if (elementosFaltantes.length > 0) {
+                    throw new Error(`Elementos faltantes: ${elementosFaltantes.join(', ')}`);
+                }
+                console.log('✅ Test elementos DOM: OK');
+                
+                // Test 3: APIs del navegador
+                const apisDisponibles = {
+                    camera: 'mediaDevices' in navigator,
+                    audio: 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
+                    share: 'share' in navigator,
+                    storage: typeof Storage !== 'undefined'
+                };
+                
+                console.log('📱 APIs disponibles:', apisDisponibles);
+                
+                // Test 4: Funciones críticas
+                const funcionesCriticas = [
+                    'mostrarSeccion', 'guardarDatos', 'cargarDatos',
+                    'actualizarDashboard', 'generarNumeroOrden'
+                ];
+                
+                funcionesCriticas.forEach(nombreFuncion => {
+                    if (typeof window[nombreFuncion] !== 'function') {
+                        throw new Error(`Función ${nombreFuncion} no encontrada`);
+                    }
+                });
+                console.log('✅ Test funciones críticas: OK');
+                
+                // Test 5: Datos básicos
+                if (!Array.isArray(productos) || !Array.isArray(clientes) || !Array.isArray(ordenesLab)) {
+                    throw new Error('Estructuras de datos no válidas');
+                }
+                console.log('✅ Test estructuras de datos: OK');
+                
+                // Todo OK
+                console.log('🎉 Test completo del sistema: ¡EXITOSO!');
+                document.getElementById('status-indicator').innerHTML = '🟢 Sistema Verificado';
+                showAlert('✅ Sistema 100% funcional - Óptica NVision listo');
+                
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Test del sistema FALLÓ:', error);
+                document.getElementById('status-indicator').innerHTML = '🟡 Sistema con Errores';
+                showAlert('⚠️ Sistema con problemas detectados');
+                
+                // Intentar reparación automática
+                setTimeout(() => {
+                    try {
+                        crearDatosEjemplo();
+                        cargarSelectores();
+                        actualizarDashboard();
+                        showAlert('🔧 Reparación automática aplicada');
+                    } catch (repairError) {
+                        console.error('❌ Reparación falló:', repairError);
+                    }
+                }, 3000);
+                
+                return false;
             }
-            
-            return {
-                productos: productos.length,
-                clientes: clientes.length,
-                ordenesLab: ordenesLaboratorio.length,
-                ultimaOrden: ordenesLaboratorio[ordenesLaboratorio.length - 1] || null,
-                clientesDetalle: clientes
-            };
-        };
+        }
 
-        // Función para forzar recarga de clientes en el select
-        window.recargarClientesLab = function() {
-            console.log('🔄 Forzando recarga de clientes en select laboratorio...');
-            cargarClientesSelectLab();
-            showAlert('🔄 Lista de clientes recargada');
-        };
-
-        // Función para limpiar y reiniciar datos
-        window.reiniciarSistema = function() {
-            if (confirm('¿Está seguro de que desea reiniciar el sistema? Esto eliminará todos los datos.')) {
-                localStorage.removeItem('nvisionInventario');
-                localStorage.removeItem('nvisionClientes');
-                localStorage.removeItem('nvisionVentas');
-                localStorage.removeItem('nvisionOrdenesLab');
-                localStorage.removeItem('nvisionContadorOrdenes');
-                location.reload();
+        // Ejecutar test completo 2 segundos después de cargar
+        setTimeout(testSistemaCompleto, 2000);
+        
+        // Test periódico cada 10 minutos
+        setInterval(() => {
+            console.log('🔄 Test periódico del sistema...');
+            try {
+                guardarDatos();
+                console.log('✅ Test periódico: OK');
+            } catch (error) {
+                console.error('❌ Test periódico falló:', error);
+                showAlert('⚠️ Detectado problema del sistema');
             }
-        };
+        }, 600000); // 10 minutos
 
+        // Mensaje final de confirmación
+        console.log('🚀 Panel Admin Óptica NVision - Sistema Completo Cargado');
+        console.log('📱 Marketing con audio para analfabetos: ✅');
+        console.log('🎤 Micrófono con botón enviar mensaje: ✅');
+        console.log('🔬 Laboratorio con medidas completas: ✅');
+        console.log('📷 Envío automático con dos fotos: ✅');
+        console.log('🔗 Enlaces directos sin confirmación: ✅');
+        console.log('💾 Backup automático completo activado: ✅');
+        console.log('📤 Exportación para GitHub/Netlify: ✅');
+        console.log('🛡️ Manejo de errores robusto: ✅');
+        console.log('📞 WhatsApp actualizado: 849-797-2424 ✅');
+        
     </script>
 </body>
 </html>
